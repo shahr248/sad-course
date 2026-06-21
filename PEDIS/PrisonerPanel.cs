@@ -25,7 +25,126 @@ namespace PEDIS
 
         private void PrisonerPanel_Load(object sender, EventArgs e)
         {
+            cmbAssignFactory.Items.Clear();
+            foreach (Factory factory in Enum.GetValues(typeof(Factory)))
+            {
+                cmbAssignFactory.Items.Add(factory);
+            }
+            if (cmbAssignFactory.Items.Count > 0)
+                cmbAssignFactory.SelectedIndex = 0;
+
             refreshList();
+            updateAvailableActions();
+        }
+
+        private void lvPrisoners_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            updateAvailableActions();
+        }
+
+        private Prisoner getSelectedPrisoner()
+        {
+            if (lvPrisoners.SelectedItems.Count == 0)
+            {
+                MessageBox.Show("Please select a prisoner first.", "Selection Required", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return null;
+            }
+            return (Prisoner)lvPrisoners.SelectedItems[0].Tag;
+        }
+
+        // Buttons are never created at runtime — only their Visible flag is toggled here,
+        // based on which transitions are valid for the selected prisoner's current status.
+        private void updateAvailableActions()
+        {
+            btnApprove.Visible = false;
+            btnReject.Visible = false;
+            btnAssignToFactory.Visible = false;
+            cmbAssignFactory.Visible = false;
+            btnStartProfessionalTraining.Visible = false;
+            btnCompleteProfessionalTraining.Visible = false;
+            btnStartSafetyTraining.Visible = false;
+            btnCompleteSafetyTraining.Visible = false;
+            btnSuspend.Visible = false;
+            txtSuspendReason.Visible = false;
+            btnReactivate.Visible = false;
+            btnRelease.Visible = false;
+
+            if (lvPrisoners.SelectedItems.Count == 0)
+                return;
+
+            Prisoner prisoner = (Prisoner)lvPrisoners.SelectedItems[0].Tag;
+            if (prisoner == null)
+                return;
+
+            switch (prisoner.getActivityStatus())
+            {
+                case PrisonerActivityStatus.PendingPrisonAdministrationApproval:
+                case PrisonerActivityStatus.PendingDepartmentManagerApproval:
+                    btnApprove.Visible = true;
+                    btnReject.Visible = true;
+                    break;
+
+                case PrisonerActivityStatus.PendingPlacement:
+                    btnAssignToFactory.Visible = true;
+                    cmbAssignFactory.Visible = true;
+                    break;
+
+                case PrisonerActivityStatus.Idle:
+                    btnStartProfessionalTraining.Visible = true;
+                    btnStartSafetyTraining.Visible = true;
+                    btnSuspend.Visible = true;
+                    txtSuspendReason.Visible = true;
+                    btnRelease.Visible = true;
+                    break;
+
+                case PrisonerActivityStatus.OnShiftWorking:
+                case PrisonerActivityStatus.WaitingForMaterials:
+                    btnSuspend.Visible = true;
+                    txtSuspendReason.Visible = true;
+                    btnRelease.Visible = true;
+                    break;
+
+                case PrisonerActivityStatus.InProfessionalTraining:
+                    btnCompleteProfessionalTraining.Visible = true;
+                    btnSuspend.Visible = true;
+                    txtSuspendReason.Visible = true;
+                    btnRelease.Visible = true;
+                    break;
+
+                case PrisonerActivityStatus.InSafetyTraining:
+                    btnCompleteSafetyTraining.Visible = true;
+                    btnSuspend.Visible = true;
+                    txtSuspendReason.Visible = true;
+                    btnRelease.Visible = true;
+                    break;
+
+                case PrisonerActivityStatus.TemporarilyUnavailable:
+                    btnReactivate.Visible = true;
+                    btnRelease.Visible = true;
+                    break;
+
+                case PrisonerActivityStatus.Archived:
+                    // terminal state — no actions available
+                    break;
+            }
+        }
+
+        // Reselects the same prisoner by id after refreshList() rebuilds the ListView items
+        // (Clear()/Add() loses selection), so updateAvailableActions() reflects the new status.
+        private void refreshListAndReselect(int prisonerId)
+        {
+            refreshList();
+            foreach (ListViewItem item in lvPrisoners.Items)
+            {
+                Prisoner p = (Prisoner)item.Tag;
+                if (p.getId() == prisonerId)
+                {
+                    item.Selected = true;
+                    item.EnsureVisible();
+                    break;
+                }
+            }
+            updateAvailableActions();
         }
 
         private bool matchesFilter(Prisoner prisoner)
@@ -80,24 +199,28 @@ namespace PEDIS
         {
             currentFilter = PrisonerFilterMode.All;
             refreshList();
+            updateAvailableActions();
         }
 
         private void btnFilterActive_Click(object sender, EventArgs e)
         {
             currentFilter = PrisonerFilterMode.ActiveInmates;
             refreshList();
+            updateAvailableActions();
         }
 
         private void btnFilterPresentToday_Click(object sender, EventArgs e)
         {
             currentFilter = PrisonerFilterMode.PresentToday;
             refreshList();
+            updateAvailableActions();
         }
 
         private void btnFilterExpiringSafety_Click(object sender, EventArgs e)
         {
             currentFilter = PrisonerFilterMode.ExpiringSafetyTraining;
             refreshList();
+            updateAvailableActions();
         }
 
         private void btnView_Click(object sender, EventArgs e)
@@ -125,6 +248,7 @@ namespace PEDIS
             if (dialog.ShowDialog() == DialogResult.OK)
             {
                 refreshList();
+                updateAvailableActions();
             }
         }
 
@@ -141,7 +265,7 @@ namespace PEDIS
             dialog.setPrisonerToEdit(prisoner);
             if (dialog.ShowDialog() == DialogResult.OK)
             {
-                refreshList();
+                refreshListAndReselect(prisoner.getId());
             }
         }
 
@@ -163,12 +287,229 @@ namespace PEDIS
             {
                 prisoner.delete();
                 refreshList();
+                updateAvailableActions();
             }
         }
 
         private void btnBack_Click(object sender, EventArgs e)
         {
             onBack?.Invoke();
+        }
+
+        private void btnApprove_Click(object sender, EventArgs e)
+        {
+            Prisoner prisoner = getSelectedPrisoner();
+            if (prisoner == null)
+                return;
+
+            try
+            {
+                if (prisoner.getActivityStatus() == PrisonerActivityStatus.PendingPrisonAdministrationApproval)
+                    prisoner.approvePrison();
+                else if (prisoner.getActivityStatus() == PrisonerActivityStatus.PendingDepartmentManagerApproval)
+                    prisoner.approveDeptManager();
+                else
+                {
+                    MessageBox.Show("This prisoner is not in a pending-approval status.", "Action Not Allowed", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                MessageBox.Show("Prisoner approved successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                refreshListAndReselect(prisoner.getId());
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Action Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void btnReject_Click(object sender, EventArgs e)
+        {
+            Prisoner prisoner = getSelectedPrisoner();
+            if (prisoner == null)
+                return;
+
+            try
+            {
+                if (prisoner.getActivityStatus() == PrisonerActivityStatus.PendingPrisonAdministrationApproval)
+                    prisoner.rejectPrison();
+                else if (prisoner.getActivityStatus() == PrisonerActivityStatus.PendingDepartmentManagerApproval)
+                    prisoner.rejectDeptManager();
+                else
+                {
+                    MessageBox.Show("This prisoner is not in a pending-approval status.", "Action Not Allowed", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                MessageBox.Show("Prisoner rejected and archived.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                refreshListAndReselect(prisoner.getId());
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Action Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void btnAssignToFactory_Click(object sender, EventArgs e)
+        {
+            Prisoner prisoner = getSelectedPrisoner();
+            if (prisoner == null)
+                return;
+
+            if (cmbAssignFactory.SelectedItem == null)
+            {
+                MessageBox.Show("Please select a factory.", "Selection Required", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            try
+            {
+                Factory factory = (Factory)cmbAssignFactory.SelectedItem;
+                prisoner.assignToFactory(factory);
+                MessageBox.Show("Prisoner assigned to factory successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                refreshListAndReselect(prisoner.getId());
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Action Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void btnStartProfessionalTraining_Click(object sender, EventArgs e)
+        {
+            Prisoner prisoner = getSelectedPrisoner();
+            if (prisoner == null)
+                return;
+
+            try
+            {
+                prisoner.enrollInProfessionalTraining();
+                MessageBox.Show("Prisoner enrolled in professional training.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                refreshListAndReselect(prisoner.getId());
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Action Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void btnCompleteProfessionalTraining_Click(object sender, EventArgs e)
+        {
+            Prisoner prisoner = getSelectedPrisoner();
+            if (prisoner == null)
+                return;
+
+            try
+            {
+                prisoner.completeProfessionalTraining();
+                MessageBox.Show("Professional training completed.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                refreshListAndReselect(prisoner.getId());
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Action Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void btnStartSafetyTraining_Click(object sender, EventArgs e)
+        {
+            Prisoner prisoner = getSelectedPrisoner();
+            if (prisoner == null)
+                return;
+
+            try
+            {
+                prisoner.enrollInSafetyTraining();
+                MessageBox.Show("Prisoner enrolled in safety training.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                refreshListAndReselect(prisoner.getId());
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Action Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void btnCompleteSafetyTraining_Click(object sender, EventArgs e)
+        {
+            Prisoner prisoner = getSelectedPrisoner();
+            if (prisoner == null)
+                return;
+
+            try
+            {
+                prisoner.completeSafetyTraining();
+                MessageBox.Show("Safety training completed.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                refreshListAndReselect(prisoner.getId());
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Action Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void btnSuspend_Click(object sender, EventArgs e)
+        {
+            Prisoner prisoner = getSelectedPrisoner();
+            if (prisoner == null)
+                return;
+
+            try
+            {
+                string reason = string.IsNullOrWhiteSpace(txtSuspendReason.Text) ? null : txtSuspendReason.Text.Trim();
+                prisoner.placeOnHold(reason);
+                txtSuspendReason.Text = "";
+                MessageBox.Show("Prisoner placed on hold.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                refreshListAndReselect(prisoner.getId());
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Action Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void btnReactivate_Click(object sender, EventArgs e)
+        {
+            Prisoner prisoner = getSelectedPrisoner();
+            if (prisoner == null)
+                return;
+
+            try
+            {
+                prisoner.releaseFromHold();
+                MessageBox.Show("Prisoner reactivated.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                refreshListAndReselect(prisoner.getId());
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Action Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void btnRelease_Click(object sender, EventArgs e)
+        {
+            Prisoner prisoner = getSelectedPrisoner();
+            if (prisoner == null)
+                return;
+
+            DialogResult confirm = MessageBox.Show(
+                "Are you sure you want to release/archive prisoner: " + prisoner.getFullName() + "?",
+                "Confirm Release",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question);
+
+            if (confirm != DialogResult.Yes)
+                return;
+
+            try
+            {
+                prisoner.archive();
+                MessageBox.Show("Prisoner released and archived.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                refreshListAndReselect(prisoner.getId());
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Action Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
     }
 }

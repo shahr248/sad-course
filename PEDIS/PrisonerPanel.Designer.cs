@@ -15,6 +15,22 @@ namespace PEDIS
         private System.Windows.Forms.Button btnDelete;
         private System.Windows.Forms.Button btnBack;
 
+        // Fixed state-machine Actions area — buttons are created here at design time
+        // and shown/hidden at runtime by updateAvailableActions(), never created dynamically.
+        private System.Windows.Forms.Label lblActions;
+        private System.Windows.Forms.Button btnApprove;
+        private System.Windows.Forms.Button btnReject;
+        private System.Windows.Forms.Button btnAssignToFactory;
+        private System.Windows.Forms.ComboBox cmbAssignFactory;
+        private System.Windows.Forms.Button btnStartProfessionalTraining;
+        private System.Windows.Forms.Button btnCompleteProfessionalTraining;
+        private System.Windows.Forms.Button btnStartSafetyTraining;
+        private System.Windows.Forms.Button btnCompleteSafetyTraining;
+        private System.Windows.Forms.Button btnSuspend;
+        private System.Windows.Forms.TextBox txtSuspendReason;
+        private System.Windows.Forms.Button btnReactivate;
+        private System.Windows.Forms.Button btnRelease;
+
         protected override void Dispose(bool disposing)
         {
             if (disposing && (components != null))
@@ -37,6 +53,19 @@ namespace PEDIS
             this.btnEdit = new System.Windows.Forms.Button();
             this.btnDelete = new System.Windows.Forms.Button();
             this.btnBack = new System.Windows.Forms.Button();
+            this.lblActions = new System.Windows.Forms.Label();
+            this.btnApprove = new System.Windows.Forms.Button();
+            this.btnReject = new System.Windows.Forms.Button();
+            this.btnAssignToFactory = new System.Windows.Forms.Button();
+            this.cmbAssignFactory = new System.Windows.Forms.ComboBox();
+            this.btnStartProfessionalTraining = new System.Windows.Forms.Button();
+            this.btnCompleteProfessionalTraining = new System.Windows.Forms.Button();
+            this.btnStartSafetyTraining = new System.Windows.Forms.Button();
+            this.btnCompleteSafetyTraining = new System.Windows.Forms.Button();
+            this.btnSuspend = new System.Windows.Forms.Button();
+            this.txtSuspendReason = new System.Windows.Forms.TextBox();
+            this.btnReactivate = new System.Windows.Forms.Button();
+            this.btnRelease = new System.Windows.Forms.Button();
             this.SuspendLayout();
 
             // lblTitle
@@ -104,6 +133,7 @@ namespace PEDIS
             this.lvPrisoners.View = System.Windows.Forms.View.Details;
             this.lvPrisoners.BackColor = System.Drawing.Color.White;
             this.lvPrisoners.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.lvPrisoners.SelectedIndexChanged += new System.EventHandler(this.lvPrisoners_SelectedIndexChanged);
 
             // Add columns
             this.lvPrisoners.Columns.Add("PrisonerID", 70);
@@ -178,10 +208,166 @@ namespace PEDIS
             this.btnBack.UseVisualStyleBackColor = false;
             this.btnBack.Click += new System.EventHandler(this.btnBack_Click);
 
+            // lblActions
+            this.lblActions.AutoSize = false;
+            this.lblActions.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
+            this.lblActions.Location = new System.Drawing.Point(20, 550);
+            this.lblActions.Name = "lblActions";
+            this.lblActions.Size = new System.Drawing.Size(400, 25);
+            this.lblActions.Text = "Actions for Selected Prisoner";
+            this.lblActions.ForeColor = System.Drawing.Color.FromArgb(0, 51, 102);
+
+            // btnApprove
+            this.btnApprove.Location = new System.Drawing.Point(20, 580);
+            this.btnApprove.Name = "btnApprove";
+            this.btnApprove.Size = new System.Drawing.Size(110, 35);
+            this.btnApprove.Text = "Approve";
+            this.btnApprove.BackColor = System.Drawing.Color.FromArgb(46, 204, 113);
+            this.btnApprove.ForeColor = System.Drawing.Color.White;
+            this.btnApprove.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            this.btnApprove.UseVisualStyleBackColor = false;
+            this.btnApprove.Visible = false;
+            this.btnApprove.Click += new System.EventHandler(this.btnApprove_Click);
+
+            // btnReject
+            this.btnReject.Location = new System.Drawing.Point(140, 580);
+            this.btnReject.Name = "btnReject";
+            this.btnReject.Size = new System.Drawing.Size(110, 35);
+            this.btnReject.Text = "Reject";
+            this.btnReject.BackColor = System.Drawing.Color.FromArgb(231, 76, 60);
+            this.btnReject.ForeColor = System.Drawing.Color.White;
+            this.btnReject.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            this.btnReject.UseVisualStyleBackColor = false;
+            this.btnReject.Visible = false;
+            this.btnReject.Click += new System.EventHandler(this.btnReject_Click);
+
+            // btnAssignToFactory
+            this.btnAssignToFactory.Location = new System.Drawing.Point(260, 580);
+            this.btnAssignToFactory.Name = "btnAssignToFactory";
+            this.btnAssignToFactory.Size = new System.Drawing.Size(150, 35);
+            this.btnAssignToFactory.Text = "Assign to Factory";
+            this.btnAssignToFactory.BackColor = System.Drawing.Color.FromArgb(0, 102, 204);
+            this.btnAssignToFactory.ForeColor = System.Drawing.Color.White;
+            this.btnAssignToFactory.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            this.btnAssignToFactory.UseVisualStyleBackColor = false;
+            this.btnAssignToFactory.Visible = false;
+            this.btnAssignToFactory.Click += new System.EventHandler(this.btnAssignToFactory_Click);
+
+            // cmbAssignFactory
+            this.cmbAssignFactory.Location = new System.Drawing.Point(420, 587);
+            this.cmbAssignFactory.Name = "cmbAssignFactory";
+            this.cmbAssignFactory.Size = new System.Drawing.Size(130, 25);
+            this.cmbAssignFactory.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbAssignFactory.Visible = false;
+
+            // btnStartProfessionalTraining
+            this.btnStartProfessionalTraining.Location = new System.Drawing.Point(560, 580);
+            this.btnStartProfessionalTraining.Name = "btnStartProfessionalTraining";
+            this.btnStartProfessionalTraining.Size = new System.Drawing.Size(190, 35);
+            this.btnStartProfessionalTraining.Text = "Start Professional Training";
+            this.btnStartProfessionalTraining.BackColor = System.Drawing.Color.FromArgb(155, 89, 182);
+            this.btnStartProfessionalTraining.ForeColor = System.Drawing.Color.White;
+            this.btnStartProfessionalTraining.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            this.btnStartProfessionalTraining.UseVisualStyleBackColor = false;
+            this.btnStartProfessionalTraining.Visible = false;
+            this.btnStartProfessionalTraining.Click += new System.EventHandler(this.btnStartProfessionalTraining_Click);
+
+            // btnCompleteProfessionalTraining
+            this.btnCompleteProfessionalTraining.Location = new System.Drawing.Point(20, 625);
+            this.btnCompleteProfessionalTraining.Name = "btnCompleteProfessionalTraining";
+            this.btnCompleteProfessionalTraining.Size = new System.Drawing.Size(210, 35);
+            this.btnCompleteProfessionalTraining.Text = "Complete Professional Training";
+            this.btnCompleteProfessionalTraining.BackColor = System.Drawing.Color.FromArgb(155, 89, 182);
+            this.btnCompleteProfessionalTraining.ForeColor = System.Drawing.Color.White;
+            this.btnCompleteProfessionalTraining.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            this.btnCompleteProfessionalTraining.UseVisualStyleBackColor = false;
+            this.btnCompleteProfessionalTraining.Visible = false;
+            this.btnCompleteProfessionalTraining.Click += new System.EventHandler(this.btnCompleteProfessionalTraining_Click);
+
+            // btnStartSafetyTraining
+            this.btnStartSafetyTraining.Location = new System.Drawing.Point(240, 625);
+            this.btnStartSafetyTraining.Name = "btnStartSafetyTraining";
+            this.btnStartSafetyTraining.Size = new System.Drawing.Size(160, 35);
+            this.btnStartSafetyTraining.Text = "Start Safety Training";
+            this.btnStartSafetyTraining.BackColor = System.Drawing.Color.FromArgb(230, 126, 34);
+            this.btnStartSafetyTraining.ForeColor = System.Drawing.Color.White;
+            this.btnStartSafetyTraining.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            this.btnStartSafetyTraining.UseVisualStyleBackColor = false;
+            this.btnStartSafetyTraining.Visible = false;
+            this.btnStartSafetyTraining.Click += new System.EventHandler(this.btnStartSafetyTraining_Click);
+
+            // btnCompleteSafetyTraining
+            this.btnCompleteSafetyTraining.Location = new System.Drawing.Point(410, 625);
+            this.btnCompleteSafetyTraining.Name = "btnCompleteSafetyTraining";
+            this.btnCompleteSafetyTraining.Size = new System.Drawing.Size(170, 35);
+            this.btnCompleteSafetyTraining.Text = "Complete Safety Training";
+            this.btnCompleteSafetyTraining.BackColor = System.Drawing.Color.FromArgb(230, 126, 34);
+            this.btnCompleteSafetyTraining.ForeColor = System.Drawing.Color.White;
+            this.btnCompleteSafetyTraining.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            this.btnCompleteSafetyTraining.UseVisualStyleBackColor = false;
+            this.btnCompleteSafetyTraining.Visible = false;
+            this.btnCompleteSafetyTraining.Click += new System.EventHandler(this.btnCompleteSafetyTraining_Click);
+
+            // btnSuspend
+            this.btnSuspend.Location = new System.Drawing.Point(20, 670);
+            this.btnSuspend.Name = "btnSuspend";
+            this.btnSuspend.Size = new System.Drawing.Size(100, 35);
+            this.btnSuspend.Text = "Suspend";
+            this.btnSuspend.BackColor = System.Drawing.Color.FromArgb(192, 57, 43);
+            this.btnSuspend.ForeColor = System.Drawing.Color.White;
+            this.btnSuspend.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            this.btnSuspend.UseVisualStyleBackColor = false;
+            this.btnSuspend.Visible = false;
+            this.btnSuspend.Click += new System.EventHandler(this.btnSuspend_Click);
+
+            // txtSuspendReason
+            this.txtSuspendReason.Location = new System.Drawing.Point(130, 678);
+            this.txtSuspendReason.Name = "txtSuspendReason";
+            this.txtSuspendReason.Size = new System.Drawing.Size(200, 25);
+            this.txtSuspendReason.PlaceholderText = "Reason (optional)";
+            this.txtSuspendReason.Visible = false;
+
+            // btnReactivate
+            this.btnReactivate.Location = new System.Drawing.Point(340, 670);
+            this.btnReactivate.Name = "btnReactivate";
+            this.btnReactivate.Size = new System.Drawing.Size(110, 35);
+            this.btnReactivate.Text = "Reactivate";
+            this.btnReactivate.BackColor = System.Drawing.Color.FromArgb(26, 188, 156);
+            this.btnReactivate.ForeColor = System.Drawing.Color.White;
+            this.btnReactivate.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            this.btnReactivate.UseVisualStyleBackColor = false;
+            this.btnReactivate.Visible = false;
+            this.btnReactivate.Click += new System.EventHandler(this.btnReactivate_Click);
+
+            // btnRelease
+            this.btnRelease.Location = new System.Drawing.Point(460, 670);
+            this.btnRelease.Name = "btnRelease";
+            this.btnRelease.Size = new System.Drawing.Size(100, 35);
+            this.btnRelease.Text = "Release";
+            this.btnRelease.BackColor = System.Drawing.Color.FromArgb(149, 165, 166);
+            this.btnRelease.ForeColor = System.Drawing.Color.White;
+            this.btnRelease.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            this.btnRelease.UseVisualStyleBackColor = false;
+            this.btnRelease.Visible = false;
+            this.btnRelease.Click += new System.EventHandler(this.btnRelease_Click);
+
             // PrisonerPanel
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(236, 240, 241);
+            this.Controls.Add(this.btnRelease);
+            this.Controls.Add(this.btnReactivate);
+            this.Controls.Add(this.txtSuspendReason);
+            this.Controls.Add(this.btnSuspend);
+            this.Controls.Add(this.btnCompleteSafetyTraining);
+            this.Controls.Add(this.btnStartSafetyTraining);
+            this.Controls.Add(this.btnCompleteProfessionalTraining);
+            this.Controls.Add(this.btnStartProfessionalTraining);
+            this.Controls.Add(this.cmbAssignFactory);
+            this.Controls.Add(this.btnAssignToFactory);
+            this.Controls.Add(this.btnReject);
+            this.Controls.Add(this.btnApprove);
+            this.Controls.Add(this.lblActions);
             this.Controls.Add(this.btnBack);
             this.Controls.Add(this.btnDelete);
             this.Controls.Add(this.btnEdit);

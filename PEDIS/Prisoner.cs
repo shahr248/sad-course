@@ -226,7 +226,7 @@ namespace PEDIS
         public void approvePrison()
         {
             if (this.activityStatus != PrisonerActivityStatus.PendingPrisonAdministrationApproval)
-                throw new Exception("כשגיאה: הכלא לא בסטטוס קבלה מינהלית");
+                throw new Exception("Error: prisoner is not in pending prison administration approval status");
 
             SqlCommand cmd = new SqlCommand();
             cmd.CommandText = "EXECUTE sp_Prisoner_approvePrison @prisoner_id";
@@ -245,7 +245,7 @@ namespace PEDIS
         public void rejectPrison()
         {
             if (this.activityStatus != PrisonerActivityStatus.PendingPrisonAdministrationApproval)
-                throw new Exception("כשגיאה: הכלא לא בסטטוס קבלה מינהלית");
+                throw new Exception("Error: prisoner is not in pending prison administration approval status");
 
             SqlCommand cmd = new SqlCommand();
             cmd.CommandText = "EXECUTE sp_Prisoner_rejectPrison @prisoner_id";
@@ -265,7 +265,7 @@ namespace PEDIS
         public void approveDeptManager()
         {
             if (this.activityStatus != PrisonerActivityStatus.PendingDepartmentManagerApproval)
-                throw new Exception("כשגיאה: כלא לא בסטטוס ממתין לאישור מנהל");
+                throw new Exception("Error: prisoner is not in pending department manager approval status");
 
             SqlCommand cmd = new SqlCommand();
             cmd.CommandText = "EXECUTE sp_Prisoner_approveDeptManager @prisoner_id";
@@ -284,7 +284,7 @@ namespace PEDIS
         public void rejectDeptManager()
         {
             if (this.activityStatus != PrisonerActivityStatus.PendingDepartmentManagerApproval)
-                throw new Exception("כשגיאה: כלא לא בסטטוס ממתין לאישור מנהל");
+                throw new Exception("Error: prisoner is not in pending department manager approval status");
 
             SqlCommand cmd = new SqlCommand();
             cmd.CommandText = "EXECUTE sp_Prisoner_rejectDeptManager @prisoner_id";
@@ -303,7 +303,7 @@ namespace PEDIS
         public void assignToFactory(Factory factory)
         {
             if (this.activityStatus != PrisonerActivityStatus.PendingPlacement)
-                throw new Exception("כשגיאה: כלא לא בסטטוס ממתין להקצאה");
+                throw new Exception("Error: prisoner is not in pending placement status");
 
             SqlCommand cmd = new SqlCommand();
             cmd.CommandText = "EXECUTE sp_Prisoner_assignToFactory @prisoner_id, @factory";
@@ -325,11 +325,11 @@ namespace PEDIS
         public void clockIn(int workOrderId)
         {
             if (this.activityStatus != PrisonerActivityStatus.Idle)
-                throw new Exception("כשגיאה: כלא לא בסטטוס יושב");
+                throw new Exception("Error: prisoner is not in idle status");
 
             // Guard: check safety cert validity (R9)
             if (this.safetyTrainingValidity.HasValue && this.safetyTrainingValidity.Value < DateTime.Now)
-                throw new Exception("כשגיאה: תעודת בטיחות של כלא פגה");
+                throw new Exception("Error: prisoner's safety certification has expired");
 
             SqlCommand cmd = new SqlCommand();
             cmd.CommandText = "EXECUTE sp_Prisoner_clockIn @prisoner_id, @work_order_id";
@@ -349,7 +349,7 @@ namespace PEDIS
         public void pauseForMaterials(string reason)
         {
             if (this.activityStatus != PrisonerActivityStatus.OnShiftWorking)
-                throw new Exception("כשגיאה: כלא לא עובד כעת");
+                throw new Exception("Error: prisoner is not currently working a shift");
 
             SqlCommand cmd = new SqlCommand();
             cmd.CommandText = "EXECUTE sp_Prisoner_pauseForMaterials @prisoner_id, @reason";
@@ -369,7 +369,7 @@ namespace PEDIS
         public void clockOut()
         {
             if (this.activityStatus != PrisonerActivityStatus.OnShiftWorking)
-                throw new Exception("כשגיאה: כלא לא עובד כעת");
+                throw new Exception("Error: prisoner is not currently working a shift");
 
             SqlCommand cmd = new SqlCommand();
             cmd.CommandText = "EXECUTE sp_Prisoner_clockOut @prisoner_id";
@@ -388,7 +388,7 @@ namespace PEDIS
         public void resumeFromMaterials()
         {
             if (this.activityStatus != PrisonerActivityStatus.WaitingForMaterials)
-                throw new Exception("כשגיאה: כלא לא ממתין לחומרים");
+                throw new Exception("Error: prisoner is not waiting for materials");
 
             SqlCommand cmd = new SqlCommand();
             cmd.CommandText = "EXECUTE sp_Prisoner_resumeFromMaterials @prisoner_id";
@@ -407,7 +407,7 @@ namespace PEDIS
         public void abortTask()
         {
             if (this.activityStatus != PrisonerActivityStatus.WaitingForMaterials)
-                throw new Exception("כשגיאה: כלא לא ממתין לחומרים");
+                throw new Exception("Error: prisoner is not waiting for materials");
 
             SqlCommand cmd = new SqlCommand();
             cmd.CommandText = "EXECUTE sp_Prisoner_abortTask @prisoner_id";
@@ -426,7 +426,7 @@ namespace PEDIS
         public void enrollInProfessionalTraining()
         {
             if (this.activityStatus != PrisonerActivityStatus.Idle)
-                throw new Exception("כשגיאה: כלא לא בסטטוס יושב");
+                throw new Exception("Error: prisoner is not in idle status");
 
             SqlCommand cmd = new SqlCommand();
             cmd.CommandText = "EXECUTE sp_Prisoner_enrollInProfessionalTraining @prisoner_id";
@@ -445,7 +445,7 @@ namespace PEDIS
         public void completeProfessionalTraining()
         {
             if (this.activityStatus != PrisonerActivityStatus.InProfessionalTraining)
-                throw new Exception("כשגיאה: כלא לא בהדרכה מקצועית");
+                throw new Exception("Error: prisoner is not in professional training");
 
             SqlCommand cmd = new SqlCommand();
             cmd.CommandText = "EXECUTE sp_Prisoner_completeProfessionalTraining @prisoner_id";
@@ -464,7 +464,7 @@ namespace PEDIS
         public void enrollInSafetyTraining()
         {
             if (this.activityStatus != PrisonerActivityStatus.Idle)
-                throw new Exception("כשגיאה: כלא לא בסטטוס יושב");
+                throw new Exception("Error: prisoner is not in idle status");
 
             SqlCommand cmd = new SqlCommand();
             cmd.CommandText = "EXECUTE sp_Prisoner_enrollInSafetyTraining @prisoner_id";
@@ -484,7 +484,7 @@ namespace PEDIS
         public void completeSafetyTraining()
         {
             if (this.activityStatus != PrisonerActivityStatus.InSafetyTraining)
-                throw new Exception("כשגיאה: כלא לא בהדרכת בטיחות");
+                throw new Exception("Error: prisoner is not in safety training");
 
             SqlCommand cmd = new SqlCommand();
             cmd.CommandText = "EXECUTE sp_Prisoner_completeSafetyTraining @prisoner_id";
@@ -522,7 +522,7 @@ namespace PEDIS
         public void releaseFromHold()
         {
             if (this.activityStatus != PrisonerActivityStatus.TemporarilyUnavailable)
-                throw new Exception("כשגיאה: כלא לא בהחזקה זמנית");
+                throw new Exception("Error: prisoner is not temporarily unavailable");
 
             SqlCommand cmd = new SqlCommand();
             cmd.CommandText = "EXECUTE sp_Prisoner_releaseFromHold @prisoner_id";
@@ -541,7 +541,7 @@ namespace PEDIS
         public void archiveUnavailable()
         {
             if (this.activityStatus != PrisonerActivityStatus.TemporarilyUnavailable)
-                throw new Exception("כשגיאה: כלא לא בהחזקה זמנית");
+                throw new Exception("Error: prisoner is not temporarily unavailable");
 
             SqlCommand cmd = new SqlCommand();
             cmd.CommandText = "EXECUTE sp_Prisoner_archiveUnavailable @prisoner_id";

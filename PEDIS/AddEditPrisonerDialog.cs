@@ -58,6 +58,9 @@ namespace PEDIS
             }
 
             cbActivityStatus.SelectedItem = prisoner.getActivityStatus();
+            // Status is controlled by the Prisoner state machine (see PrisonerPanel action buttons);
+            // editing an existing prisoner must not be able to bypass it.
+            cbActivityStatus.Enabled = false;
 
             if (prisoner.getRole().HasValue)
                 cbRole.SelectedItem = prisoner.getRole().Value;
@@ -146,7 +149,8 @@ namespace PEDIS
                     prisonerToEdit.setFullName(txtFullName.Text);
                     prisonerToEdit.setDepartment(int.Parse(txtDepartment.Text));
                     prisonerToEdit.setFactory(selectedFactory);
-                    prisonerToEdit.setActivityStatus((PrisonerActivityStatus)cbActivityStatus.SelectedItem);
+                    // activityStatus is intentionally not updated here — it is controlled
+                    // exclusively by the Prisoner state-machine action buttons in PrisonerPanel.
                     prisonerToEdit.setRole(selectedRole);
                     prisonerToEdit.setHourlyRate(decimal.Parse(txtHourlyRate.Text));
                     prisonerToEdit.setQualified(chkQualified.Checked);
