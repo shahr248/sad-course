@@ -449,3 +449,54 @@ FactoryManagerHome
 - No session management; single user per window
 - Role-based access control via enum `DepartmentManagementRole`
 
+---
+
+## Visual Design Language (Phase 10.1 Polish — ProductionOrderPanel, AttendanceRecordPanel, ProductivityRecordPanel)
+
+**Color palette**
+
+| Role | Color | Hex |
+|---|---|---|
+| Title text | `(0,51,102)` | `#003366` |
+| Separator line | `(189,195,199)` | `#BDC3C7` |
+| Primary action (View / Apply Filters) | `(52,152,219)` | `#3498DB` |
+| Create / Add | `(46,204,113)` | `#2ECC71` |
+| Edit | `(241,196,15)` | `#F1C40F` |
+| Delete | `(231,76,60)` | `#E74C3C` |
+| Back / Clear / neutral | `(149,165,166)` | `#95A5A6` |
+| Secondary/tertiary action (e.g. Daily Totals) | `(230,126,34)` | `#E67E22` |
+| Panel background | `(236,240,241)` | `#ECF0F1` |
+| Filter-section backdrop (optional) | `(248,249,250)` | `#F8F9FA` |
+| Filter label text | `(50,50,50)` | `#323232` |
+| ListView background | White | `#FFFFFF` |
+
+**Fonts** (all Segoe UI)
+- Page title: 18pt Bold
+- Section/filter labels: 10pt Bold
+- ListView grid content: 9.5pt Regular
+- Primary buttons (View/Add/Edit/Delete/Back): 10pt Bold
+- Secondary buttons (Apply/Clear Filters, utility actions): 9pt Bold
+
+**Spacing rules**
+- 20px left margin for all primary controls; content width = 984px (1024 panel width − 20px margins on each side).
+- 2px title separator spans the full 984px content width, directly under the title.
+- 20px vertical gap between major sections: grid → CRUD button row → Back button row.
+- CRUD button row: View/Add/Edit/Delete at x = 20, 130, 240, 350 (100px wide, 10px gaps); Back always at x=20 on its own row.
+
+**Button styling rules**
+- Standard size 100×35 for the primary row; 100×25 for filter-action buttons.
+- Fixed color-to-action mapping per the palette above; white text; Bold font; `UseVisualStyleBackColor = false`.
+
+**ListView styling rules**
+- `BorderStyle = FixedSingle`, `Font = Segoe UI 9.5pt`, `BackColor = White`, `FullRowSelect = true`, `GridLines = true`, `View = Details`.
+- Fixed width 984px; height adapts to available vertical space.
+
+**Section/header styling**
+- Title: 18pt Bold, `#003366`, anchored at (20,15).
+- 2px `#BDC3C7` separator line directly beneath the title.
+- Filter/section labels: 10pt Bold, `#323232`.
+
+**Panel background style**
+- Every top-level panel: `BackColor = #ECF0F1`.
+- An optional `FixedSingle`-bordered `#F8F9FA` backdrop panel may be used to visually group a cluster of filter controls — added first in z-order so it never intercepts input. Not mandatory on every panel; applied case-by-case (currently only AttendanceRecordPanel).
+
