@@ -15,7 +15,6 @@ namespace PEDIS
             InitializeComponent();
             this.Text = "PEDIS - Prison Employment Department Information System";
             this.StartPosition = FormStartPosition.CenterScreen;
-            this.Size = new System.Drawing.Size(1024, 768);
         }
 
         private void mainForm_Load(object sender, EventArgs e)
