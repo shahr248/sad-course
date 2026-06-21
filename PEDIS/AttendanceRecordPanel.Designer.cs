@@ -4,6 +4,8 @@ namespace PEDIS
     {
         private System.ComponentModel.IContainer components = null;
         private System.Windows.Forms.Label lblTitle;
+        private System.Windows.Forms.Panel pnlTitleSeparator;
+        private System.Windows.Forms.Panel pnlFilterBackground;
         private System.Windows.Forms.Label lblFilterDate;
         private System.Windows.Forms.Label lblFilterDateTo;
         private System.Windows.Forms.Label lblFilterPrisoner;
@@ -31,6 +33,8 @@ namespace PEDIS
         private void InitializeComponent()
         {
             this.lblTitle = new System.Windows.Forms.Label();
+            this.pnlTitleSeparator = new System.Windows.Forms.Panel();
+            this.pnlFilterBackground = new System.Windows.Forms.Panel();
             this.lblFilterDate = new System.Windows.Forms.Label();
             this.lblFilterDateTo = new System.Windows.Forms.Label();
             this.lblFilterPrisoner = new System.Windows.Forms.Label();
@@ -53,6 +57,17 @@ namespace PEDIS
             this.lblTitle.Size = new System.Drawing.Size(500, 35);
             this.lblTitle.Text = "Attendance Records";
             this.lblTitle.ForeColor = System.Drawing.Color.FromArgb(0, 51, 102);
+
+            this.pnlTitleSeparator.Location = new System.Drawing.Point(20, 50);
+            this.pnlTitleSeparator.Size = new System.Drawing.Size(984, 2);
+            this.pnlTitleSeparator.BackColor = System.Drawing.Color.FromArgb(189, 195, 199);
+
+            // Non-interactive backdrop behind the filter rows below -- not their parent,
+            // sits at the back of the z-order so it never covers or intercepts them.
+            this.pnlFilterBackground.Location = new System.Drawing.Point(10, 55);
+            this.pnlFilterBackground.Size = new System.Drawing.Size(686, 75);
+            this.pnlFilterBackground.BackColor = System.Drawing.Color.FromArgb(248, 249, 250);
+            this.pnlFilterBackground.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 
             // Filter Controls Section - Row 1: Date Range
             this.lblFilterDate.AutoSize = false;
@@ -95,7 +110,7 @@ namespace PEDIS
             this.btnApplyFilters.Location = new System.Drawing.Point(470, 95);
             this.btnApplyFilters.Size = new System.Drawing.Size(100, 25);
             this.btnApplyFilters.Text = "Apply Filters";
-            this.btnApplyFilters.BackColor = System.Drawing.Color.FromArgb(0, 102, 204);
+            this.btnApplyFilters.BackColor = System.Drawing.Color.FromArgb(52, 152, 219);
             this.btnApplyFilters.ForeColor = System.Drawing.Color.White;
             this.btnApplyFilters.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
             this.btnApplyFilters.UseVisualStyleBackColor = false;
@@ -112,32 +127,33 @@ namespace PEDIS
 
             this.lvAttendance.FullRowSelect = true;
             this.lvAttendance.GridLines = true;
-            this.lvAttendance.Location = new System.Drawing.Point(20, 135);
+            this.lvAttendance.Location = new System.Drawing.Point(20, 140);
             this.lvAttendance.Size = new System.Drawing.Size(984, 290);
             this.lvAttendance.UseCompatibleStateImageBehavior = false;
             this.lvAttendance.View = System.Windows.Forms.View.Details;
             this.lvAttendance.BackColor = System.Drawing.Color.White;
-            this.lvAttendance.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.lvAttendance.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.lvAttendance.Font = new System.Drawing.Font("Segoe UI", 9.5F);
 
-            this.lvAttendance.Columns.Add("ID", 50);
-            this.lvAttendance.Columns.Add("Prisoner ID", 80);
-            this.lvAttendance.Columns.Add("Prisoner Name", 150);
-            this.lvAttendance.Columns.Add("Date", 100);
-            this.lvAttendance.Columns.Add("Entry Time", 80);
-            this.lvAttendance.Columns.Add("Exit Time", 80);
-            this.lvAttendance.Columns.Add("Hours Worked", 80);
-            this.lvAttendance.Columns.Add("Factory", 80);
+            this.lvAttendance.Columns.Add("ID", 55);
+            this.lvAttendance.Columns.Add("Prisoner ID", 90);
+            this.lvAttendance.Columns.Add("Prisoner Name", 180);
+            this.lvAttendance.Columns.Add("Date", 110);
+            this.lvAttendance.Columns.Add("Entry Time", 95);
+            this.lvAttendance.Columns.Add("Exit Time", 95);
+            this.lvAttendance.Columns.Add("Hours Worked", 100);
+            this.lvAttendance.Columns.Add("Factory", 110);
 
-            this.btnView.Location = new System.Drawing.Point(20, 435);
+            this.btnView.Location = new System.Drawing.Point(20, 450);
             this.btnView.Size = new System.Drawing.Size(100, 35);
             this.btnView.Text = "View";
-            this.btnView.BackColor = System.Drawing.Color.FromArgb(0, 102, 204);
+            this.btnView.BackColor = System.Drawing.Color.FromArgb(52, 152, 219);
             this.btnView.ForeColor = System.Drawing.Color.White;
             this.btnView.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.btnView.UseVisualStyleBackColor = false;
             this.btnView.Click += new System.EventHandler(this.btnView_Click);
 
-            this.btnAdd.Location = new System.Drawing.Point(130, 435);
+            this.btnAdd.Location = new System.Drawing.Point(130, 450);
             this.btnAdd.Size = new System.Drawing.Size(100, 35);
             this.btnAdd.Text = "Add";
             this.btnAdd.BackColor = System.Drawing.Color.FromArgb(46, 204, 113);
@@ -146,7 +162,7 @@ namespace PEDIS
             this.btnAdd.UseVisualStyleBackColor = false;
             this.btnAdd.Click += new System.EventHandler(this.btnAdd_Click);
 
-            this.btnEdit.Location = new System.Drawing.Point(240, 435);
+            this.btnEdit.Location = new System.Drawing.Point(240, 450);
             this.btnEdit.Size = new System.Drawing.Size(100, 35);
             this.btnEdit.Text = "Edit";
             this.btnEdit.BackColor = System.Drawing.Color.FromArgb(241, 196, 15);
@@ -155,7 +171,7 @@ namespace PEDIS
             this.btnEdit.UseVisualStyleBackColor = false;
             this.btnEdit.Click += new System.EventHandler(this.btnEdit_Click);
 
-            this.btnDelete.Location = new System.Drawing.Point(350, 435);
+            this.btnDelete.Location = new System.Drawing.Point(350, 450);
             this.btnDelete.Size = new System.Drawing.Size(100, 35);
             this.btnDelete.Text = "Delete";
             this.btnDelete.BackColor = System.Drawing.Color.FromArgb(231, 76, 60);
@@ -164,7 +180,7 @@ namespace PEDIS
             this.btnDelete.UseVisualStyleBackColor = false;
             this.btnDelete.Click += new System.EventHandler(this.btnDelete_Click);
 
-            this.btnBack.Location = new System.Drawing.Point(20, 485);
+            this.btnBack.Location = new System.Drawing.Point(20, 505);
             this.btnBack.Size = new System.Drawing.Size(100, 35);
             this.btnBack.Text = "← Back";
             this.btnBack.BackColor = System.Drawing.Color.FromArgb(149, 165, 166);
@@ -176,6 +192,8 @@ namespace PEDIS
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(236, 240, 241);
+            this.Controls.Add(this.pnlFilterBackground);
+            this.Controls.Add(this.pnlTitleSeparator);
             this.Controls.Add(this.btnBack);
             this.Controls.Add(this.btnDelete);
             this.Controls.Add(this.btnEdit);
