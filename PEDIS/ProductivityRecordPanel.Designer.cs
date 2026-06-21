@@ -4,6 +4,7 @@ namespace PEDIS
     {
         private System.ComponentModel.IContainer components = null;
         private System.Windows.Forms.Label lblTitle;
+        private System.Windows.Forms.Panel pnlTitleSeparator;
         private System.Windows.Forms.Label lblFilterDate;
         private System.Windows.Forms.Label lblFilterDateTo;
         private System.Windows.Forms.Label lblFilterPrisoner;
@@ -34,6 +35,7 @@ namespace PEDIS
         private void InitializeComponent()
         {
             this.lblTitle = new System.Windows.Forms.Label();
+            this.pnlTitleSeparator = new System.Windows.Forms.Panel();
             this.lblFilterDate = new System.Windows.Forms.Label();
             this.lblFilterDateTo = new System.Windows.Forms.Label();
             this.lblFilterPrisoner = new System.Windows.Forms.Label();
@@ -59,6 +61,10 @@ namespace PEDIS
             this.lblTitle.Size = new System.Drawing.Size(500, 35);
             this.lblTitle.Text = "Productivity Records";
             this.lblTitle.ForeColor = System.Drawing.Color.FromArgb(0, 51, 102);
+
+            this.pnlTitleSeparator.Location = new System.Drawing.Point(20, 50);
+            this.pnlTitleSeparator.Size = new System.Drawing.Size(984, 2);
+            this.pnlTitleSeparator.BackColor = System.Drawing.Color.FromArgb(189, 195, 199);
 
             // Filter Controls Section
             this.lblFilterDate.AutoSize = false;
@@ -108,7 +114,7 @@ namespace PEDIS
             this.btnApplyFilters.Location = new System.Drawing.Point(405, 90);
             this.btnApplyFilters.Size = new System.Drawing.Size(100, 25);
             this.btnApplyFilters.Text = "Apply Filters";
-            this.btnApplyFilters.BackColor = System.Drawing.Color.FromArgb(0, 102, 204);
+            this.btnApplyFilters.BackColor = System.Drawing.Color.FromArgb(52, 152, 219);
             this.btnApplyFilters.ForeColor = System.Drawing.Color.White;
             this.btnApplyFilters.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
             this.btnApplyFilters.UseVisualStyleBackColor = false;
@@ -134,32 +140,33 @@ namespace PEDIS
 
             this.lvProductivity.FullRowSelect = true;
             this.lvProductivity.GridLines = true;
-            this.lvProductivity.Location = new System.Drawing.Point(20, 125);
+            this.lvProductivity.Location = new System.Drawing.Point(20, 135);
             this.lvProductivity.Size = new System.Drawing.Size(984, 275);
             this.lvProductivity.UseCompatibleStateImageBehavior = false;
             this.lvProductivity.View = System.Windows.Forms.View.Details;
             this.lvProductivity.BackColor = System.Drawing.Color.White;
-            this.lvProductivity.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.lvProductivity.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.lvProductivity.Font = new System.Drawing.Font("Segoe UI", 9.5F);
 
-            this.lvProductivity.Columns.Add("ID", 50);
-            this.lvProductivity.Columns.Add("Prisoner ID", 80);
-            this.lvProductivity.Columns.Add("Prisoner Name", 140);
-            this.lvProductivity.Columns.Add("Work Order", 100);
-            this.lvProductivity.Columns.Add("Product", 130);
-            this.lvProductivity.Columns.Add("Date", 100);
-            this.lvProductivity.Columns.Add("Units Produced", 120);
-            this.lvProductivity.Columns.Add("Productivity Type", 120);
+            this.lvProductivity.Columns.Add("ID", 55);
+            this.lvProductivity.Columns.Add("Prisoner ID", 90);
+            this.lvProductivity.Columns.Add("Prisoner Name", 170);
+            this.lvProductivity.Columns.Add("Work Order", 110);
+            this.lvProductivity.Columns.Add("Product", 150);
+            this.lvProductivity.Columns.Add("Date", 110);
+            this.lvProductivity.Columns.Add("Units Produced", 130);
+            this.lvProductivity.Columns.Add("Productivity Type", 130);
 
-            this.btnView.Location = new System.Drawing.Point(20, 420);
+            this.btnView.Location = new System.Drawing.Point(20, 430);
             this.btnView.Size = new System.Drawing.Size(100, 35);
             this.btnView.Text = "View";
-            this.btnView.BackColor = System.Drawing.Color.FromArgb(0, 102, 204);
+            this.btnView.BackColor = System.Drawing.Color.FromArgb(52, 152, 219);
             this.btnView.ForeColor = System.Drawing.Color.White;
             this.btnView.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.btnView.UseVisualStyleBackColor = false;
             this.btnView.Click += new System.EventHandler(this.btnView_Click);
 
-            this.btnAdd.Location = new System.Drawing.Point(130, 420);
+            this.btnAdd.Location = new System.Drawing.Point(130, 430);
             this.btnAdd.Size = new System.Drawing.Size(100, 35);
             this.btnAdd.Text = "Add";
             this.btnAdd.BackColor = System.Drawing.Color.FromArgb(46, 204, 113);
@@ -168,7 +175,7 @@ namespace PEDIS
             this.btnAdd.UseVisualStyleBackColor = false;
             this.btnAdd.Click += new System.EventHandler(this.btnAdd_Click);
 
-            this.btnEdit.Location = new System.Drawing.Point(240, 420);
+            this.btnEdit.Location = new System.Drawing.Point(240, 430);
             this.btnEdit.Size = new System.Drawing.Size(100, 35);
             this.btnEdit.Text = "Edit";
             this.btnEdit.BackColor = System.Drawing.Color.FromArgb(241, 196, 15);
@@ -177,7 +184,7 @@ namespace PEDIS
             this.btnEdit.UseVisualStyleBackColor = false;
             this.btnEdit.Click += new System.EventHandler(this.btnEdit_Click);
 
-            this.btnDelete.Location = new System.Drawing.Point(350, 420);
+            this.btnDelete.Location = new System.Drawing.Point(350, 430);
             this.btnDelete.Size = new System.Drawing.Size(100, 35);
             this.btnDelete.Text = "Delete";
             this.btnDelete.BackColor = System.Drawing.Color.FromArgb(231, 76, 60);
@@ -186,7 +193,7 @@ namespace PEDIS
             this.btnDelete.UseVisualStyleBackColor = false;
             this.btnDelete.Click += new System.EventHandler(this.btnDelete_Click);
 
-            this.btnBack.Location = new System.Drawing.Point(20, 470);
+            this.btnBack.Location = new System.Drawing.Point(20, 485);
             this.btnBack.Size = new System.Drawing.Size(100, 35);
             this.btnBack.Text = "← Back";
             this.btnBack.BackColor = System.Drawing.Color.FromArgb(149, 165, 166);
@@ -215,6 +222,7 @@ namespace PEDIS
             this.Controls.Add(this.lblFilterDateTo);
             this.Controls.Add(this.dtpFilterStartDate);
             this.Controls.Add(this.lblFilterDate);
+            this.Controls.Add(this.pnlTitleSeparator);
             this.Controls.Add(this.lblTitle);
             this.Name = "ProductivityRecordPanel";
             this.Size = new System.Drawing.Size(1024, 768);
