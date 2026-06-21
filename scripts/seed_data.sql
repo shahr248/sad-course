@@ -8,7 +8,7 @@ USE sadcourse3;
 -- ============================================================================
 
 -- ============================================================================
--- 1. EmploymentDepartment (3 rows)
+-- 1. EmploymentDepartment (1 row)
 -- ============================================================================
 
 EXEC sp_EmploymentDepartment_create
@@ -16,23 +16,7 @@ EXEC sp_EmploymentDepartment_create
     @department_code = 'DEPT-EMP',
     @department_name = 'Employment Department',
     @location = 'Building A',
-    @max_capacity = 150,
-    @is_active = 1;
-
-EXEC sp_EmploymentDepartment_create
-    @employment_department_id = 2,
-    @department_code = 'DEPT-MFG',
-    @department_name = 'Manufacturing Oversight',
-    @location = 'Building B',
-    @max_capacity = 200,
-    @is_active = 1;
-
-EXEC sp_EmploymentDepartment_create
-    @employment_department_id = 3,
-    @department_code = 'DEPT-ADM',
-    @department_name = 'Administrative Services',
-    @location = 'Building A',
-    @max_capacity = 100,
+    @max_capacity = 300,
     @is_active = 1;
 
 -- ============================================================================
@@ -203,7 +187,7 @@ EXEC sp_DepartmentManagement_create
     @password = 'MgrPass123!',
     @role = 'factoryManager',
     @factory = 'MaimonSpices',
-    @employment_department_id = 2;
+    @employment_department_id = 1;
 
 EXEC sp_DepartmentManagement_create
     @department_management_id = 4,
@@ -211,7 +195,7 @@ EXEC sp_DepartmentManagement_create
     @password = 'MgrPass123!',
     @role = 'factoryManager',
     @factory = 'Technosak',
-    @employment_department_id = 2;
+    @employment_department_id = 1;
 
 EXEC sp_DepartmentManagement_create
     @department_management_id = 5,
@@ -219,7 +203,7 @@ EXEC sp_DepartmentManagement_create
     @password = 'MgrPass123!',
     @role = 'factoryManager',
     @factory = 'SewingWorkshop',
-    @employment_department_id = 2;
+    @employment_department_id = 1;
 
 EXEC sp_DepartmentManagement_create
     @department_management_id = 6,
@@ -227,7 +211,7 @@ EXEC sp_DepartmentManagement_create
     @password = 'MgrPass123!',
     @role = 'factoryManager',
     @factory = 'TzitzitWorkshop',
-    @employment_department_id = 2;
+    @employment_department_id = 1;
 
 -- ============================================================================
 -- 5. Prisoner (15 rows) - Male inmates in Employment Program
