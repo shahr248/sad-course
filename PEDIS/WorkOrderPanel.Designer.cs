@@ -47,11 +47,14 @@ namespace PEDIS
             this.lvWorkOrders.BackColor = System.Drawing.Color.White;
             this.lvWorkOrders.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
 
-            this.lvWorkOrders.Columns.Add("ID", 100);
-            this.lvWorkOrders.Columns.Add("Work Order #", 150);
-            this.lvWorkOrders.Columns.Add("Status", 150);
-            this.lvWorkOrders.Columns.Add("Start Date", 150);
-            this.lvWorkOrders.Columns.Add("End Date", 150);
+            this.lvWorkOrders.Columns.Add("ID", 60);
+            this.lvWorkOrders.Columns.Add("Work Order #", 120);
+            this.lvWorkOrders.Columns.Add("Parent Order", 120);
+            this.lvWorkOrders.Columns.Add("Product", 140);
+            this.lvWorkOrders.Columns.Add("Status", 110);
+            this.lvWorkOrders.Columns.Add("Start Date", 100);
+            this.lvWorkOrders.Columns.Add("End Date", 100);
+            this.lvWorkOrders.Columns.Add("Work Instructions", 300);
 
             this.btnView.Location = new System.Drawing.Point(20, 420);
             this.btnView.Size = new System.Drawing.Size(100, 35);

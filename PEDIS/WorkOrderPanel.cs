@@ -37,11 +37,16 @@ namespace PEDIS
                         continue;
                 }
 
+                Product product = workOrder.getProductionOrder()?.getProduct();
+
                 ListViewItem item = new ListViewItem(workOrder.getId().ToString());
                 item.SubItems.Add(workOrder.getWorkOrderNumber());
+                item.SubItems.Add(workOrder.getProductionOrder()?.getOrderNumber() ?? "N/A");
+                item.SubItems.Add(product?.getName() ?? "N/A");
                 item.SubItems.Add(workOrder.getStatus().ToString());
                 item.SubItems.Add(workOrder.getStartDate().ToString("yyyy-MM-dd"));
                 item.SubItems.Add(workOrder.getDeadline().ToString("yyyy-MM-dd"));
+                item.SubItems.Add(product?.getPackagingInstructions() ?? "");
                 item.Tag = workOrder;
                 lvWorkOrders.Items.Add(item);
             }
@@ -56,11 +61,15 @@ namespace PEDIS
             }
 
             WorkOrder workOrder = (WorkOrder)lvWorkOrders.SelectedItems[0].Tag;
+            Product product = workOrder.getProductionOrder()?.getProduct();
             string info = "ID: " + workOrder.getId() + "\n" +
                          "Work Order #: " + workOrder.getWorkOrderNumber() + "\n" +
+                         "Parent Order: " + (workOrder.getProductionOrder()?.getOrderNumber() ?? "N/A") + "\n" +
+                         "Product: " + (product?.getName() ?? "N/A") + "\n" +
                          "Status: " + workOrder.getStatus() + "\n" +
                          "Start Date: " + workOrder.getStartDate().ToString("yyyy-MM-dd") + "\n" +
-                         "End Date: " + workOrder.getDeadline().ToString("yyyy-MM-dd");
+                         "End Date: " + workOrder.getDeadline().ToString("yyyy-MM-dd") + "\n" +
+                         "Work Instructions: " + (product?.getPackagingInstructions() ?? "N/A");
             MessageBox.Show(info, "Work Order Details", MessageBoxButtons.OK);
         }
 

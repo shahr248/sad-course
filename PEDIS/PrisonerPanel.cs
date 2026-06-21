@@ -68,6 +68,8 @@ namespace PEDIS
             txtSuspendReason.Visible = false;
             btnReactivate.Visible = false;
             btnRelease.Visible = false;
+            btnClockIn.Visible = false;
+            btnClockOut.Visible = false;
 
             if (lvPrisoners.SelectedItems.Count == 0)
                 return;
@@ -75,6 +77,20 @@ namespace PEDIS
             Prisoner prisoner = (Prisoner)lvPrisoners.SelectedItems[0].Tag;
             if (prisoner == null)
                 return;
+
+            // Clock In/Out visibility is decoupled from ActivityStatus — driven only by
+            // whether the prisoner already has an open attendance record for today.
+            if (prisoner.getActivityStatus() != PrisonerActivityStatus.Archived)
+            {
+                bool hasOpenShiftToday = Program.AttendanceRecords.Exists(a =>
+                    a.getPrisonerId() == prisoner.getId() &&
+                    a.getAttendanceDate().Date == DateTime.Today &&
+                    a.getEntryTime().HasValue &&
+                    !a.getExitTime().HasValue);
+
+                btnClockIn.Visible = !hasOpenShiftToday;
+                btnClockOut.Visible = hasOpenShiftToday;
+            }
 
             switch (prisoner.getActivityStatus())
             {
@@ -504,6 +520,94 @@ namespace PEDIS
             {
                 prisoner.archive();
                 MessageBox.Show("Prisoner released and archived.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                refreshListAndReselect(prisoner.getId());
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Action Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void btnClockIn_Click(object sender, EventArgs e)
+        {
+            Prisoner prisoner = getSelectedPrisoner();
+            if (prisoner == null)
+                return;
+
+            if (!prisoner.getFactory().HasValue)
+            {
+                MessageBox.Show("Prisoner has no assigned factory. Assign a factory before clocking in.", "Action Not Allowed", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            try
+            {
+                DateTime now = DateTime.Now;
+                TimeSpan newEntry = now.TimeOfDay;
+
+                foreach (AttendanceRecord record in Program.AttendanceRecords)
+                {
+                    if (record.getPrisonerId() != prisoner.getId() || record.getAttendanceDate().Date != now.Date)
+                        continue;
+
+                    TimeSpan existingEntry = record.getEntryTime() ?? TimeSpan.Zero;
+                    TimeSpan existingExit = record.getExitTime() ?? TimeSpan.FromHours(24);
+
+                    if (existingEntry <= newEntry && newEntry < existingExit)
+                        throw new Exception("A shift is already reported for this prisoner at this time.");
+                }
+
+                int maxId = 0;
+                foreach (AttendanceRecord record in Program.AttendanceRecords)
+                {
+                    if (record.getId() > maxId)
+                        maxId = record.getId();
+                }
+                int nextId = maxId + 1;
+
+                new AttendanceRecord(nextId, prisoner.getId(), now.Date, prisoner.getFactory().Value, newEntry, null, true);
+
+                MessageBox.Show("Clocked in at " + now.ToString("HH:mm:ss") + ".", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                refreshListAndReselect(prisoner.getId());
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Action Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void btnClockOut_Click(object sender, EventArgs e)
+        {
+            Prisoner prisoner = getSelectedPrisoner();
+            if (prisoner == null)
+                return;
+
+            try
+            {
+                DateTime now = DateTime.Now;
+                AttendanceRecord openRecord = null;
+                foreach (AttendanceRecord record in Program.AttendanceRecords)
+                {
+                    if (record.getPrisonerId() == prisoner.getId() &&
+                        record.getAttendanceDate().Date == now.Date &&
+                        record.getEntryTime().HasValue &&
+                        !record.getExitTime().HasValue)
+                    {
+                        openRecord = record;
+                        break;
+                    }
+                }
+
+                if (openRecord == null)
+                    throw new Exception("No open shift found for this prisoner today.");
+
+                if (now.TimeOfDay <= openRecord.getEntryTime().Value)
+                    throw new Exception("Clock out time must be after clock in time.");
+
+                openRecord.setExitTime(now.TimeOfDay);
+                openRecord.update();
+
+                MessageBox.Show("Clocked out at " + now.ToString("HH:mm:ss") + ".", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 refreshListAndReselect(prisoner.getId());
             }
             catch (Exception ex)

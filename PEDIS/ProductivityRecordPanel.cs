@@ -32,7 +32,8 @@ namespace PEDIS
 
         private void initializeFilters()
         {
-            dtpFilterDate.Value = DateTime.Today;
+            dtpFilterStartDate.Value = DateTime.Today;
+            dtpFilterEndDate.Value = DateTime.Today;
 
             cmbFilterPrisoner.Items.Clear();
             cmbFilterPrisoner.Items.Add("All Prisoners");
@@ -43,12 +44,11 @@ namespace PEDIS
             cmbFilterPrisoner.SelectedIndex = 0;
 
             cmbFilterWorkOrder.Items.Clear();
-            cmbFilterWorkOrder.Items.Add("All Work Orders");
             foreach (WorkOrder workOrder in Program.WorkOrders)
             {
                 cmbFilterWorkOrder.Items.Add(workOrder.getWorkOrderNumber());
             }
-            cmbFilterWorkOrder.SelectedIndex = 0;
+            cmbFilterWorkOrder.Text = "";
         }
 
         private void refreshList(DateTime? filterStartDate = null, DateTime? filterEndDate = null, int? filteredPrisonerId = null, int? filteredWorkOrderId = null)
@@ -86,6 +86,7 @@ namespace PEDIS
                 item.SubItems.Add(productivity.getPrisoner()?.getPrisonerNumber() ?? "N/A");
                 item.SubItems.Add(productivity.getPrisoner()?.getFullName() ?? "N/A");
                 item.SubItems.Add(productivity.getWorkOrder()?.getWorkOrderNumber() ?? "N/A");
+                item.SubItems.Add(productivity.getWorkOrder()?.getProductionOrder()?.getProduct()?.getName() ?? "N/A");
                 item.SubItems.Add(productivity.getProductivityDate().ToString("yyyy-MM-dd"));
                 item.SubItems.Add(productivity.getQuantityProduced().ToString());
                 item.SubItems.Add(productivity.getProductivityType().ToString());
@@ -96,10 +97,13 @@ namespace PEDIS
 
         private void btnApplyFilters_Click(object sender, EventArgs e)
         {
-            DateTime selectedDate = dtpFilterDate.Value;
-            int? selectedPrisonerId = null;
-            int? selectedWorkOrderId = null;
+            if (dtpFilterStartDate.Value.Date > dtpFilterEndDate.Value.Date)
+            {
+                MessageBox.Show("Start date must be on or before end date.", "Invalid Date Range", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
 
+            int? selectedPrisonerId = null;
             if (cmbFilterPrisoner.SelectedIndex > 0)
             {
                 string selectedText = cmbFilterPrisoner.SelectedItem.ToString();
@@ -115,18 +119,34 @@ namespace PEDIS
                 }
             }
 
-            if (cmbFilterWorkOrder.SelectedIndex > 0)
+            int? selectedWorkOrderId = null;
+            string workOrderSearch = cmbFilterWorkOrder.Text.Trim();
+            if (!string.IsNullOrEmpty(workOrderSearch))
             {
-                string selectedText = cmbFilterWorkOrder.SelectedItem.ToString();
-                WorkOrder wo = WorkOrder.seekByWorkOrderNumber(selectedText);
-                if (wo != null)
+                WorkOrder foundWorkOrder = WorkOrder.seekByWorkOrderNumber(workOrderSearch);
+                if (foundWorkOrder == null)
                 {
-                    selectedWorkOrderId = wo.getId();
+                    foreach (WorkOrder wo in Program.WorkOrders)
+                    {
+                        if (wo.getWorkOrderNumber().IndexOf(workOrderSearch, StringComparison.OrdinalIgnoreCase) >= 0)
+                        {
+                            foundWorkOrder = wo;
+                            break;
+                        }
+                    }
                 }
+
+                if (foundWorkOrder == null)
+                {
+                    MessageBox.Show("No work order found matching \"" + workOrderSearch + "\".", "Not Found", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                selectedWorkOrderId = foundWorkOrder.getId();
             }
 
-            filterStartDate = selectedDate;
-            filterEndDate = selectedDate;
+            filterStartDate = dtpFilterStartDate.Value;
+            filterEndDate = dtpFilterEndDate.Value;
             filteredPrisonerId = selectedPrisonerId;
             filteredWorkOrderId = selectedWorkOrderId;
             refreshList(filterStartDate, filterEndDate, filteredPrisonerId, filteredWorkOrderId);
@@ -134,9 +154,10 @@ namespace PEDIS
 
         private void btnClearFilters_Click(object sender, EventArgs e)
         {
-            dtpFilterDate.Value = DateTime.Today;
+            dtpFilterStartDate.Value = DateTime.Today;
+            dtpFilterEndDate.Value = DateTime.Today;
             cmbFilterPrisoner.SelectedIndex = 0;
-            cmbFilterWorkOrder.SelectedIndex = 0;
+            cmbFilterWorkOrder.Text = "";
             filterStartDate = null;
             filterEndDate = null;
             filteredPrisonerId = null;
@@ -168,10 +189,12 @@ namespace PEDIS
 
             WorkOrder workOrder = productivity.getWorkOrder();
             string workOrderInfo = workOrder != null ? workOrder.getWorkOrderNumber() : "N/A";
+            string productInfo = workOrder?.getProductionOrder()?.getProduct()?.getName() ?? "N/A";
 
             string info = "ID: " + productivity.getId() + "\n" +
                          "Prisoner: " + prisonerInfo + "\n" +
                          "Work Order #: " + workOrderInfo + "\n" +
+                         "Product: " + productInfo + "\n" +
                          "Date: " + productivity.getProductivityDate().ToString("yyyy-MM-dd") + "\n" +
                          "Units Produced: " + productivity.getQuantityProduced() + "\n" +
                          "Work Hours: " + (productivity.getWorkHours()?.ToString("F2") ?? "N/A") + "\n" +

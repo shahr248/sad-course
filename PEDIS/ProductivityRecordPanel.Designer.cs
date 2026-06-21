@@ -5,9 +5,11 @@ namespace PEDIS
         private System.ComponentModel.IContainer components = null;
         private System.Windows.Forms.Label lblTitle;
         private System.Windows.Forms.Label lblFilterDate;
+        private System.Windows.Forms.Label lblFilterDateTo;
         private System.Windows.Forms.Label lblFilterPrisoner;
         private System.Windows.Forms.Label lblFilterWorkOrder;
-        private System.Windows.Forms.DateTimePicker dtpFilterDate;
+        private System.Windows.Forms.DateTimePicker dtpFilterStartDate;
+        private System.Windows.Forms.DateTimePicker dtpFilterEndDate;
         private System.Windows.Forms.ComboBox cmbFilterPrisoner;
         private System.Windows.Forms.ComboBox cmbFilterWorkOrder;
         private System.Windows.Forms.Button btnApplyFilters;
@@ -33,9 +35,11 @@ namespace PEDIS
         {
             this.lblTitle = new System.Windows.Forms.Label();
             this.lblFilterDate = new System.Windows.Forms.Label();
+            this.lblFilterDateTo = new System.Windows.Forms.Label();
             this.lblFilterPrisoner = new System.Windows.Forms.Label();
             this.lblFilterWorkOrder = new System.Windows.Forms.Label();
-            this.dtpFilterDate = new System.Windows.Forms.DateTimePicker();
+            this.dtpFilterStartDate = new System.Windows.Forms.DateTimePicker();
+            this.dtpFilterEndDate = new System.Windows.Forms.DateTimePicker();
             this.cmbFilterPrisoner = new System.Windows.Forms.ComboBox();
             this.cmbFilterWorkOrder = new System.Windows.Forms.ComboBox();
             this.btnApplyFilters = new System.Windows.Forms.Button();
@@ -60,37 +64,48 @@ namespace PEDIS
             this.lblFilterDate.AutoSize = false;
             this.lblFilterDate.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.lblFilterDate.Location = new System.Drawing.Point(20, 60);
-            this.lblFilterDate.Size = new System.Drawing.Size(100, 20);
-            this.lblFilterDate.Text = "Filter by Date:";
+            this.lblFilterDate.Size = new System.Drawing.Size(45, 20);
+            this.lblFilterDate.Text = "From:";
             this.lblFilterDate.ForeColor = System.Drawing.Color.FromArgb(50, 50, 50);
 
-            this.dtpFilterDate.Location = new System.Drawing.Point(130, 60);
-            this.dtpFilterDate.Size = new System.Drawing.Size(120, 25);
-            this.dtpFilterDate.Format = System.Windows.Forms.DateTimePickerFormat.Short;
+            this.dtpFilterStartDate.Location = new System.Drawing.Point(70, 60);
+            this.dtpFilterStartDate.Size = new System.Drawing.Size(110, 25);
+            this.dtpFilterStartDate.Format = System.Windows.Forms.DateTimePickerFormat.Short;
+
+            this.lblFilterDateTo.AutoSize = false;
+            this.lblFilterDateTo.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.lblFilterDateTo.Location = new System.Drawing.Point(190, 60);
+            this.lblFilterDateTo.Size = new System.Drawing.Size(30, 20);
+            this.lblFilterDateTo.Text = "To:";
+            this.lblFilterDateTo.ForeColor = System.Drawing.Color.FromArgb(50, 50, 50);
+
+            this.dtpFilterEndDate.Location = new System.Drawing.Point(220, 60);
+            this.dtpFilterEndDate.Size = new System.Drawing.Size(110, 25);
+            this.dtpFilterEndDate.Format = System.Windows.Forms.DateTimePickerFormat.Short;
 
             this.lblFilterPrisoner.AutoSize = false;
             this.lblFilterPrisoner.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.lblFilterPrisoner.Location = new System.Drawing.Point(260, 60);
+            this.lblFilterPrisoner.Location = new System.Drawing.Point(350, 60);
             this.lblFilterPrisoner.Size = new System.Drawing.Size(120, 20);
             this.lblFilterPrisoner.Text = "Filter by Prisoner:";
             this.lblFilterPrisoner.ForeColor = System.Drawing.Color.FromArgb(50, 50, 50);
 
-            this.cmbFilterPrisoner.Location = new System.Drawing.Point(385, 60);
-            this.cmbFilterPrisoner.Size = new System.Drawing.Size(170, 25);
+            this.cmbFilterPrisoner.Location = new System.Drawing.Point(475, 60);
+            this.cmbFilterPrisoner.Size = new System.Drawing.Size(180, 25);
             this.cmbFilterPrisoner.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 
             this.lblFilterWorkOrder.AutoSize = false;
             this.lblFilterWorkOrder.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.lblFilterWorkOrder.Location = new System.Drawing.Point(20, 90);
-            this.lblFilterWorkOrder.Size = new System.Drawing.Size(130, 20);
-            this.lblFilterWorkOrder.Text = "Filter by Work Order:";
+            this.lblFilterWorkOrder.Size = new System.Drawing.Size(190, 20);
+            this.lblFilterWorkOrder.Text = "Search Work Order:";
             this.lblFilterWorkOrder.ForeColor = System.Drawing.Color.FromArgb(50, 50, 50);
 
-            this.cmbFilterWorkOrder.Location = new System.Drawing.Point(160, 90);
-            this.cmbFilterWorkOrder.Size = new System.Drawing.Size(170, 25);
-            this.cmbFilterWorkOrder.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbFilterWorkOrder.Location = new System.Drawing.Point(215, 90);
+            this.cmbFilterWorkOrder.Size = new System.Drawing.Size(180, 25);
+            this.cmbFilterWorkOrder.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDown;
 
-            this.btnApplyFilters.Location = new System.Drawing.Point(340, 90);
+            this.btnApplyFilters.Location = new System.Drawing.Point(405, 90);
             this.btnApplyFilters.Size = new System.Drawing.Size(100, 25);
             this.btnApplyFilters.Text = "Apply Filters";
             this.btnApplyFilters.BackColor = System.Drawing.Color.FromArgb(0, 102, 204);
@@ -99,7 +114,7 @@ namespace PEDIS
             this.btnApplyFilters.UseVisualStyleBackColor = false;
             this.btnApplyFilters.Click += new System.EventHandler(this.btnApplyFilters_Click);
 
-            this.btnClearFilters.Location = new System.Drawing.Point(450, 90);
+            this.btnClearFilters.Location = new System.Drawing.Point(515, 90);
             this.btnClearFilters.Size = new System.Drawing.Size(100, 25);
             this.btnClearFilters.Text = "Clear Filters";
             this.btnClearFilters.BackColor = System.Drawing.Color.FromArgb(149, 165, 166);
@@ -108,7 +123,7 @@ namespace PEDIS
             this.btnClearFilters.UseVisualStyleBackColor = false;
             this.btnClearFilters.Click += new System.EventHandler(this.btnClearFilters_Click);
 
-            this.btnDailyTotals.Location = new System.Drawing.Point(560, 90);
+            this.btnDailyTotals.Location = new System.Drawing.Point(625, 90);
             this.btnDailyTotals.Size = new System.Drawing.Size(120, 25);
             this.btnDailyTotals.Text = "Daily Totals";
             this.btnDailyTotals.BackColor = System.Drawing.Color.FromArgb(230, 126, 34);
@@ -130,6 +145,7 @@ namespace PEDIS
             this.lvProductivity.Columns.Add("Prisoner ID", 80);
             this.lvProductivity.Columns.Add("Prisoner Name", 140);
             this.lvProductivity.Columns.Add("Work Order", 100);
+            this.lvProductivity.Columns.Add("Product", 130);
             this.lvProductivity.Columns.Add("Date", 100);
             this.lvProductivity.Columns.Add("Units Produced", 120);
             this.lvProductivity.Columns.Add("Productivity Type", 120);
@@ -195,7 +211,9 @@ namespace PEDIS
             this.Controls.Add(this.lblFilterWorkOrder);
             this.Controls.Add(this.cmbFilterPrisoner);
             this.Controls.Add(this.lblFilterPrisoner);
-            this.Controls.Add(this.dtpFilterDate);
+            this.Controls.Add(this.dtpFilterEndDate);
+            this.Controls.Add(this.lblFilterDateTo);
+            this.Controls.Add(this.dtpFilterStartDate);
             this.Controls.Add(this.lblFilterDate);
             this.Controls.Add(this.lblTitle);
             this.Name = "ProductivityRecordPanel";

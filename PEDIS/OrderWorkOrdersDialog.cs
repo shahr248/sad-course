@@ -25,7 +25,7 @@ namespace PEDIS
             this.SuspendLayout();
 
             this.Text = "Work Orders";
-            this.Size = new System.Drawing.Size(700, 450);
+            this.Size = new System.Drawing.Size(950, 450);
             this.StartPosition = FormStartPosition.CenterParent;
             this.FormBorderStyle = FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
@@ -35,26 +35,27 @@ namespace PEDIS
             this.lblTitle.AutoSize = false;
             this.lblTitle.Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Bold);
             this.lblTitle.Location = new System.Drawing.Point(20, 15);
-            this.lblTitle.Size = new System.Drawing.Size(650, 30);
+            this.lblTitle.Size = new System.Drawing.Size(900, 30);
             this.lblTitle.Text = "Work Orders for Order " + order.getOrderNumber();
             this.lblTitle.ForeColor = System.Drawing.Color.FromArgb(0, 51, 102);
 
             this.lvWorkOrders.FullRowSelect = true;
             this.lvWorkOrders.GridLines = true;
             this.lvWorkOrders.Location = new System.Drawing.Point(20, 50);
-            this.lvWorkOrders.Size = new System.Drawing.Size(650, 320);
+            this.lvWorkOrders.Size = new System.Drawing.Size(900, 320);
             this.lvWorkOrders.UseCompatibleStateImageBehavior = false;
             this.lvWorkOrders.View = View.Details;
             this.lvWorkOrders.BackColor = System.Drawing.Color.White;
             this.lvWorkOrders.BorderStyle = BorderStyle.Fixed3D;
 
-            this.lvWorkOrders.Columns.Add("Work Order #", 130);
-            this.lvWorkOrders.Columns.Add("Product", 170);
+            this.lvWorkOrders.Columns.Add("Work Order #", 120);
+            this.lvWorkOrders.Columns.Add("Product", 150);
             this.lvWorkOrders.Columns.Add("Requested Qty", 110);
             this.lvWorkOrders.Columns.Add("Produced So Far", 120);
-            this.lvWorkOrders.Columns.Add("Status", 110);
+            this.lvWorkOrders.Columns.Add("Status", 100);
+            this.lvWorkOrders.Columns.Add("Work Instructions", 300);
 
-            this.btnClose.Location = new System.Drawing.Point(545, 380);
+            this.btnClose.Location = new System.Drawing.Point(795, 380);
             this.btnClose.Size = new System.Drawing.Size(125, 35);
             this.btnClose.Text = "Close";
             this.btnClose.BackColor = System.Drawing.Color.FromArgb(149, 165, 166);
@@ -75,6 +76,7 @@ namespace PEDIS
         {
             lvWorkOrders.Items.Clear();
             string productName = order.getProduct() != null ? order.getProduct().getName() : "N/A";
+            string workInstructions = order.getProduct() != null ? (order.getProduct().getPackagingInstructions() ?? "N/A") : "N/A";
 
             foreach (WorkOrder workOrder in Program.WorkOrders)
             {
@@ -93,6 +95,7 @@ namespace PEDIS
                 item.SubItems.Add(workOrder.getRequiredQuantity().ToString());
                 item.SubItems.Add(producedSoFar.ToString());
                 item.SubItems.Add(workOrder.getStatus().ToString());
+                item.SubItems.Add(workInstructions);
                 item.Tag = workOrder;
                 lvWorkOrders.Items.Add(item);
             }

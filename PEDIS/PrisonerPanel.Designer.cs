@@ -30,6 +30,8 @@ namespace PEDIS
         private System.Windows.Forms.TextBox txtSuspendReason;
         private System.Windows.Forms.Button btnReactivate;
         private System.Windows.Forms.Button btnRelease;
+        private System.Windows.Forms.Button btnClockIn;
+        private System.Windows.Forms.Button btnClockOut;
 
         protected override void Dispose(bool disposing)
         {
@@ -66,6 +68,8 @@ namespace PEDIS
             this.txtSuspendReason = new System.Windows.Forms.TextBox();
             this.btnReactivate = new System.Windows.Forms.Button();
             this.btnRelease = new System.Windows.Forms.Button();
+            this.btnClockIn = new System.Windows.Forms.Button();
+            this.btnClockOut = new System.Windows.Forms.Button();
             this.SuspendLayout();
 
             // lblTitle
@@ -351,10 +355,36 @@ namespace PEDIS
             this.btnRelease.Visible = false;
             this.btnRelease.Click += new System.EventHandler(this.btnRelease_Click);
 
+            // btnClockIn
+            this.btnClockIn.Location = new System.Drawing.Point(20, 715);
+            this.btnClockIn.Name = "btnClockIn";
+            this.btnClockIn.Size = new System.Drawing.Size(120, 35);
+            this.btnClockIn.Text = "Clock In";
+            this.btnClockIn.BackColor = System.Drawing.Color.FromArgb(26, 188, 156);
+            this.btnClockIn.ForeColor = System.Drawing.Color.White;
+            this.btnClockIn.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            this.btnClockIn.UseVisualStyleBackColor = false;
+            this.btnClockIn.Visible = false;
+            this.btnClockIn.Click += new System.EventHandler(this.btnClockIn_Click);
+
+            // btnClockOut
+            this.btnClockOut.Location = new System.Drawing.Point(150, 715);
+            this.btnClockOut.Name = "btnClockOut";
+            this.btnClockOut.Size = new System.Drawing.Size(120, 35);
+            this.btnClockOut.Text = "Clock Out";
+            this.btnClockOut.BackColor = System.Drawing.Color.FromArgb(52, 73, 94);
+            this.btnClockOut.ForeColor = System.Drawing.Color.White;
+            this.btnClockOut.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            this.btnClockOut.UseVisualStyleBackColor = false;
+            this.btnClockOut.Visible = false;
+            this.btnClockOut.Click += new System.EventHandler(this.btnClockOut_Click);
+
             // PrisonerPanel
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(236, 240, 241);
+            this.Controls.Add(this.btnClockOut);
+            this.Controls.Add(this.btnClockIn);
             this.Controls.Add(this.btnRelease);
             this.Controls.Add(this.btnReactivate);
             this.Controls.Add(this.txtSuspendReason);
