@@ -73,9 +73,9 @@ namespace PEDIS
         private void PopulateOrderStatuses()
         {
             cbOrderStatus.Items.Clear();
-            ProductionOrderStatus[] statuses = (ProductionOrderStatus[])System.Enum.GetValues(typeof(ProductionOrderStatus));
-            foreach (ProductionOrderStatus status in statuses)
+            foreach (var statusValue in System.Enum.GetValues(typeof(ProductionOrderStatus)))
             {
+                ProductionOrderStatus status = (ProductionOrderStatus)statusValue;
                 cbOrderStatus.Items.Add(status);
             }
             if (cbOrderStatus.Items.Count > 0)
