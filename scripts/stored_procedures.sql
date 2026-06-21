@@ -86,14 +86,15 @@ CREATE PROCEDURE sp_CustomerCompany_create
     @delivery_address NVARCHAR(MAX) = NULL,
     @billing_address NVARCHAR(MAX) = NULL,
     @email NVARCHAR(255) = NULL,
-    @activity_status NVARCHAR(50) = NULL
+    @activity_status NVARCHAR(50) = NULL,
+    @factory NVARCHAR(30)
 AS
 BEGIN
     SET NOCOUNT ON;
     INSERT INTO CustomerCompany
-        (customer_company_id, company_id, company_name, contact_name, phone_number, delivery_address, billing_address, email, activity_status, created_at)
+        (customer_company_id, company_id, company_name, contact_name, phone_number, delivery_address, billing_address, email, activity_status, created_at, factory)
     VALUES
-        (@customer_company_id, @company_id, @company_name, @contact_name, @phone_number, @delivery_address, @billing_address, @email, @activity_status, GETUTCDATE());
+        (@customer_company_id, @company_id, @company_name, @contact_name, @phone_number, @delivery_address, @billing_address, @email, @activity_status, GETUTCDATE(), @factory);
 END;
 GO
 
@@ -106,7 +107,8 @@ CREATE PROCEDURE sp_CustomerCompany_update
     @delivery_address NVARCHAR(MAX) = NULL,
     @billing_address NVARCHAR(MAX) = NULL,
     @email NVARCHAR(255) = NULL,
-    @activity_status NVARCHAR(50) = NULL
+    @activity_status NVARCHAR(50) = NULL,
+    @factory NVARCHAR(30)
 AS
 BEGIN
     SET NOCOUNT ON;
@@ -119,6 +121,7 @@ BEGIN
         billing_address = @billing_address,
         email = @email,
         activity_status = @activity_status,
+        factory = @factory,
         modified_at = GETUTCDATE()
     WHERE customer_company_id = @customer_company_id;
 END;
@@ -545,16 +548,15 @@ CREATE PROCEDURE sp_WorkOrder_create
     @required_quantity INT,
     @start_date DATE,
     @deadline DATE,
-    @factory NVARCHAR(30),
     @status NVARCHAR(50),
     @hold_reason NVARCHAR(MAX) = NULL
 AS
 BEGIN
     SET NOCOUNT ON;
     INSERT INTO WorkOrder
-        (work_order_id, work_order_number, production_order_id, required_quantity, start_date, deadline, factory, status, hold_reason, created_at)
+        (work_order_id, work_order_number, production_order_id, required_quantity, start_date, deadline, status, hold_reason, created_at)
     VALUES
-        (@work_order_id, @work_order_number, @production_order_id, @required_quantity, @start_date, @deadline, @factory, @status, @hold_reason, GETUTCDATE());
+        (@work_order_id, @work_order_number, @production_order_id, @required_quantity, @start_date, @deadline, @status, @hold_reason, GETUTCDATE());
 END;
 GO
 
@@ -565,7 +567,6 @@ CREATE PROCEDURE sp_WorkOrder_update
     @required_quantity INT,
     @start_date DATE,
     @deadline DATE,
-    @factory NVARCHAR(30),
     @status NVARCHAR(50),
     @hold_reason NVARCHAR(MAX) = NULL
 AS
@@ -577,7 +578,6 @@ BEGIN
         required_quantity = @required_quantity,
         start_date = @start_date,
         deadline = @deadline,
-        factory = @factory,
         status = @status,
         hold_reason = @hold_reason,
         modified_at = GETUTCDATE()

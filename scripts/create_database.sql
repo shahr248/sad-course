@@ -26,7 +26,9 @@ CREATE TABLE CustomerCompany (
     email NVARCHAR(255),
     activity_status NVARCHAR(50),
     created_at DATETIME2 NOT NULL DEFAULT GETUTCDATE(),
-    modified_at DATETIME2 NULL
+    modified_at DATETIME2 NULL,
+    factory NVARCHAR(30) NOT NULL,
+    CONSTRAINT CHK_CustomerCompany_Factory CHECK (factory IN ('MaimonSpices', 'Technosak', 'SewingWorkshop', 'TzitzitWorkshop'))
 );
 
 CREATE TABLE Product (
@@ -133,12 +135,10 @@ CREATE TABLE WorkOrder (
     required_quantity INT NOT NULL,
     start_date DATE NOT NULL,
     deadline DATE NOT NULL,
-    factory NVARCHAR(30) NOT NULL,
     status NVARCHAR(50) NOT NULL,
     hold_reason NVARCHAR(MAX) NULL,
     created_at DATETIME2 NOT NULL DEFAULT GETUTCDATE(),
     modified_at DATETIME2 NULL,
-    CONSTRAINT CHK_WorkOrder_Factory CHECK (factory IN ('MaimonSpices', 'Technosak', 'SewingWorkshop', 'TzitzitWorkshop')),
     CONSTRAINT CHK_WorkOrder_Status CHECK (status IN ('inProcess', 'completed', 'hasntEnteredIntoProductionYet')),
     CONSTRAINT FK_WorkOrder_ProductionOrder FOREIGN KEY (production_order_id)
         REFERENCES ProductionOrder(production_order_id) ON DELETE NO ACTION ON UPDATE NO ACTION

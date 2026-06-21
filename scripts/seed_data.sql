@@ -31,7 +31,8 @@ EXEC sp_CustomerCompany_create
     @phone_number = '08-6421234',
     @delivery_address = 'Jerusalem, Herzl Street 10',
     @email = 'david@maimon.co.il',
-    @activity_status = 'Active';
+    @activity_status = 'Active',
+    @factory = 'MaimonSpices';
 
 EXEC sp_CustomerCompany_create
     @customer_company_id = 2,
@@ -41,7 +42,8 @@ EXEC sp_CustomerCompany_create
     @phone_number = '08-9876543',
     @delivery_address = 'Tel Aviv, Dizengoff 50',
     @email = 'rachel@technosak.com',
-    @activity_status = 'Active';
+    @activity_status = 'Active',
+    @factory = 'Technosak';
 
 EXEC sp_CustomerCompany_create
     @customer_company_id = 3,
@@ -51,7 +53,8 @@ EXEC sp_CustomerCompany_create
     @phone_number = '08-1122334',
     @delivery_address = 'Beersheva, HaNisayon 15',
     @email = 'moshe@textile.co.il',
-    @activity_status = 'Active';
+    @activity_status = 'Active',
+    @factory = 'SewingWorkshop';
 
 EXEC sp_CustomerCompany_create
     @customer_company_id = 4,
@@ -61,7 +64,8 @@ EXEC sp_CustomerCompany_create
     @phone_number = '08-6450000',
     @delivery_address = 'Beersheva',
     @email = 'yosi@prison.gov.il',
-    @activity_status = 'Active';
+    @activity_status = 'Active',
+    @factory = 'MaimonSpices';
 
 EXEC sp_CustomerCompany_create
     @customer_company_id = 5,
@@ -71,7 +75,8 @@ EXEC sp_CustomerCompany_create
     @phone_number = '08-7654321',
     @delivery_address = 'Eilat, Sapir Street 5',
     @email = 'sarah@export.co.il',
-    @activity_status = 'Active';
+    @activity_status = 'Active',
+    @factory = 'MaimonSpices';
 
 EXEC sp_CustomerCompany_create
     @customer_company_id = 6,
@@ -81,7 +86,8 @@ EXEC sp_CustomerCompany_create
     @phone_number = '08-5555555',
     @delivery_address = 'Modiin, Ziv Street 20',
     @email = 'dana@organic.co.il',
-    @activity_status = 'Active';
+    @activity_status = 'Active',
+    @factory = 'TzitzitWorkshop';
 
 EXEC sp_CustomerCompany_create
     @customer_company_id = 7,
@@ -91,7 +97,8 @@ EXEC sp_CustomerCompany_create
     @phone_number = '08-4443333',
     @delivery_address = 'Petach Tikva, Bloch 8',
     @email = 'avi@pharmatech.co.il',
-    @activity_status = 'Active';
+    @activity_status = 'Active',
+    @factory = 'MaimonSpices';
 
 EXEC sp_CustomerCompany_create
     @customer_company_id = 8,
@@ -101,7 +108,8 @@ EXEC sp_CustomerCompany_create
     @phone_number = '08-3332222',
     @delivery_address = 'Ramat Gan, Jabotinsky 50',
     @email = 'lisa@retail.co.il',
-    @activity_status = 'Active';
+    @activity_status = 'Active',
+    @factory = 'Technosak';
 
 -- ============================================================================
 -- 3. Product (6 rows)
@@ -607,7 +615,6 @@ EXEC sp_WorkOrder_create
     @required_quantity = 5000,
     @start_date = '2026-06-15',
     @deadline = '2026-07-15',
-    @factory = 'MaimonSpices',
     @status = 'inProcess',
     @hold_reason = NULL;
 
@@ -618,7 +625,6 @@ EXEC sp_WorkOrder_create
     @required_quantity = 10000,
     @start_date = '2026-06-20',
     @deadline = '2026-08-01',
-    @factory = 'Technosak',
     @status = 'inProcess',
     @hold_reason = NULL;
 
@@ -629,7 +635,6 @@ EXEC sp_WorkOrder_create
     @required_quantity = 500,
     @start_date = '2026-05-20',
     @deadline = '2026-07-01',
-    @factory = 'SewingWorkshop',
     @status = 'completed',
     @hold_reason = NULL;
 
@@ -640,7 +645,6 @@ EXEC sp_WorkOrder_create
     @required_quantity = 3000,
     @start_date = '2026-04-10',
     @deadline = '2026-06-15',
-    @factory = 'MaimonSpices',
     @status = 'completed',
     @hold_reason = NULL;
 
@@ -651,7 +655,6 @@ EXEC sp_WorkOrder_create
     @required_quantity = 2000,
     @start_date = '2026-06-20',
     @deadline = '2026-07-20',
-    @factory = 'TzitzitWorkshop',
     @status = 'hasntEnteredIntoProductionYet',
     @hold_reason = NULL;
 
@@ -662,7 +665,6 @@ EXEC sp_WorkOrder_create
     @required_quantity = 3000,
     @start_date = '2026-06-01',
     @deadline = '2026-08-10',
-    @factory = 'MaimonSpices',
     @status = 'inProcess',
     @hold_reason = NULL;
 
@@ -673,7 +675,6 @@ EXEC sp_WorkOrder_create
     @required_quantity = 1500,
     @start_date = '2026-06-25',
     @deadline = '2026-07-25',
-    @factory = 'MaimonSpices',
     @status = 'hasntEnteredIntoProductionYet',
     @hold_reason = 'Waiting for ingredient shipment';
 
@@ -684,7 +685,6 @@ EXEC sp_WorkOrder_create
     @required_quantity = 5000,
     @start_date = '2026-06-18',
     @deadline = '2026-08-20',
-    @factory = 'Technosak',
     @status = 'inProcess',
     @hold_reason = NULL;
 
@@ -695,7 +695,6 @@ EXEC sp_WorkOrder_create
     @required_quantity = 5000,
     @start_date = '2026-07-01',
     @deadline = '2026-07-20',
-    @factory = 'MaimonSpices',
     @status = 'inProcess',
     @hold_reason = NULL;
 
@@ -706,7 +705,6 @@ EXEC sp_WorkOrder_create
     @required_quantity = 10000,
     @start_date = '2026-06-15',
     @deadline = '2026-07-30',
-    @factory = 'Technosak',
     @status = 'inProcess',
     @hold_reason = NULL;
 
@@ -717,7 +715,6 @@ EXEC sp_WorkOrder_create
     @required_quantity = 500,
     @start_date = '2026-06-10',
     @deadline = '2026-07-01',
-    @factory = 'SewingWorkshop',
     @status = 'completed',
     @hold_reason = NULL;
 
@@ -728,7 +725,6 @@ EXEC sp_WorkOrder_create
     @required_quantity = 3000,
     @start_date = '2026-05-25',
     @deadline = '2026-08-05',
-    @factory = 'MaimonSpices',
     @status = 'inProcess',
     @hold_reason = NULL;
 
