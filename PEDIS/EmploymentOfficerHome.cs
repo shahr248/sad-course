@@ -37,15 +37,7 @@ namespace PEDIS
         private void btnPrisoners_Click(object sender, EventArgs e)
         {
             PrisonerPanel panel = new PrisonerPanel();
-            MessageBox.Show("PrisonerPanel created. onShowPanel is: " + (onShowPanel == null ? "NULL" : "WIRED"), "Debug", MessageBoxButtons.OK);
-
-            panel.onBack += () =>
-            {
-                MessageBox.Show("onBack event received in EmploymentOfficerHome!", "Debug", MessageBoxButtons.OK);
-                onShowPanel?.Invoke(this);
-            };
-
-            MessageBox.Show("Back handler wired to PrisonerPanel. About to show panel...", "Debug", MessageBoxButtons.OK);
+            panel.onBack += () => onShowPanel?.Invoke(this);
             onShowPanel?.Invoke(panel);
         }
 

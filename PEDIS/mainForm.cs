@@ -98,18 +98,9 @@ namespace PEDIS
 
         public void showPanel(UserControl panel)
         {
-            clearPanel();
+            this.Controls.Clear();
             this.Controls.Add(panel);
             panel.Dock = DockStyle.Fill;
-        }
-
-        private void clearPanel()
-        {
-            foreach (Control control in this.Controls)
-            {
-                control.Dispose();
-            }
-            this.Controls.Clear();
         }
     }
 }
