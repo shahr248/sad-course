@@ -26,10 +26,9 @@ namespace PEDIS
             this.prisonerToEdit = prisoner;
             this.isEditMode = true;
             this.Text = "Edit Prisoner";
-            if (prisoner != null)
-            {
-                LoadPrisonerData(prisoner);
-            }
+            // Combo box items are populated in the Load handler, which hasn't fired yet at this
+            // point (ShowDialog() hasn't been called) -- defer applying record values until then,
+            // otherwise SelectedItem assignments below would have nothing to match against.
         }
 
         private void LoadPrisonerData(Prisoner prisoner)
@@ -221,25 +220,34 @@ namespace PEDIS
         private void AddEditPrisonerDialog_Load(object sender, EventArgs e)
         {
             // Populate Factory ComboBox with "Unassigned" option
+            cbFactory.Items.Clear();
             cbFactory.Items.Add("(Unassigned)");
             foreach (var factory in Enum.GetValues(typeof(Factory)))
                 cbFactory.Items.Add(factory);
             cbFactory.DropDownStyle = ComboBoxStyle.DropDownList;
-            if (!isEditMode)
-                cbFactory.SelectedIndex = 0; // Default to Unassigned for new prisoners
 
             // Populate ActivityStatus ComboBox
+            cbActivityStatus.Items.Clear();
             foreach (var status in Enum.GetValues(typeof(PrisonerActivityStatus)))
                 cbActivityStatus.Items.Add(status);
             cbActivityStatus.DropDownStyle = ComboBoxStyle.DropDownList;
 
             // Populate Role ComboBox with empty option
+            cbRole.Items.Clear();
             cbRole.Items.Add("(None)");
             foreach (var role in Enum.GetValues(typeof(PrisonerRole)))
                 cbRole.Items.Add(role);
             cbRole.DropDownStyle = ComboBoxStyle.DropDownList;
-            if (!isEditMode)
+
+            if (isEditMode && prisonerToEdit != null)
+            {
+                LoadPrisonerData(prisonerToEdit);
+            }
+            else
+            {
+                cbFactory.SelectedIndex = 0; // Default to Unassigned for new prisoners
                 cbRole.SelectedIndex = 0; // Default to None for new prisoners
+            }
         }
     }
 }
