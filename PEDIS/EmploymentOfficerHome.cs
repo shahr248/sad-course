@@ -43,22 +43,30 @@ namespace PEDIS
 
         private void btnOrders_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Order Management Panel\n(To be implemented)", "Feature", MessageBoxButtons.OK);
+            ProductionOrderPanel panel = new ProductionOrderPanel();
+            panel.onBack += () => onShowPanel?.Invoke(this);
+            onShowPanel?.Invoke(panel);
         }
 
         private void btnContracts_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Contract Management Panel\n(To be implemented)", "Feature", MessageBoxButtons.OK);
+            ContractPanel panel = new ContractPanel();
+            panel.onBack += () => onShowPanel?.Invoke(this);
+            onShowPanel?.Invoke(panel);
         }
 
         private void btnWorkOrders_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Work Order Management Panel\n(To be implemented)", "Feature", MessageBoxButtons.OK);
+            WorkOrderPanel panel = new WorkOrderPanel();
+            panel.onBack += () => onShowPanel?.Invoke(this);
+            onShowPanel?.Invoke(panel);
         }
 
         private void btnAttendance_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Attendance Tracking Panel\n(To be implemented)", "Feature", MessageBoxButtons.OK);
+            AttendanceRecordPanel panel = new AttendanceRecordPanel();
+            panel.onBack += () => onShowPanel?.Invoke(this);
+            onShowPanel?.Invoke(panel);
         }
 
         private void btnReports_Click(object sender, EventArgs e)

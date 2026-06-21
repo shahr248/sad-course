@@ -37,27 +37,35 @@ namespace PEDIS
 
         private void btnPrisoners_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Prisoner Assignment Panel\n(To be implemented)", "Feature", MessageBoxButtons.OK);
+            PrisonerPanel panel = new PrisonerPanel();
+            panel.onBack += () => onShowPanel?.Invoke(this);
+            onShowPanel?.Invoke(panel);
         }
 
         private void btnAttendance_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Attendance Tracking Panel\n(To be implemented)", "Feature", MessageBoxButtons.OK);
+            AttendanceRecordPanel panel = new AttendanceRecordPanel();
+            panel.onBack += () => onShowPanel?.Invoke(this);
+            onShowPanel?.Invoke(panel);
         }
 
         private void btnProductivity_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Productivity Tracking Panel\n(To be implemented)", "Feature", MessageBoxButtons.OK);
+            ProductivityRecordPanel panel = new ProductivityRecordPanel();
+            panel.onBack += () => onShowPanel?.Invoke(this);
+            onShowPanel?.Invoke(panel);
         }
 
         private void btnWorkOrders_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Work Order Management Panel\n(To be implemented)", "Feature", MessageBoxButtons.OK);
+            WorkOrderPanel panel = new WorkOrderPanel();
+            panel.onBack += () => onShowPanel?.Invoke(this);
+            onShowPanel?.Invoke(panel);
         }
 
         private void btnInventory_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Inventory Management Panel\n(To be implemented)", "Feature", MessageBoxButtons.OK);
+            MessageBox.Show("Inventory Management Panel\n(To be implemented - no Inventory table in schema)", "Feature", MessageBoxButtons.OK);
         }
 
         private void btnReports_Click(object sender, EventArgs e)
