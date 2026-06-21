@@ -11,10 +11,16 @@ namespace PEDIS
         private DateTime? filterStartDate = null;
         private DateTime? filterEndDate = null;
         private int? filteredPrisonerId = null;
+        private DepartmentManagement currentUser;
 
         public AttendanceRecordPanel()
         {
             InitializeComponent();
+        }
+
+        public void setCurrentUser(DepartmentManagement user)
+        {
+            this.currentUser = user;
         }
 
         private void AttendanceRecordPanel_Load(object sender, EventArgs e)
@@ -42,6 +48,13 @@ namespace PEDIS
 
             foreach (AttendanceRecord attendance in Program.AttendanceRecords)
             {
+                // Factory Manager filtering: only show attendance records for their factory
+                if (currentUser != null && currentUser.getRole() == DepartmentManagementRole.FactoryManager)
+                {
+                    if (attendance.getFactory() != currentUser.getFactory())
+                        continue;
+                }
+
                 bool dateMatch = true;
                 if (filterStartDate.HasValue || filterEndDate.HasValue)
                 {

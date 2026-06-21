@@ -11,6 +11,8 @@ namespace PEDIS
         private System.Windows.Forms.Button btnWorkOrders;
         private System.Windows.Forms.Button btnInventory;
         private System.Windows.Forms.Button btnReports;
+        private System.Windows.Forms.Button btnOrders;
+        private System.Windows.Forms.Button btnCustomerCompanies;
         private System.Windows.Forms.Button btnLogout;
 
         protected override void Dispose(bool disposing)
@@ -32,6 +34,8 @@ namespace PEDIS
             this.btnWorkOrders = new System.Windows.Forms.Button();
             this.btnInventory = new System.Windows.Forms.Button();
             this.btnReports = new System.Windows.Forms.Button();
+            this.btnOrders = new System.Windows.Forms.Button();
+            this.btnCustomerCompanies = new System.Windows.Forms.Button();
             this.btnLogout = new System.Windows.Forms.Button();
             this.SuspendLayout();
 
@@ -113,6 +117,26 @@ namespace PEDIS
             this.btnReports.UseVisualStyleBackColor = false;
             this.btnReports.Click += new System.EventHandler(this.btnReports_Click);
 
+            // btnOrders
+            this.btnOrders.Location = new System.Drawing.Point(20, 190);
+            this.btnOrders.Size = new System.Drawing.Size(150, 60);
+            this.btnOrders.Text = "📋 Orders";
+            this.btnOrders.BackColor = System.Drawing.Color.FromArgb(0, 102, 204);
+            this.btnOrders.ForeColor = System.Drawing.Color.White;
+            this.btnOrders.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
+            this.btnOrders.UseVisualStyleBackColor = false;
+            this.btnOrders.Click += new System.EventHandler(this.btnOrders_Click);
+
+            // btnCustomerCompanies
+            this.btnCustomerCompanies.Location = new System.Drawing.Point(180, 190);
+            this.btnCustomerCompanies.Size = new System.Drawing.Size(150, 60);
+            this.btnCustomerCompanies.Text = "🏢 Customer Companies";
+            this.btnCustomerCompanies.BackColor = System.Drawing.Color.FromArgb(52, 73, 94);
+            this.btnCustomerCompanies.ForeColor = System.Drawing.Color.White;
+            this.btnCustomerCompanies.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            this.btnCustomerCompanies.UseVisualStyleBackColor = false;
+            this.btnCustomerCompanies.Click += new System.EventHandler(this.btnCustomerCompanies_Click);
+
             // btnLogout
             this.btnLogout.Location = new System.Drawing.Point(20, 700);
             this.btnLogout.Size = new System.Drawing.Size(120, 40);
@@ -128,6 +152,8 @@ namespace PEDIS
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(236, 240, 241);
             this.Controls.Add(this.btnLogout);
+            this.Controls.Add(this.btnCustomerCompanies);
+            this.Controls.Add(this.btnOrders);
             this.Controls.Add(this.btnReports);
             this.Controls.Add(this.btnInventory);
             this.Controls.Add(this.btnWorkOrders);

@@ -12,10 +12,16 @@ namespace PEDIS
         private DateTime? filterEndDate = null;
         private int? filteredPrisonerId = null;
         private int? filteredWorkOrderId = null;
+        private DepartmentManagement currentUser;
 
         public ProductivityRecordPanel()
         {
             InitializeComponent();
+        }
+
+        public void setCurrentUser(DepartmentManagement user)
+        {
+            this.currentUser = user;
         }
 
         private void ProductivityRecordPanel_Load(object sender, EventArgs e)
@@ -51,6 +57,13 @@ namespace PEDIS
 
             foreach (ProductivityRecord productivity in Program.ProductivityRecords)
             {
+                // Factory Manager filtering: only show productivity records for their factory
+                if (currentUser != null && currentUser.getRole() == DepartmentManagementRole.FactoryManager)
+                {
+                    if (productivity.getPrisoner() == null || productivity.getPrisoner().getFactory() != currentUser.getFactory())
+                        continue;
+                }
+
                 bool dateMatch = true;
                 if (filterStartDate.HasValue || filterEndDate.HasValue)
                 {

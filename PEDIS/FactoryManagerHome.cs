@@ -44,9 +44,29 @@ namespace PEDIS
             onShowPanel?.Invoke(panel);
         }
 
+        private void btnOrders_Click(object sender, EventArgs e)
+        {
+            ProductionOrderPanel panel = new ProductionOrderPanel();
+            if (currentUser != null)
+                panel.setCurrentUser(currentUser);
+            panel.onBack += () => onShowPanel?.Invoke(this);
+            onShowPanel?.Invoke(panel);
+        }
+
+        private void btnCustomerCompanies_Click(object sender, EventArgs e)
+        {
+            CustomerCompanyPanel panel = new CustomerCompanyPanel();
+            if (currentUser != null)
+                panel.setCurrentUser(currentUser);
+            panel.onBack += () => onShowPanel?.Invoke(this);
+            onShowPanel?.Invoke(panel);
+        }
+
         private void btnAttendance_Click(object sender, EventArgs e)
         {
             AttendanceRecordPanel panel = new AttendanceRecordPanel();
+            if (currentUser != null)
+                panel.setCurrentUser(currentUser);
             panel.onBack += () => onShowPanel?.Invoke(this);
             onShowPanel?.Invoke(panel);
         }
@@ -54,6 +74,8 @@ namespace PEDIS
         private void btnProductivity_Click(object sender, EventArgs e)
         {
             ProductivityRecordPanel panel = new ProductivityRecordPanel();
+            if (currentUser != null)
+                panel.setCurrentUser(currentUser);
             panel.onBack += () => onShowPanel?.Invoke(this);
             onShowPanel?.Invoke(panel);
         }
@@ -61,6 +83,8 @@ namespace PEDIS
         private void btnWorkOrders_Click(object sender, EventArgs e)
         {
             WorkOrderPanel panel = new WorkOrderPanel();
+            if (currentUser != null)
+                panel.setCurrentUser(currentUser);
             panel.onBack += () => onShowPanel?.Invoke(this);
             onShowPanel?.Invoke(panel);
         }

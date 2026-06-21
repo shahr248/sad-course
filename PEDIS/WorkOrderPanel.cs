@@ -8,9 +8,16 @@ namespace PEDIS
         public delegate void BackHandler();
         public event BackHandler onBack;
 
+        private DepartmentManagement currentUser;
+
         public WorkOrderPanel()
         {
             InitializeComponent();
+        }
+
+        public void setCurrentUser(DepartmentManagement user)
+        {
+            this.currentUser = user;
         }
 
         private void WorkOrderPanel_Load(object sender, EventArgs e)
@@ -23,6 +30,13 @@ namespace PEDIS
             lvWorkOrders.Items.Clear();
             foreach (WorkOrder workOrder in Program.WorkOrders)
             {
+                // Factory Manager filtering: only show work orders for their factory
+                if (currentUser != null && currentUser.getRole() == DepartmentManagementRole.FactoryManager)
+                {
+                    if (workOrder.getProductionOrder() == null || workOrder.getProductionOrder().getFactory() != currentUser.getFactory())
+                        continue;
+                }
+
                 ListViewItem item = new ListViewItem(workOrder.getId().ToString());
                 item.SubItems.Add(workOrder.getWorkOrderNumber());
                 item.SubItems.Add(workOrder.getStatus().ToString());

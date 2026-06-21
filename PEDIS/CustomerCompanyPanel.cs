@@ -8,9 +8,16 @@ namespace PEDIS
         public delegate void BackHandler();
         public event BackHandler onBack;
 
+        private DepartmentManagement currentUser;
+
         public CustomerCompanyPanel()
         {
             InitializeComponent();
+        }
+
+        public void setCurrentUser(DepartmentManagement user)
+        {
+            this.currentUser = user;
         }
 
         private void CustomerCompanyPanel_Load(object sender, EventArgs e)
@@ -23,6 +30,13 @@ namespace PEDIS
             lvCompanies.Items.Clear();
             foreach (CustomerCompany company in Program.CustomerCompanies)
             {
+                // Factory Manager filtering: only show customer companies tied to their factory
+                if (currentUser != null && currentUser.getRole() == DepartmentManagementRole.FactoryManager)
+                {
+                    if (company.getFactory() != currentUser.getFactory())
+                        continue;
+                }
+
                 ListViewItem item = new ListViewItem(company.getId().ToString());
                 item.SubItems.Add(company.getName());
                 item.SubItems.Add(company.getContactName() ?? "");
