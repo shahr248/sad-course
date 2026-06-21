@@ -54,10 +54,7 @@ namespace PEDIS
 
         private void btnAdd_Click(object sender, EventArgs e)
         {
-            // Placeholder for add dialog
-            MessageBox.Show("Add Department Panel\n(To be implemented)", "Feature", MessageBoxButtons.OK);
-            // When implemented, refresh list after successful add:
-            // refreshList();
+            MessageBox.Show("Add Department - Feature coming soon", "Not Implemented", MessageBoxButtons.OK);
         }
 
         private void btnEdit_Click(object sender, EventArgs e)
@@ -68,10 +65,7 @@ namespace PEDIS
                 return;
             }
 
-            // Placeholder for edit dialog
-            MessageBox.Show("Edit Department Panel\n(To be implemented)", "Feature", MessageBoxButtons.OK);
-            // When implemented, refresh list after successful edit:
-            // refreshList();
+            MessageBox.Show("Edit Department - Feature coming soon", "Not Implemented", MessageBoxButtons.OK);
         }
 
         private void btnDelete_Click(object sender, EventArgs e)

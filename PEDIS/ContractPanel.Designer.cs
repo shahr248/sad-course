@@ -48,10 +48,10 @@ namespace PEDIS
             this.lvContracts.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
 
             this.lvContracts.Columns.Add("ID", 50);
-            this.lvContracts.Columns.Add("Contract #", 150);
-            this.lvContracts.Columns.Add("Status", 150);
-            this.lvContracts.Columns.Add("Start Date", 150);
-            this.lvContracts.Columns.Add("End Date", 150);
+            this.lvContracts.Columns.Add("Company", 180);
+            this.lvContracts.Columns.Add("Contract #", 120);
+            this.lvContracts.Columns.Add("Status", 120);
+            this.lvContracts.Columns.Add("Start Date", 100);
 
             this.btnView.Location = new System.Drawing.Point(20, 420);
             this.btnView.Size = new System.Drawing.Size(100, 35);

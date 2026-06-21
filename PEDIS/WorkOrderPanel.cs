@@ -52,7 +52,7 @@ namespace PEDIS
 
         private void btnAdd_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Add Work Order Panel\n(To be implemented)", "Feature", MessageBoxButtons.OK);
+            MessageBox.Show("Add Work Order - Feature coming soon", "Not Implemented", MessageBoxButtons.OK);
         }
 
         private void btnEdit_Click(object sender, EventArgs e)
@@ -62,7 +62,7 @@ namespace PEDIS
                 MessageBox.Show("Please select a work order to edit", "Selection Required", MessageBoxButtons.OK);
                 return;
             }
-            MessageBox.Show("Edit Work Order Panel\n(To be implemented)", "Feature", MessageBoxButtons.OK);
+            MessageBox.Show("Edit Work Order - Feature coming soon", "Not Implemented", MessageBoxButtons.OK);
         }
 
         private void btnDelete_Click(object sender, EventArgs e)

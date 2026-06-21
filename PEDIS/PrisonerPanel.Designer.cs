@@ -54,12 +54,13 @@ namespace PEDIS
             this.lvPrisoners.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
 
             // Add columns
-            this.lvPrisoners.Columns.Add("Number", 100);
+            this.lvPrisoners.Columns.Add("PrisonerID", 80);
             this.lvPrisoners.Columns.Add("Name", 150);
-            this.lvPrisoners.Columns.Add("Status", 120);
-            this.lvPrisoners.Columns.Add("Role", 100);
-            this.lvPrisoners.Columns.Add("Hourly Rate", 100);
-            this.lvPrisoners.Columns.Add("Qualified", 80);
+            this.lvPrisoners.Columns.Add("Factory", 120);
+            this.lvPrisoners.Columns.Add("Status", 100);
+            this.lvPrisoners.Columns.Add("Role", 80);
+            this.lvPrisoners.Columns.Add("Hourly Rate", 80);
+            this.lvPrisoners.Columns.Add("Qualified", 60);
 
             // btnView
             this.btnView.Location = new System.Drawing.Point(20, 420);

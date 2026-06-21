@@ -50,7 +50,7 @@ namespace PEDIS
 
         private void btnAdd_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Add Product Panel\n(To be implemented)", "Feature", MessageBoxButtons.OK);
+            MessageBox.Show("Add Product - Feature coming soon", "Not Implemented", MessageBoxButtons.OK);
         }
 
         private void btnEdit_Click(object sender, EventArgs e)
@@ -60,7 +60,7 @@ namespace PEDIS
                 MessageBox.Show("Please select a product to edit", "Selection Required", MessageBoxButtons.OK);
                 return;
             }
-            MessageBox.Show("Edit Product Panel\n(To be implemented)", "Feature", MessageBoxButtons.OK);
+            MessageBox.Show("Edit Product - Feature coming soon", "Not Implemented", MessageBoxButtons.OK);
         }
 
         private void btnDelete_Click(object sender, EventArgs e)

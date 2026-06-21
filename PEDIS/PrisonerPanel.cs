@@ -25,6 +25,7 @@ namespace PEDIS
             {
                 ListViewItem item = new ListViewItem(prisoner.getPrisonerNumber());
                 item.SubItems.Add(prisoner.getFullName());
+                item.SubItems.Add(prisoner.getFactory()?.ToString() ?? "N/A");
                 item.SubItems.Add(prisoner.getActivityStatus().ToString());
                 item.SubItems.Add(prisoner.getRole()?.ToString() ?? "");
                 item.SubItems.Add(prisoner.getHourlyRate().ToString("C"));
@@ -45,6 +46,7 @@ namespace PEDIS
             Prisoner prisoner = (Prisoner)lvPrisoners.SelectedItems[0].Tag;
             string info = "Number: " + prisoner.getPrisonerNumber() + "\n" +
                          "Name: " + prisoner.getFullName() + "\n" +
+                         "Factory: " + (prisoner.getFactory()?.ToString() ?? "N/A") + "\n" +
                          "Status: " + prisoner.getActivityStatus() + "\n" +
                          "Role: " + (prisoner.getRole()?.ToString() ?? "N/A") + "\n" +
                          "Hourly Rate: " + prisoner.getHourlyRate().ToString("C") + "\n" +
@@ -54,7 +56,7 @@ namespace PEDIS
 
         private void btnAdd_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Add Prisoner Panel\n(To be implemented)", "Feature", MessageBoxButtons.OK);
+            MessageBox.Show("Add Prisoner - Feature coming soon", "Not Implemented", MessageBoxButtons.OK);
         }
 
         private void btnEdit_Click(object sender, EventArgs e)
@@ -65,7 +67,7 @@ namespace PEDIS
                 return;
             }
 
-            MessageBox.Show("Edit Prisoner Panel\n(To be implemented)", "Feature", MessageBoxButtons.OK);
+            MessageBox.Show("Edit Prisoner - Feature coming soon", "Not Implemented", MessageBoxButtons.OK);
         }
 
         private void btnDelete_Click(object sender, EventArgs e)
