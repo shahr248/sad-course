@@ -27,11 +27,18 @@ namespace PEDIS
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            // Initialize all in-memory lists from database
-            initLists();
+            try
+            {
+                // Initialize all in-memory lists from database
+                initLists();
 
-            // Start main application window (to be implemented)
-            // Application.Run(new mainForm());
+                // Start main application window
+                Application.Run(new mainForm());
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Fatal error: " + ex.Message + "\n\n" + ex.StackTrace, "Application Error", MessageBoxButtons.OK);
+            }
         }
 
         /// <summary>
@@ -41,35 +48,26 @@ namespace PEDIS
         /// </summary>
         public static void initLists()
         {
-            try
-            {
-                // Load order (respecting FK dependencies):
-                // 1. Base entities (no FK references to other entities)
-                EmploymentDepartment.initEmploymentDepartments();
-                CustomerCompany.initCustomerCompanies();
-                Product.initProducts();
+            // Load order (respecting FK dependencies):
+            // 1. Base entities (no FK references to other entities)
+            EmploymentDepartment.initEmploymentDepartments();
+            CustomerCompany.initCustomerCompanies();
+            Product.initProducts();
 
-                // 2. Entities with FK to base entities
-                DepartmentManagement.initDepartmentManagements();
-                Prisoner.initPrisoners();
-                Contract.initContracts();
+            // 2. Entities with FK to base entities
+            DepartmentManagement.initDepartmentManagements();
+            Prisoner.initPrisoners();
+            Contract.initContracts();
 
-                // 3. Entities with FK to tier 2
-                ProductionOrder.initProductionOrders();
+            // 3. Entities with FK to tier 2
+            ProductionOrder.initProductionOrders();
 
-                // 4. Entities with FK to tier 3
-                WorkOrder.initWorkOrders();
+            // 4. Entities with FK to tier 3
+            WorkOrder.initWorkOrders();
 
-                // 5. Transactional records (FK to multiple entities)
-                AttendanceRecord.initAttendanceRecords();
-                ProductivityRecord.initProductivityRecords();
-
-                MessageBox.Show("All data loaded successfully from database", "Initialization Complete", MessageBoxButtons.OK);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error initializing data: " + ex.Message, "Initialization Error", MessageBoxButtons.OK);
-            }
+            // 5. Transactional records (FK to multiple entities)
+            AttendanceRecord.initAttendanceRecords();
+            ProductivityRecord.initProductivityRecords();
         }
     }
 }
