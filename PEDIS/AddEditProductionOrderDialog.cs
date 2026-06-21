@@ -30,6 +30,10 @@ namespace PEDIS
             this.orderToEdit = orderToEdit;
             this.isEditMode = (orderToEdit != null);
             InitializeComponent();
+            PopulateCustomerCompanies();
+            PopulateProducts();
+            PopulateContracts();
+            PopulateOrderStatuses();
             if (isEditMode)
             {
                 setPrisonOrderToEdit(orderToEdit);

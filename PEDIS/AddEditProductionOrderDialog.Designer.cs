@@ -105,6 +105,9 @@ namespace PEDIS
             this.cbContract.Size = new System.Drawing.Size(400, 24);
             this.cbContract.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+
             this.lblQuantity.AutoSize = true;
             this.lblQuantity.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.lblQuantity.Location = new System.Drawing.Point(20, 195);
