@@ -14,6 +14,11 @@ namespace PEDIS
             prisonerToEdit = null;
             isEditMode = false;
             this.Text = "Add Prisoner";
+            // Set default hourly rate when adding a new prisoner
+            if (!isEditMode)
+            {
+                txtHourlyRate.Text = "14.7";
+            }
         }
 
         public void setPrisonerToEdit(Prisoner prisoner)

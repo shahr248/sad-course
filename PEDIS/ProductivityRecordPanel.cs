@@ -8,7 +8,8 @@ namespace PEDIS
         public delegate void BackHandler();
         public event BackHandler onBack;
 
-        private DateTime? filterDate = null;
+        private DateTime? filterStartDate = null;
+        private DateTime? filterEndDate = null;
         private int? filteredPrisonerId = null;
         private int? filteredWorkOrderId = null;
 
@@ -20,7 +21,7 @@ namespace PEDIS
         private void ProductivityRecordPanel_Load(object sender, EventArgs e)
         {
             initializeFilters();
-            refreshList(DateTime.Today, null, null);
+            refreshList(DateTime.Today, DateTime.Today, null, null);
         }
 
         private void initializeFilters()
@@ -44,13 +45,22 @@ namespace PEDIS
             cmbFilterWorkOrder.SelectedIndex = 0;
         }
 
-        private void refreshList(DateTime? filterDate = null, int? filteredPrisonerId = null, int? filteredWorkOrderId = null)
+        private void refreshList(DateTime? filterStartDate = null, DateTime? filterEndDate = null, int? filteredPrisonerId = null, int? filteredWorkOrderId = null)
         {
             lvProductivity.Items.Clear();
 
             foreach (ProductivityRecord productivity in Program.ProductivityRecords)
             {
-                bool dateMatch = filterDate == null || productivity.getProductivityDate().Date == filterDate.Value.Date;
+                bool dateMatch = true;
+                if (filterStartDate.HasValue || filterEndDate.HasValue)
+                {
+                    DateTime recordDate = productivity.getProductivityDate().Date;
+                    if (filterStartDate.HasValue && recordDate < filterStartDate.Value.Date)
+                        dateMatch = false;
+                    if (filterEndDate.HasValue && recordDate > filterEndDate.Value.Date)
+                        dateMatch = false;
+                }
+
                 bool prisonerMatch = filteredPrisonerId == null || productivity.getPrisonerId() == filteredPrisonerId;
                 bool workOrderMatch = filteredWorkOrderId == null || productivity.getWorkOrderId() == filteredWorkOrderId;
 
@@ -79,9 +89,14 @@ namespace PEDIS
             {
                 string selectedText = cmbFilterPrisoner.SelectedItem.ToString();
                 string[] parts = selectedText.Split(new string[] { " - " }, StringSplitOptions.None);
-                if (parts.Length > 0 && int.TryParse(parts[0], out int prisonerId))
+                if (parts.Length > 0)
                 {
-                    selectedPrisonerId = prisonerId;
+                    string prisonerNumber = parts[0];
+                    Prisoner foundPrisoner = Prisoner.seekByNumber(prisonerNumber);
+                    if (foundPrisoner != null)
+                    {
+                        selectedPrisonerId = foundPrisoner.getId();
+                    }
                 }
             }
 
@@ -95,10 +110,11 @@ namespace PEDIS
                 }
             }
 
-            filterDate = selectedDate;
+            filterStartDate = selectedDate;
+            filterEndDate = selectedDate;
             filteredPrisonerId = selectedPrisonerId;
             filteredWorkOrderId = selectedWorkOrderId;
-            refreshList(filterDate, filteredPrisonerId, filteredWorkOrderId);
+            refreshList(filterStartDate, filterEndDate, filteredPrisonerId, filteredWorkOrderId);
         }
 
         private void btnClearFilters_Click(object sender, EventArgs e)
@@ -106,19 +122,20 @@ namespace PEDIS
             dtpFilterDate.Value = DateTime.Today;
             cmbFilterPrisoner.SelectedIndex = 0;
             cmbFilterWorkOrder.SelectedIndex = 0;
-            filterDate = null;
+            filterStartDate = null;
+            filterEndDate = null;
             filteredPrisonerId = null;
             filteredWorkOrderId = null;
-            refreshList(DateTime.Today, null, null);
+            refreshList(null, null, null, null);
         }
 
         private void btnDailyTotals_Click(object sender, EventArgs e)
         {
-            DateTime selectedDate = filterDate ?? DateTime.Today;
+            DateTime selectedDate = filterStartDate ?? DateTime.Today;
             DailyProductionTotalDialog dialog = new DailyProductionTotalDialog(selectedDate);
             if (dialog.ShowDialog() == DialogResult.OK)
             {
-                refreshList(filterDate, filteredPrisonerId, filteredWorkOrderId);
+                refreshList(filterStartDate, filterEndDate, filteredPrisonerId, filteredWorkOrderId);
             }
         }
 

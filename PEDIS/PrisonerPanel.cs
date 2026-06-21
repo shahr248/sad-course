@@ -40,9 +40,13 @@ namespace PEDIS
                 ListViewItem item = new ListViewItem(prisoner.getPrisonerNumber());
                 item.SubItems.Add(prisoner.getFullName());
                 item.SubItems.Add(prisoner.getFactory()?.ToString() ?? "");
+                item.SubItems.Add(prisoner.getDepartment()?.ToString() ?? "");
                 item.SubItems.Add(prisoner.getActivityStatus().ToString());
                 item.SubItems.Add(prisoner.getRole()?.ToString() ?? "");
                 item.SubItems.Add(prisoner.getHourlyRate().ToString("C"));
+                item.SubItems.Add(prisoner.getWorkStartDate()?.ToString("yyyy-MM-dd") ?? "");
+                item.SubItems.Add(prisoner.getSafetyTrainingValidity()?.ToString("yyyy-MM-dd") ?? "");
+                item.SubItems.Add(prisoner.getReleaseDate()?.ToString("yyyy-MM-dd") ?? "");
                 item.SubItems.Add(prisoner.getQualified() ? "Yes" : "No");
                 item.Tag = prisoner;
                 lvPrisoners.Items.Add(item);

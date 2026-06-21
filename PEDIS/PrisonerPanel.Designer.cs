@@ -46,7 +46,7 @@ namespace PEDIS
             this.lvPrisoners.GridLines = true;
             this.lvPrisoners.Location = new System.Drawing.Point(20, 60);
             this.lvPrisoners.Name = "lvPrisoners";
-            this.lvPrisoners.Size = new System.Drawing.Size(984, 350);
+            this.lvPrisoners.Size = new System.Drawing.Size(1400, 350);
             this.lvPrisoners.TabIndex = 1;
             this.lvPrisoners.UseCompatibleStateImageBehavior = false;
             this.lvPrisoners.View = System.Windows.Forms.View.Details;
@@ -54,12 +54,16 @@ namespace PEDIS
             this.lvPrisoners.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
 
             // Add columns
-            this.lvPrisoners.Columns.Add("PrisonerID", 80);
-            this.lvPrisoners.Columns.Add("Name", 150);
-            this.lvPrisoners.Columns.Add("Factory", 120);
-            this.lvPrisoners.Columns.Add("Status", 100);
-            this.lvPrisoners.Columns.Add("Role", 80);
-            this.lvPrisoners.Columns.Add("Hourly Rate", 80);
+            this.lvPrisoners.Columns.Add("PrisonerID", 70);
+            this.lvPrisoners.Columns.Add("Name", 130);
+            this.lvPrisoners.Columns.Add("Factory", 90);
+            this.lvPrisoners.Columns.Add("Department", 90);
+            this.lvPrisoners.Columns.Add("Status", 80);
+            this.lvPrisoners.Columns.Add("Role", 70);
+            this.lvPrisoners.Columns.Add("Hourly Rate", 70);
+            this.lvPrisoners.Columns.Add("Work Start", 100);
+            this.lvPrisoners.Columns.Add("Safety Training Exp", 130);
+            this.lvPrisoners.Columns.Add("Release Date", 100);
             this.lvPrisoners.Columns.Add("Qualified", 60);
 
             // btnView

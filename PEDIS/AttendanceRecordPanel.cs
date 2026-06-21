@@ -8,7 +8,8 @@ namespace PEDIS
         public delegate void BackHandler();
         public event BackHandler onBack;
 
-        private DateTime? filterDate = null;
+        private DateTime? filterStartDate = null;
+        private DateTime? filterEndDate = null;
         private int? filteredPrisonerId = null;
 
         public AttendanceRecordPanel()
@@ -19,7 +20,7 @@ namespace PEDIS
         private void AttendanceRecordPanel_Load(object sender, EventArgs e)
         {
             initializeFilters();
-            refreshList(DateTime.Today, null);
+            refreshList(DateTime.Today, DateTime.Today, null);
         }
 
         private void initializeFilters()
@@ -35,13 +36,22 @@ namespace PEDIS
             cmbFilterPrisoner.SelectedIndex = 0;
         }
 
-        private void refreshList(DateTime? filterDate = null, int? filteredPrisonerId = null)
+        private void refreshList(DateTime? filterStartDate = null, DateTime? filterEndDate = null, int? filteredPrisonerId = null)
         {
             lvAttendance.Items.Clear();
 
             foreach (AttendanceRecord attendance in Program.AttendanceRecords)
             {
-                bool dateMatch = filterDate == null || attendance.getAttendanceDate().Date == filterDate.Value.Date;
+                bool dateMatch = true;
+                if (filterStartDate.HasValue || filterEndDate.HasValue)
+                {
+                    DateTime recordDate = attendance.getAttendanceDate().Date;
+                    if (filterStartDate.HasValue && recordDate < filterStartDate.Value.Date)
+                        dateMatch = false;
+                    if (filterEndDate.HasValue && recordDate > filterEndDate.Value.Date)
+                        dateMatch = false;
+                }
+
                 bool prisonerMatch = filteredPrisonerId == null || attendance.getPrisonerId() == filteredPrisonerId;
 
                 if (!dateMatch || !prisonerMatch)
@@ -77,24 +87,31 @@ namespace PEDIS
             {
                 string selectedText = cmbFilterPrisoner.SelectedItem.ToString();
                 string[] parts = selectedText.Split(new string[] { " - " }, StringSplitOptions.None);
-                if (parts.Length > 0 && int.TryParse(parts[0], out int prisonerId))
+                if (parts.Length > 0)
                 {
-                    selectedPrisonerId = prisonerId;
+                    string prisonerNumber = parts[0];
+                    Prisoner foundPrisoner = Prisoner.seekByNumber(prisonerNumber);
+                    if (foundPrisoner != null)
+                    {
+                        selectedPrisonerId = foundPrisoner.getId();
+                    }
                 }
             }
 
-            filterDate = selectedDate;
+            filterStartDate = selectedDate;
+            filterEndDate = selectedDate;
             filteredPrisonerId = selectedPrisonerId;
-            refreshList(filterDate, filteredPrisonerId);
+            refreshList(filterStartDate, filterEndDate, filteredPrisonerId);
         }
 
         private void btnClearFilters_Click(object sender, EventArgs e)
         {
             dtpFilterDate.Value = DateTime.Today;
             cmbFilterPrisoner.SelectedIndex = 0;
-            filterDate = null;
+            filterStartDate = null;
+            filterEndDate = null;
             filteredPrisonerId = null;
-            refreshList(DateTime.Today, null);
+            refreshList(null, null, null);
         }
 
         private void btnView_Click(object sender, EventArgs e)
@@ -127,7 +144,11 @@ namespace PEDIS
 
         private void btnAdd_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Add Attendance Record - Feature coming soon", "Not Implemented", MessageBoxButtons.OK);
+            AddEditAttendanceDialog dialog = new AddEditAttendanceDialog();
+            if (dialog.ShowDialog() == DialogResult.OK)
+            {
+                refreshList(filterStartDate, filterEndDate, filteredPrisonerId);
+            }
         }
 
         private void btnEdit_Click(object sender, EventArgs e)
@@ -137,7 +158,14 @@ namespace PEDIS
                 MessageBox.Show("Please select an attendance record to edit", "Selection Required", MessageBoxButtons.OK);
                 return;
             }
-            MessageBox.Show("Edit Attendance Record - Feature coming soon", "Not Implemented", MessageBoxButtons.OK);
+
+            AttendanceRecord attendance = (AttendanceRecord)lvAttendance.SelectedItems[0].Tag;
+            AddEditAttendanceDialog dialog = new AddEditAttendanceDialog();
+            dialog.setAttendanceToEdit(attendance);
+            if (dialog.ShowDialog() == DialogResult.OK)
+            {
+                refreshList(filterStartDate, filterEndDate, filteredPrisonerId);
+            }
         }
 
         private void btnDelete_Click(object sender, EventArgs e)
@@ -157,7 +185,7 @@ namespace PEDIS
             if (result == DialogResult.Yes)
             {
                 attendance.delete();
-                refreshList(filterDate, filteredPrisonerId);
+                refreshList(filterStartDate, filterEndDate, filteredPrisonerId);
             }
         }
 

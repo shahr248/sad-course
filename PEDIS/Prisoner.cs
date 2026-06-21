@@ -205,6 +205,16 @@ namespace PEDIS
             return null;
         }
 
+        public static Prisoner seekByNumber(string prisonerNumber)
+        {
+            foreach (Prisoner p in Program.Prisoners)
+            {
+                if (p.getPrisonerNumber() == prisonerNumber)
+                    return p;
+            }
+            return null;
+        }
+
         // ============================================================================
         // STATE TRANSITION METHODS (18 transitions for PrisonerActivityStatus)
         // ============================================================================
