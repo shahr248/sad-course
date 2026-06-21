@@ -14,24 +14,24 @@ USE sadcourse3;
 EXEC sp_EmploymentDepartment_create
     @employment_department_id = 1,
     @department_code = 'DEPT-EMP',
-    @department_name = 'מחלקת העסקה',
-    @location = 'בנין א',
+    @department_name = 'Employment Department',
+    @location = 'Building A',
     @max_capacity = 150,
     @is_active = 1;
 
 EXEC sp_EmploymentDepartment_create
     @employment_department_id = 2,
     @department_code = 'DEPT-MFG',
-    @department_name = 'פיקוח ייצור',
-    @location = 'בנין ב',
+    @department_name = 'Manufacturing Oversight',
+    @location = 'Building B',
     @max_capacity = 200,
     @is_active = 1;
 
 EXEC sp_EmploymentDepartment_create
     @employment_department_id = 3,
     @department_code = 'DEPT-ADM',
-    @department_name = 'שירותים ניהוליים',
-    @location = 'בנין א',
+    @department_name = 'Administrative Services',
+    @location = 'Building A',
     @max_capacity = 100,
     @is_active = 1;
 
@@ -42,81 +42,81 @@ EXEC sp_EmploymentDepartment_create
 EXEC sp_CustomerCompany_create
     @customer_company_id = 1,
     @company_id = 'CUST-MAIMON',
-    @company_name = 'תבלינים מימון',
-    @contact_name = 'דוד כהן',
+    @company_name = 'Maimon Spices Ltd',
+    @contact_name = 'David Cohen',
     @phone_number = '08-6421234',
-    @delivery_address = 'ירושלים, רח\' הרצל 10',
+    @delivery_address = 'Jerusalem, Herzl Street 10',
     @email = 'david@maimon.co.il',
     @activity_status = 'Active';
 
 EXEC sp_CustomerCompany_create
     @customer_company_id = 2,
     @company_id = 'CUST-TECHNO',
-    @company_name = 'טכנוסק בע"מ',
-    @contact_name = 'רחל לוי',
+    @company_name = 'Technosak Industries',
+    @contact_name = 'Rachel Levi',
     @phone_number = '08-9876543',
-    @delivery_address = 'תל אביב, רח\' דיזנגוף 50',
+    @delivery_address = 'Tel Aviv, Dizengoff 50',
     @email = 'rachel@technosak.com',
     @activity_status = 'Active';
 
 EXEC sp_CustomerCompany_create
     @customer_company_id = 3,
     @company_id = 'CUST-SEW',
-    @company_name = 'תיקייה וטקסטיל',
-    @contact_name = 'משה רביץ',
+    @company_name = 'Textile & Sewing Co',
+    @contact_name = 'Moses Ravitz',
     @phone_number = '08-1122334',
-    @delivery_address = 'באר שבע, רח\' הנסיון 15',
+    @delivery_address = 'Beersheva, HaNisayon 15',
     @email = 'moshe@textile.co.il',
     @activity_status = 'Active';
 
 EXEC sp_CustomerCompany_create
     @customer_company_id = 4,
     @company_id = 'CUST-INTERNAL',
-    @company_name = 'רשות כלא - מחלקה כלכלית',
-    @contact_name = 'יוסי גבר',
+    @company_name = 'Prison Authority Economic Dept',
+    @contact_name = 'Yosi Gaber',
     @phone_number = '08-6450000',
-    @delivery_address = 'באר שבע',
+    @delivery_address = 'Beersheva',
     @email = 'yosi@prison.gov.il',
     @activity_status = 'Active';
 
 EXEC sp_CustomerCompany_create
     @customer_company_id = 5,
     @company_id = 'CUST-EXPORT',
-    @company_name = 'ייצוא הדרומית',
-    @contact_name = 'שרה משפחתי',
+    @company_name = 'Southern Export Corp',
+    @contact_name = 'Sarah Family',
     @phone_number = '08-7654321',
-    @delivery_address = 'אילת, רח\' ספיר 5',
+    @delivery_address = 'Eilat, Sapir Street 5',
     @email = 'sarah@export.co.il',
     @activity_status = 'Active';
 
 EXEC sp_CustomerCompany_create
     @customer_company_id = 6,
     @company_id = 'CUST-ORGANIC',
-    @company_name = 'אורגני טבעי',
-    @contact_name = 'דנה גרין',
+    @company_name = 'Organic Natural Products',
+    @contact_name = 'Dana Green',
     @phone_number = '08-5555555',
-    @delivery_address = 'מודיעין, רח\' זיו 20',
+    @delivery_address = 'Modiin, Ziv Street 20',
     @email = 'dana@organic.co.il',
     @activity_status = 'Active';
 
 EXEC sp_CustomerCompany_create
     @customer_company_id = 7,
-    @company_id = 'CUST-RETAIL',
-    @company_name = 'רשת קמעונאית גדולה',
-    @contact_name = 'יעקב סלע',
-    @phone_number = '08-9999999',
-    @delivery_address = 'תל אביב, רח\' דרך ישראל 100',
-    @email = 'yaakov@retail.co.il',
+    @company_id = 'CUST-PHARMA',
+    @company_name = 'PharmaTech Solutions',
+    @contact_name = 'Avi Kaplan',
+    @phone_number = '08-4443333',
+    @delivery_address = 'Petach Tikva, Bloch 8',
+    @email = 'avi@pharmatech.co.il',
     @activity_status = 'Active';
 
 EXEC sp_CustomerCompany_create
     @customer_company_id = 8,
-    @company_id = 'CUST-FASHION',
-    @company_name = 'אופנה וטקסטיל',
-    @contact_name = 'דינה נחשון',
-    @phone_number = '08-4444444',
-    @delivery_address = 'ירושלים, רח\' יפו 25',
-    @email = 'dina@fashion.co.il',
+    @company_id = 'CUST-RETAIL',
+    @company_name = 'Retail Networks Group',
+    @contact_name = 'Lisa Stern',
+    @phone_number = '08-3332222',
+    @delivery_address = 'Ramat Gan, Jabotinsky 50',
+    @email = 'lisa@retail.co.il',
     @activity_status = 'Active';
 
 -- ============================================================================
@@ -126,348 +126,352 @@ EXEC sp_CustomerCompany_create
 EXEC sp_Product_create
     @product_id = 1,
     @sku = 'SKU-SPICE-001',
-    @product_name = 'תערובת תבלינים',
-    @description = 'תערובת תבלינים טבעית למזון',
-    @packaging_instructions = 'אריזה בשקיות 1 ק"ג או לפי הזמנה',
-    @unit_of_measure = 'kg',
+    @product_name = 'Black Pepper Powder',
+    @description = 'Premium black pepper, ground',
+    @packaging_instructions = 'Pack in 500g bags, seal with tamper-proof label',
+    @unit_of_measure = 'gr',
     @activity_status = 'Active';
 
 EXEC sp_Product_create
     @product_id = 2,
-    @sku = 'SKU-TECH-001',
-    @product_name = 'מכלולי פלסטיק',
-    @description = 'חלקי פלסטיק מחודדים לתעשייה',
-    @unit_of_measure = 'units',
+    @sku = 'SKU-SPICE-002',
+    @product_name = 'Paprika Seasoning Mix',
+    @description = 'Spiced paprika blend for cooking',
+    @packaging_instructions = 'Pack in 250g containers',
+    @unit_of_measure = 'gr',
     @activity_status = 'Active';
 
 EXEC sp_Product_create
     @product_id = 3,
-    @sku = 'SKU-SEW-001',
-    @product_name = 'תיקיות בד טבעי',
-    @description = 'תיקיות עשויות בד טבעי 100%',
-    @packaging_instructions = 'אריזה 50 יחידות למגש',
+    @sku = 'SKU-PLASTIC-001',
+    @product_name = 'Clear Plastic Bottles',
+    @description = '500ml clear plastic bottles with caps',
+    @packaging_instructions = 'Pack in cartons of 100 units',
     @unit_of_measure = 'units',
     @activity_status = 'Active';
 
 EXEC sp_Product_create
     @product_id = 4,
-    @sku = 'SKU-TZITZIT-001',
-    @product_name = 'ציצית',
-    @description = 'ציצית צבעוני דקים',
-    @unit_of_measure = 'gr',
-    @activity_status = 'Active';
-
-EXEC sp_Product_create
-    @product_id = 5,
-    @sku = 'SKU-SPICE-002',
-    @product_name = 'קמח תבלינים',
-    @description = 'קמח תבלינים דק',
+    @sku = 'SKU-TEXTILE-001',
+    @product_name = 'Woven Fabric Rolls',
+    @description = '100% cotton woven fabric, 1.5m wide',
+    @packaging_instructions = 'Roll and wrap in protective plastic',
     @unit_of_measure = 'kg',
     @activity_status = 'Active';
 
 EXEC sp_Product_create
+    @product_id = 5,
+    @sku = 'SKU-TZITZIT-001',
+    @product_name = 'Tzitzit Thread Bundles',
+    @description = 'Hand-spun tzitzit thread, traditional quality',
+    @packaging_instructions = 'Bundle in sets of 4, wrap per order',
+    @unit_of_measure = 'units',
+    @activity_status = 'Active';
+
+EXEC sp_Product_create
     @product_id = 6,
-    @sku = 'SKU-SEW-002',
-    @product_name = 'חגורה עור',
-    @description = 'חגורה עור טבעית',
+    @sku = 'SKU-CRAFT-001',
+    @product_name = 'Handmade Soap Bars',
+    @description = 'Natural handmade soap, various scents',
+    @packaging_instructions = 'Pack individually in cardboard boxes',
     @unit_of_measure = 'units',
     @activity_status = 'Active';
 
 -- ============================================================================
--- 4. DepartmentManagement (6 users - 2 per role)
+-- 4. DepartmentManagement (6 rows) - System Users
 -- ============================================================================
 
 EXEC sp_DepartmentManagement_create
     @department_management_id = 1,
-    @username = 'manager1',
-    @password = 'password123',
+    @username = 'admin_emp',
+    @password = 'AdminPass123!',
     @role = 'departmentManager',
     @factory = NULL,
     @employment_department_id = 1;
 
 EXEC sp_DepartmentManagement_create
     @department_management_id = 2,
-    @username = 'manager2',
-    @password = 'password123',
-    @role = 'departmentManager',
-    @factory = NULL,
-    @employment_department_id = 2;
-
-EXEC sp_DepartmentManagement_create
-    @department_management_id = 3,
-    @username = 'deputy1',
-    @password = 'password123',
+    @username = 'deputy_emp',
+    @password = 'DeputyPass123!',
     @role = 'deputyOfDepartmentManager',
     @factory = NULL,
     @employment_department_id = 1;
 
 EXEC sp_DepartmentManagement_create
+    @department_management_id = 3,
+    @username = 'mgr_maimon',
+    @password = 'MgrPass123!',
+    @role = 'factoryManager',
+    @factory = 'MaimonSpices',
+    @employment_department_id = 2;
+
+EXEC sp_DepartmentManagement_create
     @department_management_id = 4,
-    @username = 'deputy2',
-    @password = 'password123',
-    @role = 'deputyOfDepartmentManager',
-    @factory = NULL,
+    @username = 'mgr_techno',
+    @password = 'MgrPass123!',
+    @role = 'factoryManager',
+    @factory = 'Technosak',
     @employment_department_id = 2;
 
 EXEC sp_DepartmentManagement_create
     @department_management_id = 5,
-    @username = 'factory_mgr_maimon',
-    @password = 'password123',
+    @username = 'mgr_sewing',
+    @password = 'MgrPass123!',
     @role = 'factoryManager',
-    @factory = 'MaimonSpices',
+    @factory = 'SewingWorkshop',
     @employment_department_id = 2;
 
 EXEC sp_DepartmentManagement_create
     @department_management_id = 6,
-    @username = 'factory_mgr_techno',
-    @password = 'password123',
+    @username = 'mgr_tzitzit',
+    @password = 'MgrPass123!',
     @role = 'factoryManager',
-    @factory = 'Technosak',
+    @factory = 'TzitzitWorkshop',
     @employment_department_id = 2;
 
 -- ============================================================================
--- 5. Prisoner (15 rows - various statuses and factories)
+-- 5. Prisoner (15 rows) - Inmates in Employment Program
 -- ============================================================================
 
 EXEC sp_Prisoner_create
     @prisoner_id = 1,
-    @prisoner_number = 'P001234',
-    @prisoner_name = 'דוד',
-    @full_name = 'דוד כהן',
-    @factory = 'MaimonSpices',
-    @department = 'Production',
-    @activity_status = 'onShiftWorking',
-    @role = 'Worker',
-    @safety_training_validity = '2026-12-31',
-    @work_start_date = '2025-01-15',
-    @release_date = '2028-06-20',
-    @qualified = 1,
-    @shabbat_keeping = 0,
-    @min_salary = 500.00;
-
-EXEC sp_Prisoner_create
-    @prisoner_id = 2,
-    @prisoner_number = 'P001235',
-    @prisoner_name = 'משה',
-    @full_name = 'משה לוי',
-    @factory = 'Technosak',
-    @department = 'Assembly',
-    @activity_status = 'onShiftWorking',
-    @role = 'Worker',
-    @safety_training_validity = '2027-03-15',
-    @work_start_date = '2025-03-01',
-    @release_date = '2027-12-25',
-    @qualified = 1,
-    @shabbat_keeping = 1,
-    @min_salary = 550.00;
-
-EXEC sp_Prisoner_create
-    @prisoner_id = 3,
-    @prisoner_number = 'P001236',
-    @prisoner_name = 'יוסי',
-    @full_name = 'יוסף רביץ',
-    @factory = 'SewingWorkshop',
-    @department = 'Sewing',
-    @activity_status = 'idle',
-    @role = 'Worker',
-    @safety_training_validity = '2026-06-30',
-    @work_start_date = '2024-06-15',
-    @release_date = '2026-12-15',
-    @qualified = 0,
-    @shabbat_keeping = 1,
-    @min_salary = 450.00;
-
-EXEC sp_Prisoner_create
-    @prisoner_id = 4,
-    @prisoner_number = 'P001237',
-    @prisoner_name = 'אלי',
-    @full_name = 'אלישע גבר',
-    @factory = 'TzitzitWorkshop',
-    @department = 'Wrapping',
-    @activity_status = 'onShiftWorking',
-    @role = 'Supervisor',
-    @safety_training_validity = '2028-01-10',
-    @work_start_date = '2023-09-01',
-    @release_date = '2029-03-20',
-    @qualified = 1,
-    @shabbat_keeping = 0,
-    @min_salary = 650.00;
-
-EXEC sp_Prisoner_create
-    @prisoner_id = 5,
-    @prisoner_number = 'P001238',
-    @prisoner_name = 'נחום',
-    @full_name = 'נחום משפחתי',
-    @factory = 'MaimonSpices',
-    @department = 'Packing',
-    @activity_status = 'waitingForMaterials',
-    @role = 'Worker',
-    @safety_training_validity = '2026-08-15',
-    @work_start_date = '2025-02-10',
-    @release_date = '2029-01-30',
-    @qualified = 1,
-    @shabbat_keeping = 0,
-    @min_salary = 480.00;
-
-EXEC sp_Prisoner_create
-    @prisoner_id = 6,
-    @prisoner_number = 'P001239',
-    @prisoner_name = 'דן',
-    @full_name = 'דן סלע',
-    @factory = 'Technosak',
-    @department = 'Quality',
-    @activity_status = 'temporarilyUnavailable',
-    @role = 'Technician',
-    @safety_training_validity = '2027-05-20',
-    @work_start_date = '2024-05-15',
-    @release_date = '2028-11-10',
-    @qualified = 1,
-    @shabbat_keeping = 0,
-    @min_salary = 600.00;
-
-EXEC sp_Prisoner_create
-    @prisoner_id = 7,
-    @prisoner_number = 'P001240',
-    @prisoner_name = 'רוני',
-    @full_name = 'רוני נחשון',
-    @factory = 'SewingWorkshop',
-    @department = 'Cutting',
-    @activity_status = 'onShiftWorking',
-    @role = 'Worker',
-    @safety_training_validity = '2026-11-30',
-    @work_start_date = '2025-04-01',
-    @release_date = '2027-09-15',
-    @qualified = 1,
-    @shabbat_keeping = 1,
-    @min_salary = 520.00;
-
-EXEC sp_Prisoner_create
-    @prisoner_id = 8,
-    @prisoner_number = 'P001241',
-    @prisoner_name = 'אלון',
-    @full_name = 'אלון ירוק',
-    @factory = 'MaimonSpices',
-    @department = 'Production',
-    @activity_status = 'idle',
-    @role = 'Worker',
-    @safety_training_validity = '2026-07-15',
-    @work_start_date = '2025-01-01',
-    @release_date = '2026-08-20',
-    @qualified = 0,
-    @shabbat_keeping = 1,
-    @min_salary = 400.00;
-
-EXEC sp_Prisoner_create
-    @prisoner_id = 9,
-    @prisoner_number = 'P001242',
-    @prisoner_name = 'גדי',
-    @full_name = 'גדי ברקוביץ',
-    @factory = 'TzitzitWorkshop',
-    @department = 'Packing',
-    @activity_status = 'onShiftWorking',
-    @role = 'Worker',
-    @safety_training_validity = '2027-09-10',
-    @work_start_date = '2024-10-15',
-    @release_date = '2028-05-25',
-    @qualified = 1,
-    @shabbat_keeping = 0,
-    @min_salary = 510.00;
-
-EXEC sp_Prisoner_create
-    @prisoner_id = 10,
-    @prisoner_number = 'P001243',
-    @prisoner_name = 'שלום',
-    @full_name = 'שלום כספי',
-    @factory = 'Technosak',
-    @department = 'Assembly',
-    @activity_status = 'onShiftWorking',
-    @role = 'Worker',
-    @safety_training_validity = '2026-04-20',
-    @work_start_date = '2025-02-15',
-    @release_date = '2027-07-10',
-    @qualified = 1,
-    @shabbat_keeping = 1,
-    @min_salary = 540.00;
-
-EXEC sp_Prisoner_create
-    @prisoner_id = 11,
-    @prisoner_number = 'P001244',
-    @prisoner_name = 'יעקב',
-    @full_name = 'יעקב אלטמן',
-    @factory = 'SewingWorkshop',
-    @department = 'Finishing',
-    @activity_status = 'inSafetyTraining',
-    @role = 'Worker',
-    @safety_training_validity = NULL,
-    @work_start_date = '2026-06-01',
-    @release_date = '2028-12-30',
-    @qualified = 0,
-    @shabbat_keeping = 1,
-    @min_salary = 300.00;
-
-EXEC sp_Prisoner_create
-    @prisoner_id = 12,
-    @prisoner_number = 'P001245',
-    @prisoner_name = 'בנימין',
-    @full_name = 'בנימין חיים',
+    @prisoner_number = 'P123456',
+    @prisoner_name = 'Inmate A',
+    @full_name = 'David Moshe Cohen',
     @factory = 'MaimonSpices',
     @department = 'Grinding',
     @activity_status = 'onShiftWorking',
-    @role = 'Technician',
-    @safety_training_validity = '2027-12-25',
-    @work_start_date = '2024-12-01',
-    @release_date = '2029-06-15',
+    @role = 'Spice Grinder',
+    @safety_training_validity = '2027-06-20',
+    @work_start_date = '2025-06-20',
+    @release_date = '2028-12-31',
     @qualified = 1,
     @shabbat_keeping = 0,
-    @min_salary = 620.00;
+    @min_salary = 2500.00;
 
 EXEC sp_Prisoner_create
-    @prisoner_id = 13,
-    @prisoner_number = 'P001246',
-    @prisoner_name = 'סימון',
-    @full_name = 'סימון כץ',
+    @prisoner_id = 2,
+    @prisoner_number = 'P123457',
+    @prisoner_name = 'Inmate B',
+    @full_name = 'Rachel Leah Levi',
+    @factory = 'Technosak',
+    @department = 'Molding',
+    @activity_status = 'onShiftWorking',
+    @role = 'Plastic Molder',
+    @safety_training_validity = '2027-03-15',
+    @work_start_date = '2025-03-15',
+    @release_date = '2027-06-30',
+    @qualified = 1,
+    @shabbat_keeping = 1,
+    @min_salary = 2300.00;
+
+EXEC sp_Prisoner_create
+    @prisoner_id = 3,
+    @prisoner_number = 'P123458',
+    @prisoner_name = 'Inmate C',
+    @full_name = 'Yosi Mordecai Gaber',
+    @factory = 'SewingWorkshop',
+    @department = 'Sewing',
+    @activity_status = 'inSafetyTraining',
+    @role = 'Textile Operator',
+    @safety_training_validity = NULL,
+    @work_start_date = '2026-06-01',
+    @release_date = '2029-01-15',
+    @qualified = 0,
+    @shabbat_keeping = 0,
+    @min_salary = 2000.00;
+
+EXEC sp_Prisoner_create
+    @prisoner_id = 4,
+    @prisoner_number = 'P123459',
+    @prisoner_name = 'Inmate D',
+    @full_name = 'Ariel Benjamin Rotman',
+    @factory = 'TzitzitWorkshop',
+    @department = 'Tzitzit Assembly',
+    @activity_status = 'onShiftWorking',
+    @role = 'Tzitzit Assembler',
+    @safety_training_validity = '2026-12-01',
+    @work_start_date = '2025-12-01',
+    @release_date = '2026-09-30',
+    @qualified = 1,
+    @shabbat_keeping = 1,
+    @min_salary = 2100.00;
+
+EXEC sp_Prisoner_create
+    @prisoner_id = 5,
+    @prisoner_number = 'P123460',
+    @prisoner_name = 'Inmate E',
+    @full_name = 'Shlomo Kalman Ravitz',
+    @factory = 'MaimonSpices',
+    @department = 'Packaging',
+    @activity_status = 'waitingForMaterials',
+    @role = 'Packager',
+    @safety_training_validity = '2027-09-10',
+    @work_start_date = '2025-09-10',
+    @release_date = '2030-03-20',
+    @qualified = 1,
+    @shabbat_keeping = 0,
+    @min_salary = 2200.00;
+
+EXEC sp_Prisoner_create
+    @prisoner_id = 6,
+    @prisoner_number = 'P123461',
+    @prisoner_name = 'Inmate F',
+    @full_name = 'Avi Shaul Kaplan',
+    @factory = 'Technosak',
+    @department = 'Quality Control',
+    @activity_status = 'onShiftWorking',
+    @role = 'QC Inspector',
+    @safety_training_validity = '2027-05-15',
+    @work_start_date = '2025-05-15',
+    @release_date = '2028-08-10',
+    @qualified = 1,
+    @shabbat_keeping = 1,
+    @min_salary = 2600.00;
+
+EXEC sp_Prisoner_create
+    @prisoner_id = 7,
+    @prisoner_number = 'P123462',
+    @prisoner_name = 'Inmate G',
+    @full_name = 'Sarah Miriam Stern',
+    @factory = 'SewingWorkshop',
+    @department = 'Cutting',
+    @activity_status = 'inProfessionalTraining',
+    @role = 'Cutter',
+    @safety_training_validity = '2027-02-28',
+    @work_start_date = '2025-02-28',
+    @release_date = '2027-11-30',
+    @qualified = 0,
+    @shabbat_keeping = 0,
+    @min_salary = 2150.00;
+
+EXEC sp_Prisoner_create
+    @prisoner_id = 8,
+    @prisoner_number = 'P123463',
+    @prisoner_name = 'Inmate H',
+    @full_name = 'Moshe Netanel Rosen',
     @factory = NULL,
     @department = NULL,
     @activity_status = 'pendingPlacement',
     @role = NULL,
     @safety_training_validity = NULL,
     @work_start_date = NULL,
-    @release_date = '2030-01-20',
+    @release_date = '2025-12-15',
     @qualified = 0,
     @shabbat_keeping = 0,
     @min_salary = NULL;
 
 EXEC sp_Prisoner_create
-    @prisoner_id = 14,
-    @prisoner_number = 'P001247',
-    @prisoner_name = 'צביקא',
-    @full_name = 'צביקא דרור',
-    @factory = 'Technosak',
-    @department = 'Assembly',
+    @prisoner_id = 9,
+    @prisoner_number = 'P123464',
+    @prisoner_name = 'Inmate I',
+    @full_name = 'Eliyahu Yosef Wasserman',
+    @factory = 'MaimonSpices',
+    @department = 'Grinding',
     @activity_status = 'onShiftWorking',
-    @role = 'Worker',
-    @safety_training_validity = '2026-09-30',
-    @work_start_date = '2025-05-10',
-    @release_date = '2027-11-05',
+    @role = 'Spice Grinder',
+    @safety_training_validity = '2027-11-01',
+    @work_start_date = '2025-11-01',
+    @release_date = '2031-04-05',
     @qualified = 1,
     @shabbat_keeping = 1,
-    @min_salary = 530.00;
+    @min_salary = 2400.00;
+
+EXEC sp_Prisoner_create
+    @prisoner_id = 10,
+    @prisoner_number = 'P123465',
+    @prisoner_name = 'Inmate J',
+    @full_name = 'Lisa Chana Goldberg',
+    @factory = NULL,
+    @department = NULL,
+    @activity_status = 'temporarilyUnavailable',
+    @role = NULL,
+    @safety_training_validity = NULL,
+    @work_start_date = '2025-01-10',
+    @release_date = '2029-06-20',
+    @qualified = 1,
+    @shabbat_keeping = 0,
+    @min_salary = 2350.00;
+
+EXEC sp_Prisoner_create
+    @prisoner_id = 11,
+    @prisoner_number = 'P123466',
+    @prisoner_name = 'Inmate K',
+    @full_name = 'Tzion Meir Friedman',
+    @factory = 'TzitzitWorkshop',
+    @department = 'Tzitzit Assembly',
+    @activity_status = 'onShiftWorking',
+    @role = 'Tzitzit Assembler',
+    @safety_training_validity = '2026-08-22',
+    @work_start_date = '2025-08-22',
+    @release_date = '2027-05-10',
+    @qualified = 1,
+    @shabbat_keeping = 1,
+    @min_salary = 2050.00;
+
+EXEC sp_Prisoner_create
+    @prisoner_id = 12,
+    @prisoner_number = 'P123467',
+    @prisoner_name = 'Inmate L',
+    @full_name = 'Daphna Noa Katz',
+    @factory = 'SewingWorkshop',
+    @department = 'Sewing',
+    @activity_status = 'onShiftWorking',
+    @role = 'Textile Operator',
+    @safety_training_validity = '2027-04-10',
+    @work_start_date = '2025-04-10',
+    @release_date = '2028-10-30',
+    @qualified = 1,
+    @shabbat_keeping = 0,
+    @min_salary = 2250.00;
+
+EXEC sp_Prisoner_create
+    @prisoner_id = 13,
+    @prisoner_number = 'P123468',
+    @prisoner_name = 'Inmate M',
+    @full_name = 'Amnon David Rabin',
+    @factory = 'Technosak',
+    @department = 'Molding',
+    @activity_status = 'idle',
+    @role = 'Plastic Molder',
+    @safety_training_validity = '2026-10-05',
+    @work_start_date = '2025-10-05',
+    @release_date = '2026-07-20',
+    @qualified = 1,
+    @shabbat_keeping = 0,
+    @min_salary = 2300.00;
+
+EXEC sp_Prisoner_create
+    @prisoner_id = 14,
+    @prisoner_number = 'P123469',
+    @prisoner_name = 'Inmate N',
+    @full_name = 'Chaim Yaakov Landau',
+    @factory = NULL,
+    @department = NULL,
+    @activity_status = 'pendingDepartmentManagerApproval',
+    @role = NULL,
+    @safety_training_validity = NULL,
+    @work_start_date = NULL,
+    @release_date = '2028-02-14',
+    @qualified = 0,
+    @shabbat_keeping = 1,
+    @min_salary = NULL;
 
 EXEC sp_Prisoner_create
     @prisoner_id = 15,
-    @prisoner_number = 'P001248',
-    @prisoner_name = 'חנוך',
-    @full_name = 'חנוך סלע',
-    @factory = 'SewingWorkshop',
-    @department = 'Sewing',
-    @activity_status = 'idle',
-    @role = 'Worker',
-    @safety_training_validity = '2026-10-15',
-    @work_start_date = '2024-07-20',
-    @release_date = '2026-09-30',
+    @prisoner_number = 'P123470',
+    @prisoner_name = 'Inmate O',
+    @full_name = 'Ronit Esther Bloch',
+    @factory = 'MaimonSpices',
+    @department = 'Packaging',
+    @activity_status = 'onShiftWorking',
+    @role = 'Packager',
+    @safety_training_validity = '2027-07-18',
+    @work_start_date = '2025-07-18',
+    @release_date = '2030-09-25',
     @qualified = 1,
     @shabbat_keeping = 0,
-    @min_salary = 490.00;
+    @min_salary = 2200.00;
 
 -- ============================================================================
 -- 6. Contract (5 rows)
@@ -475,56 +479,56 @@ EXEC sp_Prisoner_create
 
 EXEC sp_Contract_create
     @contract_id = 1,
-    @contract_number = 'CONT-2026-001',
+    @contract_number = 'CON-2026-001',
     @customer_company_id = 1,
     @product_id = 1,
     @start_date = '2026-01-01',
-    @price_per_unit = 50.00,
-    @payment_terms = 'Net 30',
+    @price_per_unit = 45.50,
+    @payment_terms = 'Net 30, monthly invoicing',
     @contract_status = 'Active';
 
 EXEC sp_Contract_create
     @contract_id = 2,
-    @contract_number = 'CONT-2026-002',
+    @contract_number = 'CON-2026-002',
     @customer_company_id = 2,
-    @product_id = 2,
+    @product_id = 3,
     @start_date = '2026-02-01',
-    @price_per_unit = 150.00,
-    @payment_terms = 'Net 45',
+    @price_per_unit = 12.75,
+    @payment_terms = 'Net 45, quarterly review',
     @contract_status = 'Active';
 
 EXEC sp_Contract_create
     @contract_id = 3,
-    @contract_number = 'CONT-2026-003',
+    @contract_number = 'CON-2026-003',
     @customer_company_id = 3,
-    @product_id = 3,
-    @start_date = '2026-03-01',
-    @price_per_unit = 75.00,
-    @payment_terms = 'Net 30',
+    @product_id = 4,
+    @start_date = '2026-03-15',
+    @price_per_unit = 125.00,
+    @payment_terms = 'Net 30, prepayment required',
     @contract_status = 'Active';
 
 EXEC sp_Contract_create
     @contract_id = 4,
-    @contract_number = 'CONT-2026-004',
+    @contract_number = 'CON-2026-004',
     @customer_company_id = 4,
-    @product_id = 5,
-    @start_date = '2026-04-01',
-    @price_per_unit = 45.00,
-    @payment_terms = 'Net 15',
+    @product_id = 2,
+    @start_date = '2026-01-15',
+    @price_per_unit = 38.00,
+    @payment_terms = 'Net 60, government terms',
     @contract_status = 'Active';
 
 EXEC sp_Contract_create
     @contract_id = 5,
-    @contract_number = 'CONT-2026-005',
+    @contract_number = 'CON-2026-005',
     @customer_company_id = 5,
-    @product_id = 1,
-    @start_date = '2026-05-01',
+    @product_id = 5,
+    @start_date = '2026-04-01',
     @price_per_unit = 55.00,
-    @payment_terms = 'Net 60',
-    @contract_status = 'Active';
+    @payment_terms = 'Net 30, FOB destination',
+    @contract_status = 'Inactive';
 
 -- ============================================================================
--- 7. ProductionOrder (8 rows - various statuses)
+-- 7. ProductionOrder (8 rows)
 -- ============================================================================
 
 EXEC sp_ProductionOrder_create
@@ -533,595 +537,580 @@ EXEC sp_ProductionOrder_create
     @customer_company_id = 1,
     @product_id = 1,
     @contract_id = 1,
-    @quantity = 500,
+    @quantity = 5000,
     @submission_date = '2026-06-01',
-    @delivery_deadline = '2026-07-01',
+    @delivery_deadline = '2026-07-15',
     @order_status = 'inProduction';
 
 EXEC sp_ProductionOrder_create
     @production_order_id = 2,
     @order_number = 'ORD-2026-0002',
     @customer_company_id = 2,
-    @product_id = 2,
+    @product_id = 3,
     @contract_id = 2,
-    @quantity = 300,
+    @quantity = 10000,
     @submission_date = '2026-06-05',
-    @delivery_deadline = '2026-07-05',
-    @order_status = 'recieved';
+    @delivery_deadline = '2026-08-01',
+    @order_status = 'inProduction';
 
 EXEC sp_ProductionOrder_create
     @production_order_id = 3,
     @order_number = 'ORD-2026-0003',
     @customer_company_id = 3,
-    @product_id = 3,
+    @product_id = 4,
     @contract_id = 3,
-    @quantity = 1000,
+    @quantity = 500,
     @submission_date = '2026-05-20',
-    @delivery_deadline = '2026-06-30',
+    @delivery_deadline = '2026-07-01',
     @order_status = 'readyForPickup';
 
 EXEC sp_ProductionOrder_create
     @production_order_id = 4,
     @order_number = 'ORD-2026-0004',
     @customer_company_id = 4,
-    @product_id = 5,
+    @product_id = 2,
     @contract_id = 4,
-    @quantity = 200,
-    @submission_date = '2026-06-10',
-    @delivery_deadline = '2026-07-10',
-    @order_status = 'inProduction';
+    @quantity = 3000,
+    @submission_date = '2026-04-10',
+    @delivery_deadline = '2026-06-15',
+    @order_status = 'delivered';
 
 EXEC sp_ProductionOrder_create
     @production_order_id = 5,
     @order_number = 'ORD-2026-0005',
-    @customer_company_id = 5,
-    @product_id = 1,
-    @contract_id = 5,
-    @quantity = 750,
-    @submission_date = '2026-06-15',
-    @delivery_deadline = '2026-08-15',
-    @order_status = 'inProduction';
+    @customer_company_id = 6,
+    @product_id = 6,
+    @contract_id = NULL,
+    @quantity = 2000,
+    @submission_date = '2026-06-10',
+    @delivery_deadline = '2026-07-20',
+    @order_status = 'recieved';
 
 EXEC sp_ProductionOrder_create
     @production_order_id = 6,
     @order_number = 'ORD-2026-0006',
-    @customer_company_id = 6,
+    @customer_company_id = 1,
     @product_id = 1,
-    @quantity = 400,
-    @submission_date = '2026-05-01',
-    @delivery_deadline = '2026-06-15',
-    @order_status = 'delivered';
+    @contract_id = 1,
+    @quantity = 3000,
+    @submission_date = '2026-05-15',
+    @delivery_deadline = '2026-08-10',
+    @order_status = 'inProduction';
 
 EXEC sp_ProductionOrder_create
     @production_order_id = 7,
     @order_number = 'ORD-2026-0007',
     @customer_company_id = 7,
-    @product_id = 3,
-    @quantity = 600,
+    @product_id = 2,
+    @contract_id = NULL,
+    @quantity = 1500,
     @submission_date = '2026-06-12',
-    @delivery_deadline = '2026-07-20',
+    @delivery_deadline = '2026-07-25',
     @order_status = 'onHold';
 
 EXEC sp_ProductionOrder_create
     @production_order_id = 8,
     @order_number = 'ORD-2026-0008',
     @customer_company_id = 8,
-    @product_id = 6,
-    @quantity = 250,
-    @submission_date = '2026-06-18',
-    @delivery_deadline = '2026-08-01',
-    @order_status = 'recieved';
+    @product_id = 3,
+    @contract_id = NULL,
+    @quantity = 5000,
+    @submission_date = '2026-06-08',
+    @delivery_deadline = '2026-08-20',
+    @order_status = 'inProduction';
 
 -- ============================================================================
--- 8. WorkOrder (12 rows - 1-2 per ProductionOrder)
+-- 8. WorkOrder (12 rows)
 -- ============================================================================
 
 EXEC sp_WorkOrder_create
     @work_order_id = 1,
     @work_order_number = 'WO-2026-0001',
     @production_order_id = 1,
-    @required_quantity = 500,
-    @completed_quantity = 450,
-    @start_date = '2026-06-05',
-    @deadline = '2026-06-25',
+    @required_quantity = 5000,
+    @completed_quantity = 2500,
+    @start_date = '2026-06-15',
+    @deadline = '2026-07-15',
     @factory = 'MaimonSpices',
-    @status = 'inProcess';
+    @status = 'inProcess',
+    @hold_reason = NULL;
 
 EXEC sp_WorkOrder_create
     @work_order_id = 2,
     @work_order_number = 'WO-2026-0002',
     @production_order_id = 2,
-    @required_quantity = 300,
-    @completed_quantity = 0,
-    @start_date = '2026-06-08',
-    @deadline = '2026-07-05',
+    @required_quantity = 10000,
+    @completed_quantity = 3000,
+    @start_date = '2026-06-20',
+    @deadline = '2026-08-01',
     @factory = 'Technosak',
-    @status = 'hasntEnteredIntoProductionYet';
+    @status = 'inProcess',
+    @hold_reason = NULL;
 
 EXEC sp_WorkOrder_create
     @work_order_id = 3,
     @work_order_number = 'WO-2026-0003',
     @production_order_id = 3,
-    @required_quantity = 1000,
-    @completed_quantity = 1000,
-    @start_date = '2026-05-25',
-    @deadline = '2026-06-20',
+    @required_quantity = 500,
+    @completed_quantity = 500,
+    @start_date = '2026-05-20',
+    @deadline = '2026-07-01',
     @factory = 'SewingWorkshop',
-    @status = 'completed';
+    @status = 'completed',
+    @hold_reason = NULL;
 
 EXEC sp_WorkOrder_create
     @work_order_id = 4,
     @work_order_number = 'WO-2026-0004',
     @production_order_id = 4,
-    @required_quantity = 200,
-    @completed_quantity = 50,
-    @start_date = '2026-06-12',
-    @deadline = '2026-07-10',
-    @factory = 'TzitzitWorkshop',
-    @status = 'inProcess',
-    @hold_reason = 'חיתוך חוט חסר';
+    @required_quantity = 3000,
+    @completed_quantity = 3000,
+    @start_date = '2026-04-10',
+    @deadline = '2026-06-15',
+    @factory = 'MaimonSpices',
+    @status = 'completed',
+    @hold_reason = NULL;
 
 EXEC sp_WorkOrder_create
     @work_order_id = 5,
     @work_order_number = 'WO-2026-0005',
     @production_order_id = 5,
-    @required_quantity = 750,
-    @completed_quantity = 200,
-    @start_date = '2026-06-17',
-    @deadline = '2026-08-15',
-    @factory = 'MaimonSpices',
-    @status = 'inProcess';
+    @required_quantity = 2000,
+    @completed_quantity = 0,
+    @start_date = '2026-06-20',
+    @deadline = '2026-07-20',
+    @factory = 'TzitzitWorkshop',
+    @status = 'hasntEnteredIntoProductionYet',
+    @hold_reason = NULL;
 
 EXEC sp_WorkOrder_create
     @work_order_id = 6,
     @work_order_number = 'WO-2026-0006',
     @production_order_id = 6,
-    @required_quantity = 400,
-    @completed_quantity = 400,
-    @start_date = '2026-05-05',
-    @deadline = '2026-06-10',
+    @required_quantity = 3000,
+    @completed_quantity = 1500,
+    @start_date = '2026-06-01',
+    @deadline = '2026-08-10',
     @factory = 'MaimonSpices',
-    @status = 'completed';
+    @status = 'inProcess',
+    @hold_reason = NULL;
 
 EXEC sp_WorkOrder_create
     @work_order_id = 7,
     @work_order_number = 'WO-2026-0007',
     @production_order_id = 7,
-    @required_quantity = 600,
-    @completed_quantity = 100,
-    @start_date = '2026-06-15',
-    @deadline = '2026-07-20',
-    @factory = 'SewingWorkshop',
-    @status = 'inProcess',
-    @hold_reason = 'בעיה בתיאום עם לקוח';
+    @required_quantity = 1500,
+    @completed_quantity = 0,
+    @start_date = '2026-06-25',
+    @deadline = '2026-07-25',
+    @factory = 'MaimonSpices',
+    @status = 'hasntEnteredIntoProductionYet',
+    @hold_reason = 'Waiting for ingredient shipment';
 
 EXEC sp_WorkOrder_create
     @work_order_id = 8,
     @work_order_number = 'WO-2026-0008',
     @production_order_id = 8,
-    @required_quantity = 250,
-    @completed_quantity = 0,
-    @start_date = '2026-06-20',
-    @deadline = '2026-08-01',
-    @factory = 'SewingWorkshop',
-    @status = 'hasntEnteredIntoProductionYet';
+    @required_quantity = 5000,
+    @completed_quantity = 2000,
+    @start_date = '2026-06-18',
+    @deadline = '2026-08-20',
+    @factory = 'Technosak',
+    @status = 'inProcess',
+    @hold_reason = NULL;
 
 EXEC sp_WorkOrder_create
     @work_order_id = 9,
     @work_order_number = 'WO-2026-0009',
     @production_order_id = 1,
-    @required_quantity = 500,
-    @completed_quantity = 450,
-    @start_date = '2026-06-05',
-    @deadline = '2026-06-25',
+    @required_quantity = 5000,
+    @completed_quantity = 2500,
+    @start_date = '2026-07-01',
+    @deadline = '2026-07-20',
     @factory = 'MaimonSpices',
-    @status = 'completed';
+    @status = 'inProcess',
+    @hold_reason = NULL;
 
 EXEC sp_WorkOrder_create
     @work_order_id = 10,
     @work_order_number = 'WO-2026-0010',
-    @production_order_id = 4,
-    @required_quantity = 200,
-    @completed_quantity = 150,
+    @production_order_id = 2,
+    @required_quantity = 10000,
+    @completed_quantity = 5000,
     @start_date = '2026-06-15',
-    @deadline = '2026-07-15',
-    @factory = 'TzitzitWorkshop',
-    @status = 'inProcess';
+    @deadline = '2026-07-30',
+    @factory = 'Technosak',
+    @status = 'inProcess',
+    @hold_reason = NULL;
 
 EXEC sp_WorkOrder_create
     @work_order_id = 11,
     @work_order_number = 'WO-2026-0011',
-    @production_order_id = 5,
-    @required_quantity = 750,
-    @completed_quantity = 350,
-    @start_date = '2026-06-17',
-    @deadline = '2026-08-15',
-    @factory = 'MaimonSpices',
-    @status = 'inProcess';
+    @production_order_id = 3,
+    @required_quantity = 500,
+    @completed_quantity = 500,
+    @start_date = '2026-06-10',
+    @deadline = '2026-07-01',
+    @factory = 'SewingWorkshop',
+    @status = 'completed',
+    @hold_reason = NULL;
 
 EXEC sp_WorkOrder_create
     @work_order_id = 12,
     @work_order_number = 'WO-2026-0012',
-    @production_order_id = 2,
-    @required_quantity = 300,
-    @completed_quantity = 100,
-    @start_date = '2026-06-10',
-    @deadline = '2026-07-08',
-    @factory = 'Technosak',
-    @status = 'inProcess';
+    @production_order_id = 6,
+    @required_quantity = 3000,
+    @completed_quantity = 1000,
+    @start_date = '2026-05-25',
+    @deadline = '2026-08-05',
+    @factory = 'MaimonSpices',
+    @status = 'inProcess',
+    @hold_reason = NULL;
 
 -- ============================================================================
--- 9. AttendanceRecord (20 rows - various dates and factories)
+-- 9. AttendanceRecord (20 rows)
 -- ============================================================================
 
 EXEC sp_AttendanceRecord_create
     @attendance_record_id = 1,
     @prisoner_id = 1,
-    @attendance_date = '2026-06-18',
+    @attendance_date = '2026-06-20',
     @factory = 'MaimonSpices',
-    @entry_time = '08:00:00',
-    @exit_time = '16:00:00';
-
-EXEC sp_AttendanceRecord_create
-    @attendance_record_id = 2,
-    @prisoner_id = 1,
-    @attendance_date = '2026-06-19',
-    @factory = 'MaimonSpices',
-    @entry_time = '08:00:00',
-    @exit_time = '16:30:00';
-
-EXEC sp_AttendanceRecord_create
-    @attendance_record_id = 3,
-    @prisoner_id = 2,
-    @attendance_date = '2026-06-18',
-    @factory = 'Technosak',
-    @entry_time = '07:30:00',
+    @entry_time = '07:00:00',
     @exit_time = '15:30:00';
 
 EXEC sp_AttendanceRecord_create
+    @attendance_record_id = 2,
+    @prisoner_id = 2,
+    @attendance_date = '2026-06-20',
+    @factory = 'Technosak',
+    @entry_time = '06:30:00',
+    @exit_time = '14:30:00';
+
+EXEC sp_AttendanceRecord_create
+    @attendance_record_id = 3,
+    @prisoner_id = 4,
+    @attendance_date = '2026-06-20',
+    @factory = 'TzitzitWorkshop',
+    @entry_time = '07:30:00',
+    @exit_time = '16:00:00';
+
+EXEC sp_AttendanceRecord_create
     @attendance_record_id = 4,
-    @prisoner_id = 3,
-    @attendance_date = '2026-06-18',
-    @factory = 'SewingWorkshop',
-    @entry_time = NULL,
-    @exit_time = NULL;
+    @prisoner_id = 5,
+    @attendance_date = '2026-06-20',
+    @factory = 'MaimonSpices',
+    @entry_time = '07:00:00',
+    @exit_time = '15:30:00';
 
 EXEC sp_AttendanceRecord_create
     @attendance_record_id = 5,
-    @prisoner_id = 4,
-    @attendance_date = '2026-06-18',
-    @factory = 'TzitzitWorkshop',
-    @entry_time = '07:00:00',
-    @exit_time = '17:00:00';
+    @prisoner_id = 6,
+    @attendance_date = '2026-06-20',
+    @factory = 'Technosak',
+    @entry_time = '06:45:00',
+    @exit_time = '15:15:00';
 
 EXEC sp_AttendanceRecord_create
     @attendance_record_id = 6,
-    @prisoner_id = 5,
-    @attendance_date = '2026-06-18',
+    @prisoner_id = 9,
+    @attendance_date = '2026-06-20',
     @factory = 'MaimonSpices',
-    @entry_time = '08:00:00',
-    @exit_time = '12:00:00';
+    @entry_time = '07:05:00',
+    @exit_time = '15:35:00';
 
 EXEC sp_AttendanceRecord_create
     @attendance_record_id = 7,
-    @prisoner_id = 6,
-    @attendance_date = '2026-06-18',
-    @factory = 'Technosak',
-    @entry_time = NULL,
-    @exit_time = NULL;
+    @prisoner_id = 11,
+    @attendance_date = '2026-06-20',
+    @factory = 'TzitzitWorkshop',
+    @entry_time = '07:30:00',
+    @exit_time = '16:00:00';
 
 EXEC sp_AttendanceRecord_create
     @attendance_record_id = 8,
-    @prisoner_id = 7,
-    @attendance_date = '2026-06-18',
+    @prisoner_id = 12,
+    @attendance_date = '2026-06-20',
     @factory = 'SewingWorkshop',
-    @entry_time = '08:15:00',
-    @exit_time = '16:15:00';
+    @entry_time = '07:15:00',
+    @exit_time = '15:45:00';
 
 EXEC sp_AttendanceRecord_create
     @attendance_record_id = 9,
-    @prisoner_id = 8,
-    @attendance_date = '2026-06-18',
-    @factory = 'MaimonSpices',
-    @entry_time = NULL,
-    @exit_time = NULL;
+    @prisoner_id = 13,
+    @attendance_date = '2026-06-20',
+    @factory = 'Technosak',
+    @entry_time = '06:30:00',
+    @exit_time = '14:30:00';
 
 EXEC sp_AttendanceRecord_create
     @attendance_record_id = 10,
-    @prisoner_id = 9,
-    @attendance_date = '2026-06-18',
-    @factory = 'TzitzitWorkshop',
-    @entry_time = '08:00:00',
-    @exit_time = '16:00:00';
+    @prisoner_id = 15,
+    @attendance_date = '2026-06-20',
+    @factory = 'MaimonSpices',
+    @entry_time = '07:00:00',
+    @exit_time = '15:30:00';
 
 EXEC sp_AttendanceRecord_create
     @attendance_record_id = 11,
     @prisoner_id = 1,
-    @attendance_date = '2026-06-17',
+    @attendance_date = '2026-06-19',
     @factory = 'MaimonSpices',
-    @entry_time = '08:00:00',
-    @exit_time = '16:00:00';
+    @entry_time = '07:00:00',
+    @exit_time = '15:30:00';
 
 EXEC sp_AttendanceRecord_create
     @attendance_record_id = 12,
     @prisoner_id = 2,
-    @attendance_date = '2026-06-17',
+    @attendance_date = '2026-06-19',
     @factory = 'Technosak',
-    @entry_time = '07:30:00',
-    @exit_time = '15:30:00';
+    @entry_time = '06:30:00',
+    @exit_time = '14:30:00';
 
 EXEC sp_AttendanceRecord_create
     @attendance_record_id = 13,
     @prisoner_id = 4,
-    @attendance_date = '2026-06-17',
+    @attendance_date = '2026-06-19',
     @factory = 'TzitzitWorkshop',
-    @entry_time = '07:00:00',
-    @exit_time = '17:00:00';
-
-EXEC sp_AttendanceRecord_create
-    @attendance_record_id = 14,
-    @prisoner_id = 7,
-    @attendance_date = '2026-06-17',
-    @factory = 'SewingWorkshop',
-    @entry_time = '08:15:00',
-    @exit_time = '16:15:00';
-
-EXEC sp_AttendanceRecord_create
-    @attendance_record_id = 15,
-    @prisoner_id = 10,
-    @attendance_date = '2026-06-18',
-    @factory = 'Technosak',
-    @entry_time = '07:45:00',
-    @exit_time = '15:45:00';
-
-EXEC sp_AttendanceRecord_create
-    @attendance_record_id = 16,
-    @prisoner_id = 12,
-    @attendance_date = '2026-06-18',
-    @factory = 'MaimonSpices',
-    @entry_time = '08:00:00',
+    @entry_time = '07:30:00',
     @exit_time = '16:00:00';
 
 EXEC sp_AttendanceRecord_create
-    @attendance_record_id = 17,
-    @prisoner_id = 14,
-    @attendance_date = '2026-06-18',
-    @factory = 'Technosak',
-    @entry_time = '07:30:00',
+    @attendance_record_id = 14,
+    @prisoner_id = 5,
+    @attendance_date = '2026-06-19',
+    @factory = 'MaimonSpices',
+    @entry_time = '07:00:00',
     @exit_time = '15:30:00';
+
+EXEC sp_AttendanceRecord_create
+    @attendance_record_id = 15,
+    @prisoner_id = 6,
+    @attendance_date = '2026-06-19',
+    @factory = 'Technosak',
+    @entry_time = '06:45:00',
+    @exit_time = '15:15:00';
+
+EXEC sp_AttendanceRecord_create
+    @attendance_record_id = 16,
+    @prisoner_id = 9,
+    @attendance_date = '2026-06-19',
+    @factory = 'MaimonSpices',
+    @entry_time = '07:05:00',
+    @exit_time = '15:35:00';
+
+EXEC sp_AttendanceRecord_create
+    @attendance_record_id = 17,
+    @prisoner_id = 12,
+    @attendance_date = '2026-06-19',
+    @factory = 'SewingWorkshop',
+    @entry_time = '07:15:00',
+    @exit_time = '15:45:00';
 
 EXEC sp_AttendanceRecord_create
     @attendance_record_id = 18,
     @prisoner_id = 15,
-    @attendance_date = '2026-06-18',
-    @factory = 'SewingWorkshop',
-    @entry_time = '08:00:00',
-    @exit_time = '16:00:00';
+    @attendance_date = '2026-06-19',
+    @factory = 'MaimonSpices',
+    @entry_time = '07:00:00',
+    @exit_time = '15:30:00';
 
 EXEC sp_AttendanceRecord_create
     @attendance_record_id = 19,
-    @prisoner_id = 5,
-    @attendance_date = '2026-06-19',
+    @prisoner_id = 1,
+    @attendance_date = '2026-06-18',
     @factory = 'MaimonSpices',
-    @entry_time = '08:00:00',
-    @exit_time = '14:00:00';
+    @entry_time = '07:00:00',
+    @exit_time = '15:30:00';
 
 EXEC sp_AttendanceRecord_create
     @attendance_record_id = 20,
-    @prisoner_id = 9,
-    @attendance_date = '2026-06-19',
-    @factory = 'TzitzitWorkshop',
-    @entry_time = '08:00:00',
-    @exit_time = '16:00:00';
+    @prisoner_id = 2,
+    @attendance_date = '2026-06-18',
+    @factory = 'Technosak',
+    @entry_time = '06:30:00',
+    @exit_time = '14:30:00';
 
 -- ============================================================================
--- 10. ProductivityRecord (20 rows - Individual and Group types)
+-- 10. ProductivityRecord (20 rows)
 -- ============================================================================
 
 EXEC sp_ProductivityRecord_create
     @productivity_record_id = 1,
     @prisoner_id = 1,
     @work_order_id = 1,
-    @productivity_date = '2026-06-18',
-    @quantity_produced = 50,
-    @work_hours = 8.0,
-    @productivity_type = 'Individual';
-
-EXEC sp_ProductivityRecord_create
-    @productivity_record_id = 2,
-    @prisoner_id = 1,
-    @work_order_id = 1,
-    @productivity_date = '2026-06-19',
-    @quantity_produced = 45,
+    @productivity_date = '2026-06-20',
+    @quantity_produced = 450,
     @work_hours = 8.5,
     @productivity_type = 'Individual';
 
 EXEC sp_ProductivityRecord_create
-    @productivity_record_id = 3,
+    @productivity_record_id = 2,
     @prisoner_id = 2,
-    @work_order_id = 12,
-    @productivity_date = '2026-06-18',
-    @quantity_produced = 30,
+    @work_order_id = 2,
+    @productivity_date = '2026-06-20',
+    @quantity_produced = 800,
     @work_hours = 8.0,
     @productivity_type = 'Individual';
 
 EXEC sp_ProductivityRecord_create
-    @productivity_record_id = 4,
+    @productivity_record_id = 3,
     @prisoner_id = 4,
-    @work_order_id = 4,
-    @productivity_date = '2026-06-18',
-    @quantity_produced = 25,
-    @work_hours = 8.0,
+    @work_order_id = 5,
+    @productivity_date = '2026-06-20',
+    @quantity_produced = 120,
+    @work_hours = 8.5,
+    @productivity_type = 'Group';
+
+EXEC sp_ProductivityRecord_create
+    @productivity_record_id = 4,
+    @prisoner_id = 5,
+    @work_order_id = 1,
+    @productivity_date = '2026-06-20',
+    @quantity_produced = 380,
+    @work_hours = 8.5,
     @productivity_type = 'Individual';
 
 EXEC sp_ProductivityRecord_create
     @productivity_record_id = 5,
-    @prisoner_id = 5,
-    @work_order_id = 1,
-    @productivity_date = '2026-06-18',
-    @quantity_produced = 40,
-    @work_hours = 4.0,
+    @prisoner_id = 6,
+    @work_order_id = 2,
+    @productivity_date = '2026-06-20',
+    @quantity_produced = 650,
+    @work_hours = 8.0,
     @productivity_type = 'Individual';
 
 EXEC sp_ProductivityRecord_create
     @productivity_record_id = 6,
-    @prisoner_id = 7,
-    @work_order_id = 3,
-    @productivity_date = '2026-06-18',
-    @quantity_produced = 120,
-    @work_hours = 8.0,
-    @productivity_type = 'Group';
-
-EXEC sp_ProductivityRecord_create
-    @productivity_record_id = 7,
     @prisoner_id = 9,
-    @work_order_id = 10,
-    @productivity_date = '2026-06-18',
-    @quantity_produced = 35,
-    @work_hours = 8.0,
+    @work_order_id = 6,
+    @productivity_date = '2026-06-20',
+    @quantity_produced = 500,
+    @work_hours = 8.5,
     @productivity_type = 'Individual';
 
 EXEC sp_ProductivityRecord_create
+    @productivity_record_id = 7,
+    @prisoner_id = 11,
+    @work_order_id = 5,
+    @productivity_date = '2026-06-20',
+    @quantity_produced = 100,
+    @work_hours = 8.5,
+    @productivity_type = 'Group';
+
+EXEC sp_ProductivityRecord_create
     @productivity_record_id = 8,
-    @prisoner_id = 10,
-    @work_order_id = 12,
-    @productivity_date = '2026-06-18',
-    @quantity_produced = 28,
+    @prisoner_id = 12,
+    @work_order_id = 3,
+    @productivity_date = '2026-06-20',
+    @quantity_produced = 200,
     @work_hours = 8.0,
     @productivity_type = 'Individual';
 
 EXEC sp_ProductivityRecord_create
     @productivity_record_id = 9,
-    @prisoner_id = 12,
-    @work_order_id = 5,
-    @productivity_date = '2026-06-18',
-    @quantity_produced = 55,
+    @prisoner_id = 13,
+    @work_order_id = 8,
+    @productivity_date = '2026-06-20',
+    @quantity_produced = 700,
     @work_hours = 8.0,
     @productivity_type = 'Individual';
 
 EXEC sp_ProductivityRecord_create
     @productivity_record_id = 10,
-    @prisoner_id = 14,
+    @prisoner_id = 15,
     @work_order_id = 12,
-    @productivity_date = '2026-06-18',
-    @quantity_produced = 32,
-    @work_hours = 8.0,
+    @productivity_date = '2026-06-20',
+    @quantity_produced = 320,
+    @work_hours = 8.5,
     @productivity_type = 'Individual';
 
 EXEC sp_ProductivityRecord_create
     @productivity_record_id = 11,
-    @prisoner_id = 15,
-    @work_order_id = 3,
-    @productivity_date = '2026-06-18',
-    @quantity_produced = 125,
-    @work_hours = 8.0,
-    @productivity_type = 'Group';
+    @prisoner_id = 1,
+    @work_order_id = 1,
+    @productivity_date = '2026-06-19',
+    @quantity_produced = 420,
+    @work_hours = 8.5,
+    @productivity_type = 'Individual';
 
 EXEC sp_ProductivityRecord_create
     @productivity_record_id = 12,
-    @prisoner_id = 1,
-    @work_order_id = 9,
-    @productivity_date = '2026-06-17',
-    @quantity_produced = 48,
+    @prisoner_id = 2,
+    @work_order_id = 2,
+    @productivity_date = '2026-06-19',
+    @quantity_produced = 750,
     @work_hours = 8.0,
     @productivity_type = 'Individual';
 
 EXEC sp_ProductivityRecord_create
     @productivity_record_id = 13,
-    @prisoner_id = 2,
-    @work_order_id = 12,
-    @productivity_date = '2026-06-17',
-    @quantity_produced = 28,
-    @work_hours = 8.0,
+    @prisoner_id = 5,
+    @work_order_id = 1,
+    @productivity_date = '2026-06-19',
+    @quantity_produced = 400,
+    @work_hours = 8.5,
     @productivity_type = 'Individual';
 
 EXEC sp_ProductivityRecord_create
     @productivity_record_id = 14,
-    @prisoner_id = 4,
-    @work_order_id = 10,
-    @productivity_date = '2026-06-17',
-    @quantity_produced = 40,
+    @prisoner_id = 6,
+    @work_order_id = 2,
+    @productivity_date = '2026-06-19',
+    @quantity_produced = 680,
     @work_hours = 8.0,
     @productivity_type = 'Individual';
 
 EXEC sp_ProductivityRecord_create
     @productivity_record_id = 15,
-    @prisoner_id = 7,
-    @work_order_id = 7,
-    @productivity_date = '2026-06-17',
-    @quantity_produced = 50,
-    @work_hours = 8.0,
-    @productivity_type = 'Group';
+    @prisoner_id = 9,
+    @work_order_id = 6,
+    @productivity_date = '2026-06-19',
+    @quantity_produced = 480,
+    @work_hours = 8.5,
+    @productivity_type = 'Individual';
 
 EXEC sp_ProductivityRecord_create
     @productivity_record_id = 16,
-    @prisoner_id = 9,
-    @work_order_id = 10,
-    @productivity_date = '2026-06-17',
-    @quantity_produced = 38,
+    @prisoner_id = 12,
+    @work_order_id = 3,
+    @productivity_date = '2026-06-19',
+    @quantity_produced = 180,
     @work_hours = 8.0,
     @productivity_type = 'Individual';
 
 EXEC sp_ProductivityRecord_create
     @productivity_record_id = 17,
-    @prisoner_id = 5,
-    @work_order_id = 5,
+    @prisoner_id = 15,
+    @work_order_id = 12,
     @productivity_date = '2026-06-19',
-    @quantity_produced = 35,
-    @work_hours = 6.0,
+    @quantity_produced = 350,
+    @work_hours = 8.5,
     @productivity_type = 'Individual';
 
 EXEC sp_ProductivityRecord_create
     @productivity_record_id = 18,
-    @prisoner_id = 12,
-    @work_order_id = 11,
+    @prisoner_id = 1,
+    @work_order_id = 1,
     @productivity_date = '2026-06-18',
-    @quantity_produced = 60,
-    @work_hours = 8.0,
+    @quantity_produced = 400,
+    @work_hours = 8.5,
     @productivity_type = 'Individual';
 
 EXEC sp_ProductivityRecord_create
     @productivity_record_id = 19,
-    @prisoner_id = 1,
-    @work_order_id = 1,
-    @productivity_date = '2026-06-17',
-    @quantity_produced = 52,
+    @prisoner_id = 2,
+    @work_order_id = 2,
+    @productivity_date = '2026-06-18',
+    @quantity_produced = 770,
     @work_hours = 8.0,
     @productivity_type = 'Individual';
 
 EXEC sp_ProductivityRecord_create
     @productivity_record_id = 20,
-    @prisoner_id = 9,
-    @work_order_id = 4,
-    @productivity_date = '2026-06-19',
-    @quantity_produced = 30,
-    @work_hours = 8.0,
+    @prisoner_id = 5,
+    @work_order_id = 1,
+    @productivity_date = '2026-06-18',
+    @quantity_produced = 390,
+    @work_hours = 8.5,
     @productivity_type = 'Individual';
-
--- ============================================================================
--- SUMMARY - Row counts per table
--- ============================================================================
-
-PRINT '=== DATA SEED SUMMARY ===';
-PRINT '';
-
-SELECT 'EmploymentDepartment' AS TableName, COUNT(*) AS RowCount FROM EmploymentDepartment
-UNION ALL
-SELECT 'CustomerCompany', COUNT(*) FROM CustomerCompany
-UNION ALL
-SELECT 'Product', COUNT(*) FROM Product
-UNION ALL
-SELECT 'DepartmentManagement', COUNT(*) FROM DepartmentManagement
-UNION ALL
-SELECT 'Prisoner', COUNT(*) FROM Prisoner
-UNION ALL
-SELECT 'Contract', COUNT(*) FROM Contract
-UNION ALL
-SELECT 'ProductionOrder', COUNT(*) FROM ProductionOrder
-UNION ALL
-SELECT 'WorkOrder', COUNT(*) FROM WorkOrder
-UNION ALL
-SELECT 'AttendanceRecord', COUNT(*) FROM AttendanceRecord
-UNION ALL
-SELECT 'ProductivityRecord', COUNT(*) FROM ProductivityRecord
-ORDER BY TableName;
