@@ -89,7 +89,12 @@ namespace PEDIS
 
         private void btnAdd_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Add Production Order - Feature coming soon", "Not Implemented", MessageBoxButtons.OK);
+            AddEditProductionOrderDialog dialog = new AddEditProductionOrderDialog(null);
+            DialogResult result = dialog.ShowDialog();
+            if (result == DialogResult.OK)
+            {
+                refreshList();
+            }
         }
 
         private void btnEdit_Click(object sender, EventArgs e)
@@ -99,7 +104,14 @@ namespace PEDIS
                 MessageBox.Show("Please select an order to edit", "Selection Required", MessageBoxButtons.OK);
                 return;
             }
-            MessageBox.Show("Edit Production Order - Feature coming soon", "Not Implemented", MessageBoxButtons.OK);
+
+            ProductionOrder order = (ProductionOrder)lvOrders.SelectedItems[0].Tag;
+            AddEditProductionOrderDialog dialog = new AddEditProductionOrderDialog(order);
+            DialogResult result = dialog.ShowDialog();
+            if (result == DialogResult.OK)
+            {
+                refreshList();
+            }
         }
 
         private void btnDelete_Click(object sender, EventArgs e)
