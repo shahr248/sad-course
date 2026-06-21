@@ -141,15 +141,18 @@ namespace PEDIS
         private void AddEditPrisonerDialog_Load(object sender, EventArgs e)
         {
             // Populate Factory ComboBox
-            cbFactory.Items.AddRange(Enum.GetValues(typeof(Factory)));
+            foreach (var factory in Enum.GetValues(typeof(Factory)))
+                cbFactory.Items.Add(factory);
             cbFactory.DropDownStyle = ComboBoxStyle.DropDownList;
 
             // Populate ActivityStatus ComboBox
-            cbActivityStatus.Items.AddRange(Enum.GetValues(typeof(PrisonerActivityStatus)));
+            foreach (var status in Enum.GetValues(typeof(PrisonerActivityStatus)))
+                cbActivityStatus.Items.Add(status);
             cbActivityStatus.DropDownStyle = ComboBoxStyle.DropDownList;
 
             // Populate Role ComboBox
-            cbRole.Items.AddRange(Enum.GetValues(typeof(PrisonerRole)));
+            foreach (var role in Enum.GetValues(typeof(PrisonerRole)))
+                cbRole.Items.Add(role);
             cbRole.DropDownStyle = ComboBoxStyle.DropDownList;
         }
     }
