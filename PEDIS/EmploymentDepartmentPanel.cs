@@ -97,7 +97,14 @@ namespace PEDIS
 
         private void btnBack_Click(object sender, EventArgs e)
         {
-            onBack?.Invoke();
+            if (onBack != null)
+            {
+                onBack.Invoke();
+            }
+            else
+            {
+                MessageBox.Show("Back handler not wired properly", "Debug", MessageBoxButtons.OK);
+            }
         }
     }
 }

@@ -36,7 +36,7 @@ namespace PEDIS
 
         private void btnPrisoners_Click(object sender, EventArgs e)
         {
-            EmploymentDepartmentPanel panel = new EmploymentDepartmentPanel();
+            PrisonerPanel panel = new PrisonerPanel();
             panel.onBack += () => onShowPanel?.Invoke(this);
             onShowPanel?.Invoke(panel);
         }
