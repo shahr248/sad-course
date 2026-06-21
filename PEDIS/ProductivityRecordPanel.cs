@@ -57,10 +57,12 @@ namespace PEDIS
 
             foreach (ProductivityRecord productivity in Program.ProductivityRecords)
             {
-                // Factory Manager filtering: only show productivity records for their factory
+                // Factory Manager filtering: only show productivity records for the factory where the
+                // work was actually produced (a prisoner can work across multiple factories, so their
+                // own "home" factory is not a reliable filter key here)
                 if (currentUser != null && currentUser.getRole() == DepartmentManagementRole.FactoryManager)
                 {
-                    if (productivity.getPrisoner() == null || productivity.getPrisoner().getFactory() != currentUser.getFactory())
+                    if (productivity.getFactory() != currentUser.getFactory())
                         continue;
                 }
 
@@ -145,7 +147,7 @@ namespace PEDIS
         private void btnDailyTotals_Click(object sender, EventArgs e)
         {
             DateTime selectedDate = filterStartDate ?? DateTime.Today;
-            DailyProductionTotalDialog dialog = new DailyProductionTotalDialog(selectedDate);
+            DailyProductionTotalDialog dialog = new DailyProductionTotalDialog(selectedDate, currentUser);
             if (dialog.ShowDialog() == DialogResult.OK)
             {
                 refreshList(filterStartDate, filterEndDate, filteredPrisonerId, filteredWorkOrderId);

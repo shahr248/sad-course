@@ -8,22 +8,30 @@ namespace PEDIS
     {
         private DateTime selectedDate;
         private int? filteredProductId;
+        private DepartmentManagement currentUser;
+        private Factory? selectedFactoryFilter;
         private ListView lvDailyTotals;
         private Button btnApplyToOrder;
         private Button btnClose;
         private Label lblTitle;
+        private Label lblFactory;
+        private ComboBox cmbFactory;
 
-        public DailyProductionTotalDialog(DateTime selectedDate, int? filteredProductId = null)
+        public DailyProductionTotalDialog(DateTime selectedDate, DepartmentManagement currentUser, int? filteredProductId = null)
         {
             this.selectedDate = selectedDate;
+            this.currentUser = currentUser;
             this.filteredProductId = filteredProductId;
             InitializeComponent();
+            InitializeFactoryFilter();
             LoadDailyTotals();
         }
 
         private void InitializeComponent()
         {
             this.lblTitle = new Label();
+            this.lblFactory = new Label();
+            this.cmbFactory = new ComboBox();
             this.lvDailyTotals = new ListView();
             this.btnApplyToOrder = new Button();
             this.btnClose = new Button();
@@ -44,10 +52,22 @@ namespace PEDIS
             this.lblTitle.Text = "Daily Production Totals - " + selectedDate.ToString("yyyy-MM-dd");
             this.lblTitle.ForeColor = System.Drawing.Color.FromArgb(0, 51, 102);
 
+            this.lblFactory.AutoSize = false;
+            this.lblFactory.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.lblFactory.Location = new System.Drawing.Point(20, 50);
+            this.lblFactory.Size = new System.Drawing.Size(100, 25);
+            this.lblFactory.Text = "Filter by Factory:";
+            this.lblFactory.ForeColor = System.Drawing.Color.FromArgb(50, 50, 50);
+
+            this.cmbFactory.Location = new System.Drawing.Point(130, 50);
+            this.cmbFactory.Size = new System.Drawing.Size(200, 25);
+            this.cmbFactory.DropDownStyle = ComboBoxStyle.DropDownList;
+            this.cmbFactory.SelectedIndexChanged += new EventHandler(this.cmbFactory_SelectedIndexChanged);
+
             this.lvDailyTotals.FullRowSelect = true;
             this.lvDailyTotals.GridLines = true;
-            this.lvDailyTotals.Location = new System.Drawing.Point(20, 50);
-            this.lvDailyTotals.Size = new System.Drawing.Size(550, 270);
+            this.lvDailyTotals.Location = new System.Drawing.Point(20, 85);
+            this.lvDailyTotals.Size = new System.Drawing.Size(550, 235);
             this.lvDailyTotals.UseCompatibleStateImageBehavior = false;
             this.lvDailyTotals.View = System.Windows.Forms.View.Details;
             this.lvDailyTotals.BackColor = System.Drawing.Color.White;
@@ -79,9 +99,44 @@ namespace PEDIS
             this.Controls.Add(this.btnClose);
             this.Controls.Add(this.btnApplyToOrder);
             this.Controls.Add(this.lvDailyTotals);
+            this.Controls.Add(this.cmbFactory);
+            this.Controls.Add(this.lblFactory);
             this.Controls.Add(this.lblTitle);
             this.ResumeLayout(false);
             this.PerformLayout();
+        }
+
+        private void InitializeFactoryFilter()
+        {
+            bool isFactoryManager = currentUser != null && currentUser.getRole() == DepartmentManagementRole.FactoryManager;
+
+            if (isFactoryManager)
+            {
+                // Factory Manager: always scoped to their own factory, no choice to make
+                selectedFactoryFilter = currentUser.getFactory();
+                lblFactory.Text = "Factory: " + currentUser.getFactory();
+                cmbFactory.Visible = false;
+            }
+            else
+            {
+                // Wing Manager / Deputy Wing Manager: see all factories by default, with the option to narrow down
+                cmbFactory.Items.Add("All Factories");
+                foreach (Factory factory in Enum.GetValues(typeof(Factory)))
+                {
+                    cmbFactory.Items.Add(factory.ToString());
+                }
+                cmbFactory.SelectedIndex = 0;
+            }
+        }
+
+        private void cmbFactory_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (cmbFactory.SelectedIndex <= 0)
+                selectedFactoryFilter = null;
+            else
+                selectedFactoryFilter = (Factory)Enum.Parse(typeof(Factory), cmbFactory.SelectedItem.ToString());
+
+            LoadDailyTotals();
         }
 
         private void LoadDailyTotals()
@@ -93,6 +148,9 @@ namespace PEDIS
             foreach (ProductivityRecord record in Program.ProductivityRecords)
             {
                 if (record.getProductivityDate().Date != selectedDate.Date)
+                    continue;
+
+                if (selectedFactoryFilter.HasValue && record.getFactory() != selectedFactoryFilter.Value)
                     continue;
 
                 WorkOrder workOrder = record.getWorkOrder();

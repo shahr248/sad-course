@@ -48,6 +48,13 @@ namespace PEDIS
         public string getHoldReason() { return this.holdReason; }
         public ProductionOrder getProductionOrder() { return this.productionOrder; }
 
+        public Factory? getFactory()
+        {
+            if (this.productionOrder == null || this.productionOrder.getCustomerCompany() == null)
+                return null;
+            return this.productionOrder.getFactory();
+        }
+
         public void setWorkOrderNumber(string num) { this.workOrderNumber = num; }
         public void setRequiredQuantity(int qty) { this.requiredQuantity = qty; }
         public void setStartDate(DateTime date) { this.startDate = date; }

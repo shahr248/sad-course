@@ -49,6 +49,10 @@ namespace PEDIS
         public Prisoner getPrisoner() { return this.prisoner; }
         public WorkOrder getWorkOrder() { return this.workOrder; }
 
+        // Factory where this production actually happened (via the WorkOrder's ProductionOrder),
+        // not the prisoner's home factory — a prisoner can work across multiple factories.
+        public Factory? getFactory() { return this.workOrder?.getFactory(); }
+
         public void setQuantityProduced(int qty) { this.quantityProduced = qty; }
         public void setWorkHours(decimal? hours) { this.workHours = hours; }
         public void setProductivityType(ProductivityType type) { this.productivityType = type; }
