@@ -78,6 +78,16 @@ namespace PEDIS
             MessageBox.Show(info, "Production Order Details", MessageBoxButtons.OK);
         }
 
+        private void lvOrders_DoubleClick(object sender, EventArgs e)
+        {
+            if (lvOrders.SelectedItems.Count == 0)
+                return;
+
+            ProductionOrder order = (ProductionOrder)lvOrders.SelectedItems[0].Tag;
+            OrderWorkOrdersDialog dialog = new OrderWorkOrdersDialog(order);
+            dialog.ShowDialog();
+        }
+
         private void btnAdd_Click(object sender, EventArgs e)
         {
             AddEditProductionOrderDialog dialog = new AddEditProductionOrderDialog(null);

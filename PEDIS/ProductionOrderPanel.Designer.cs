@@ -46,6 +46,7 @@ namespace PEDIS
             this.lvOrders.View = System.Windows.Forms.View.Details;
             this.lvOrders.BackColor = System.Drawing.Color.White;
             this.lvOrders.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.lvOrders.DoubleClick += new System.EventHandler(this.lvOrders_DoubleClick);
 
             this.lvOrders.Columns.Add("ID", 50);
             this.lvOrders.Columns.Add("Order #", 120);
