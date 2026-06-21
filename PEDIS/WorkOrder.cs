@@ -162,6 +162,16 @@ namespace PEDIS
             return null;
         }
 
+        public static WorkOrder seekByWorkOrderNumber(string number)
+        {
+            foreach (WorkOrder wo in Program.WorkOrders)
+            {
+                if (wo.getWorkOrderNumber() == number)
+                    return wo;
+            }
+            return null;
+        }
+
         // ============================================================================
         // STATE TRANSITION METHODS (4 transitions for WorkOrderStatus)
         // ============================================================================

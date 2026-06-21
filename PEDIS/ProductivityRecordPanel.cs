@@ -8,6 +8,10 @@ namespace PEDIS
         public delegate void BackHandler();
         public event BackHandler onBack;
 
+        private DateTime? filterDate = null;
+        private int? filteredPrisonerId = null;
+        private int? filteredWorkOrderId = null;
+
         public ProductivityRecordPanel()
         {
             InitializeComponent();
@@ -15,22 +19,106 @@ namespace PEDIS
 
         private void ProductivityRecordPanel_Load(object sender, EventArgs e)
         {
-            refreshList();
+            initializeFilters();
+            refreshList(DateTime.Today, null, null);
         }
 
-        private void refreshList()
+        private void initializeFilters()
+        {
+            dtpFilterDate.Value = DateTime.Today;
+
+            cmbFilterPrisoner.Items.Clear();
+            cmbFilterPrisoner.Items.Add("All Prisoners");
+            foreach (Prisoner prisoner in Program.Prisoners)
+            {
+                cmbFilterPrisoner.Items.Add(prisoner.getPrisonerNumber() + " - " + prisoner.getFullName());
+            }
+            cmbFilterPrisoner.SelectedIndex = 0;
+
+            cmbFilterWorkOrder.Items.Clear();
+            cmbFilterWorkOrder.Items.Add("All Work Orders");
+            foreach (WorkOrder workOrder in Program.WorkOrders)
+            {
+                cmbFilterWorkOrder.Items.Add(workOrder.getWorkOrderNumber());
+            }
+            cmbFilterWorkOrder.SelectedIndex = 0;
+        }
+
+        private void refreshList(DateTime? filterDate = null, int? filteredPrisonerId = null, int? filteredWorkOrderId = null)
         {
             lvProductivity.Items.Clear();
+
             foreach (ProductivityRecord productivity in Program.ProductivityRecords)
             {
+                bool dateMatch = filterDate == null || productivity.getProductivityDate().Date == filterDate.Value.Date;
+                bool prisonerMatch = filteredPrisonerId == null || productivity.getPrisonerId() == filteredPrisonerId;
+                bool workOrderMatch = filteredWorkOrderId == null || productivity.getWorkOrderId() == filteredWorkOrderId;
+
+                if (!dateMatch || !prisonerMatch || !workOrderMatch)
+                    continue;
+
                 ListViewItem item = new ListViewItem(productivity.getId().ToString());
-                item.SubItems.Add(productivity.getPrisoner().getFullName());
-                item.SubItems.Add(productivity.getWorkOrder().getWorkOrderNumber());
+                item.SubItems.Add(productivity.getPrisoner()?.getPrisonerNumber() ?? "N/A");
+                item.SubItems.Add(productivity.getPrisoner()?.getFullName() ?? "N/A");
+                item.SubItems.Add(productivity.getWorkOrder()?.getWorkOrderNumber() ?? "N/A");
                 item.SubItems.Add(productivity.getProductivityDate().ToString("yyyy-MM-dd"));
                 item.SubItems.Add(productivity.getQuantityProduced().ToString());
                 item.SubItems.Add(productivity.getProductivityType().ToString());
                 item.Tag = productivity;
                 lvProductivity.Items.Add(item);
+            }
+        }
+
+        private void btnApplyFilters_Click(object sender, EventArgs e)
+        {
+            DateTime selectedDate = dtpFilterDate.Value;
+            int? selectedPrisonerId = null;
+            int? selectedWorkOrderId = null;
+
+            if (cmbFilterPrisoner.SelectedIndex > 0)
+            {
+                string selectedText = cmbFilterPrisoner.SelectedItem.ToString();
+                string[] parts = selectedText.Split(new string[] { " - " }, StringSplitOptions.None);
+                if (parts.Length > 0 && int.TryParse(parts[0], out int prisonerId))
+                {
+                    selectedPrisonerId = prisonerId;
+                }
+            }
+
+            if (cmbFilterWorkOrder.SelectedIndex > 0)
+            {
+                string selectedText = cmbFilterWorkOrder.SelectedItem.ToString();
+                WorkOrder wo = WorkOrder.seekByWorkOrderNumber(selectedText);
+                if (wo != null)
+                {
+                    selectedWorkOrderId = wo.getId();
+                }
+            }
+
+            filterDate = selectedDate;
+            filteredPrisonerId = selectedPrisonerId;
+            filteredWorkOrderId = selectedWorkOrderId;
+            refreshList(filterDate, filteredPrisonerId, filteredWorkOrderId);
+        }
+
+        private void btnClearFilters_Click(object sender, EventArgs e)
+        {
+            dtpFilterDate.Value = DateTime.Today;
+            cmbFilterPrisoner.SelectedIndex = 0;
+            cmbFilterWorkOrder.SelectedIndex = 0;
+            filterDate = null;
+            filteredPrisonerId = null;
+            filteredWorkOrderId = null;
+            refreshList(DateTime.Today, null, null);
+        }
+
+        private void btnDailyTotals_Click(object sender, EventArgs e)
+        {
+            DateTime selectedDate = filterDate ?? DateTime.Today;
+            DailyProductionTotalDialog dialog = new DailyProductionTotalDialog(selectedDate);
+            if (dialog.ShowDialog() == DialogResult.OK)
+            {
+                refreshList(filterDate, filteredPrisonerId, filteredWorkOrderId);
             }
         }
 
@@ -43,12 +131,19 @@ namespace PEDIS
             }
 
             ProductivityRecord productivity = (ProductivityRecord)lvProductivity.SelectedItems[0].Tag;
+            Prisoner prisoner = productivity.getPrisoner();
+            string prisonerInfo = prisoner != null ? prisoner.getFullName() + " (" + prisoner.getPrisonerNumber() + ")" : "N/A";
+
+            WorkOrder workOrder = productivity.getWorkOrder();
+            string workOrderInfo = workOrder != null ? workOrder.getWorkOrderNumber() : "N/A";
+
             string info = "ID: " + productivity.getId() + "\n" +
-                         "Prisoner: " + productivity.getPrisoner().getFullName() + "\n" +
-                         "Work Order #: " + productivity.getWorkOrder().getWorkOrderNumber() + "\n" +
+                         "Prisoner: " + prisonerInfo + "\n" +
+                         "Work Order #: " + workOrderInfo + "\n" +
                          "Date: " + productivity.getProductivityDate().ToString("yyyy-MM-dd") + "\n" +
                          "Units Produced: " + productivity.getQuantityProduced() + "\n" +
-                         "Type: " + productivity.getProductivityType();
+                         "Work Hours: " + (productivity.getWorkHours()?.ToString("F2") ?? "N/A") + "\n" +
+                         "Productivity Type: " + productivity.getProductivityType();
             MessageBox.Show(info, "Productivity Record Details", MessageBoxButtons.OK);
         }
 
@@ -77,14 +172,14 @@ namespace PEDIS
 
             ProductivityRecord productivity = (ProductivityRecord)lvProductivity.SelectedItems[0].Tag;
             DialogResult result = MessageBox.Show(
-                "Are you sure you want to delete productivity record for: " + productivity.getPrisoner().getFullName() + " on " + productivity.getProductivityDate().ToString("yyyy-MM-dd") + "?",
+                "Are you sure you want to delete productivity record for: " + (productivity.getPrisoner()?.getFullName() ?? "Unknown") + " on " + productivity.getProductivityDate().ToString("yyyy-MM-dd") + "?",
                 "Confirm Delete",
                 MessageBoxButtons.YesNo);
 
             if (result == DialogResult.Yes)
             {
                 productivity.delete();
-                refreshList();
+                refreshList(filterDate, filteredPrisonerId, filteredWorkOrderId);
             }
         }
 

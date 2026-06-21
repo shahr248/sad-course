@@ -1,0 +1,183 @@
+using System;
+using System.Collections.Generic;
+using System.Windows.Forms;
+
+namespace PEDIS
+{
+    public class DailyProductionTotalDialog : Form
+    {
+        private DateTime selectedDate;
+        private int? filteredProductId;
+        private ListView lvDailyTotals;
+        private Button btnApplyToOrder;
+        private Button btnClose;
+        private Label lblTitle;
+
+        public DailyProductionTotalDialog(DateTime selectedDate, int? filteredProductId = null)
+        {
+            this.selectedDate = selectedDate;
+            this.filteredProductId = filteredProductId;
+            InitializeComponent();
+            LoadDailyTotals();
+        }
+
+        private void InitializeComponent()
+        {
+            this.lblTitle = new Label();
+            this.lvDailyTotals = new ListView();
+            this.btnApplyToOrder = new Button();
+            this.btnClose = new Button();
+            this.SuspendLayout();
+
+            this.Text = "Daily Production Totals";
+            this.Size = new System.Drawing.Size(600, 400);
+            this.StartPosition = FormStartPosition.CenterParent;
+            this.FormBorderStyle = FormBorderStyle.FixedDialog;
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
+            this.BackColor = System.Drawing.Color.FromArgb(236, 240, 241);
+
+            this.lblTitle.AutoSize = false;
+            this.lblTitle.Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Bold);
+            this.lblTitle.Location = new System.Drawing.Point(20, 15);
+            this.lblTitle.Size = new System.Drawing.Size(550, 30);
+            this.lblTitle.Text = "Daily Production Totals - " + selectedDate.ToString("yyyy-MM-dd");
+            this.lblTitle.ForeColor = System.Drawing.Color.FromArgb(0, 51, 102);
+
+            this.lvDailyTotals.FullRowSelect = true;
+            this.lvDailyTotals.GridLines = true;
+            this.lvDailyTotals.Location = new System.Drawing.Point(20, 50);
+            this.lvDailyTotals.Size = new System.Drawing.Size(550, 270);
+            this.lvDailyTotals.UseCompatibleStateImageBehavior = false;
+            this.lvDailyTotals.View = System.Windows.Forms.View.Details;
+            this.lvDailyTotals.BackColor = System.Drawing.Color.White;
+            this.lvDailyTotals.BorderStyle = BorderStyle.Fixed3D;
+
+            this.lvDailyTotals.Columns.Add("Product Name", 250);
+            this.lvDailyTotals.Columns.Add("Total Units", 150);
+            this.lvDailyTotals.Columns.Add("Work Orders", 150);
+
+            this.btnApplyToOrder.Location = new System.Drawing.Point(20, 330);
+            this.btnApplyToOrder.Size = new System.Drawing.Size(150, 35);
+            this.btnApplyToOrder.Text = "Apply to Order";
+            this.btnApplyToOrder.BackColor = System.Drawing.Color.FromArgb(0, 102, 204);
+            this.btnApplyToOrder.ForeColor = System.Drawing.Color.White;
+            this.btnApplyToOrder.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.btnApplyToOrder.UseVisualStyleBackColor = false;
+            this.btnApplyToOrder.Click += new System.EventHandler(this.btnApplyToOrder_Click);
+
+            this.btnClose.Location = new System.Drawing.Point(420, 330);
+            this.btnClose.Size = new System.Drawing.Size(150, 35);
+            this.btnClose.Text = "Close";
+            this.btnClose.BackColor = System.Drawing.Color.FromArgb(149, 165, 166);
+            this.btnClose.ForeColor = System.Drawing.Color.White;
+            this.btnClose.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.btnClose.UseVisualStyleBackColor = false;
+            this.btnClose.Click += new System.EventHandler(this.btnClose_Click);
+            this.btnClose.DialogResult = DialogResult.OK;
+
+            this.Controls.Add(this.btnClose);
+            this.Controls.Add(this.btnApplyToOrder);
+            this.Controls.Add(this.lvDailyTotals);
+            this.Controls.Add(this.lblTitle);
+            this.ResumeLayout(false);
+            this.PerformLayout();
+        }
+
+        private void LoadDailyTotals()
+        {
+            lvDailyTotals.Items.Clear();
+            Dictionary<int, (string productName, int totalUnits, List<int> workOrderIds)> productTotals =
+                new Dictionary<int, (string, int, List<int>)>();
+
+            foreach (ProductivityRecord record in Program.ProductivityRecords)
+            {
+                if (record.getProductivityDate().Date != selectedDate.Date)
+                    continue;
+
+                WorkOrder workOrder = record.getWorkOrder();
+                if (workOrder == null)
+                    continue;
+
+                ProductionOrder prodOrder = workOrder.getProductionOrder();
+                if (prodOrder == null)
+                    continue;
+
+                Product product = prodOrder.getProduct();
+                if (product == null)
+                    continue;
+
+                int productId = product.getId();
+
+                if (!productTotals.ContainsKey(productId))
+                {
+                    productTotals[productId] = (product.getName(), 0, new List<int>());
+                }
+
+                var (name, total, woIds) = productTotals[productId];
+                total += record.getQuantityProduced();
+                if (!woIds.Contains(workOrder.getId()))
+                    woIds.Add(workOrder.getId());
+                productTotals[productId] = (name, total, woIds);
+            }
+
+            foreach (var kvp in productTotals)
+            {
+                int productId = kvp.Key;
+                var (productName, totalUnits, workOrderIds) = kvp.Value;
+
+                ListViewItem item = new ListViewItem(productName);
+                item.SubItems.Add(totalUnits.ToString());
+                item.SubItems.Add(workOrderIds.Count.ToString());
+                item.Tag = new { productId, totalUnits, workOrderIds };
+                lvDailyTotals.Items.Add(item);
+            }
+        }
+
+        private void btnApplyToOrder_Click(object sender, EventArgs e)
+        {
+            if (lvDailyTotals.SelectedItems.Count == 0)
+            {
+                MessageBox.Show("Please select a product to apply totals", "Selection Required", MessageBoxButtons.OK);
+                return;
+            }
+
+            ListViewItem selectedItem = lvDailyTotals.SelectedItems[0];
+            dynamic tagData = selectedItem.Tag;
+            int productId = tagData.productId;
+            int totalUnits = tagData.totalUnits;
+            List<int> workOrderIds = tagData.workOrderIds;
+
+            int updatedCount = 0;
+            foreach (int workOrderId in workOrderIds)
+            {
+                WorkOrder workOrder = WorkOrder.seekById(workOrderId);
+                if (workOrder == null)
+                    continue;
+
+                ProductionOrder prodOrder = workOrder.getProductionOrder();
+                if (prodOrder == null)
+                    continue;
+
+                int currentCompleted = prodOrder.getCompletedQuantity();
+                prodOrder.setCompletedQuantity(currentCompleted + totalUnits);
+                prodOrder.update();
+                updatedCount++;
+            }
+
+            MessageBox.Show(
+                "Updated " + updatedCount + " order(s) with total " + totalUnits + " units produced",
+                "Success",
+                MessageBoxButtons.OK);
+
+            this.DialogResult = DialogResult.OK;
+            this.Close();
+        }
+
+        private void btnClose_Click(object sender, EventArgs e)
+        {
+            this.DialogResult = DialogResult.OK;
+            this.Close();
+        }
+    }
+}
