@@ -157,7 +157,6 @@ CREATE TABLE AttendanceRecord (
     exit_time TIME NULL,
     created_at DATETIME2 NOT NULL DEFAULT GETUTCDATE(),
     CONSTRAINT CHK_AttendanceRecord_Factory CHECK (factory IN ('MaimonSpices', 'Technosak', 'SewingWorkshop', 'TzitzitWorkshop')),
-    CONSTRAINT UQ_AttendanceRecord_PrisonerDateFactory UNIQUE (prisoner_id, attendance_date, factory),
     CONSTRAINT FK_AttendanceRecord_Prisoner FOREIGN KEY (prisoner_id)
         REFERENCES Prisoner(prisoner_id) ON DELETE NO ACTION ON UPDATE NO ACTION
 );

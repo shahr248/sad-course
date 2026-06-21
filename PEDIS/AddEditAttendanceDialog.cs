@@ -74,8 +74,7 @@ namespace PEDIS
                 }
             }
 
-            // Check for duplicate attendance record (same prisoner on same date) - only in Add mode
-            if (!isEditMode)
+            // Multiple records per date are allowed, as long as their hours don't overlap.
             {
                 string selectedPrisoner = cbPrisoner.SelectedItem.ToString();
                 string[] parts = selectedPrisoner.Split(new string[] { " - " }, StringSplitOptions.None);
@@ -83,12 +82,24 @@ namespace PEDIS
 
                 if (prisoner != null)
                 {
+                    TimeSpan newEntry = chkEntryTime.Checked ? dtpEntryTime.Value.TimeOfDay : TimeSpan.Zero;
+                    TimeSpan newExit = chkExitTime.Checked ? dtpExitTime.Value.TimeOfDay : TimeSpan.FromHours(24);
+
                     foreach (AttendanceRecord record in Program.AttendanceRecords)
                     {
-                        if (record.getPrisonerId() == prisoner.getId() &&
-                            record.getAttendanceDate().Date == dtpAttendanceDate.Value.Date)
+                        if (isEditMode && record == attendanceToEdit)
+                            continue;
+
+                        if (record.getPrisonerId() != prisoner.getId() ||
+                            record.getAttendanceDate().Date != dtpAttendanceDate.Value.Date)
+                            continue;
+
+                        TimeSpan existingEntry = record.getEntryTime() ?? TimeSpan.Zero;
+                        TimeSpan existingExit = record.getExitTime() ?? TimeSpan.FromHours(24);
+
+                        if (newEntry < existingExit && existingEntry < newExit)
                         {
-                            MessageBox.Show("An attendance record already exists for this prisoner on this date.", "Duplicate Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            MessageBox.Show("This prisoner already has an attendance record on this date with overlapping hours.", "Overlap Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                             return false;
                         }
                     }

@@ -25,15 +25,15 @@ namespace PEDIS
 
         private void initializeFilters()
         {
-            dtpFilterDate.Value = DateTime.Today;
+            dtpFilterStartDate.Value = DateTime.Today;
+            dtpFilterEndDate.Value = DateTime.Today;
 
             cmbFilterPrisoner.Items.Clear();
-            cmbFilterPrisoner.Items.Add("All Prisoners");
             foreach (Prisoner prisoner in Program.Prisoners)
             {
                 cmbFilterPrisoner.Items.Add(prisoner.getPrisonerNumber() + " - " + prisoner.getFullName());
             }
-            cmbFilterPrisoner.SelectedIndex = 0;
+            cmbFilterPrisoner.Text = "";
         }
 
         private void refreshList(DateTime? filterStartDate = null, DateTime? filterEndDate = null, int? filteredPrisonerId = null)
@@ -80,34 +80,55 @@ namespace PEDIS
 
         private void btnApplyFilters_Click(object sender, EventArgs e)
         {
-            DateTime selectedDate = dtpFilterDate.Value;
-            int? selectedPrisonerId = null;
-
-            if (cmbFilterPrisoner.SelectedIndex > 0)
+            if (dtpFilterStartDate.Value.Date > dtpFilterEndDate.Value.Date)
             {
-                string selectedText = cmbFilterPrisoner.SelectedItem.ToString();
-                string[] parts = selectedText.Split(new string[] { " - " }, StringSplitOptions.None);
-                if (parts.Length > 0)
-                {
-                    string prisonerNumber = parts[0];
-                    Prisoner foundPrisoner = Prisoner.seekByNumber(prisonerNumber);
-                    if (foundPrisoner != null)
-                    {
-                        selectedPrisonerId = foundPrisoner.getId();
-                    }
-                }
+                MessageBox.Show("Start date must be on or before end date.", "Invalid Date Range", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
             }
 
-            filterStartDate = selectedDate;
-            filterEndDate = selectedDate;
+            int? selectedPrisonerId = null;
+            string searchText = cmbFilterPrisoner.Text.Trim();
+
+            if (!string.IsNullOrEmpty(searchText))
+            {
+                string prisonerNumber = searchText;
+                int dashIndex = searchText.IndexOf(" - ");
+                if (dashIndex >= 0)
+                    prisonerNumber = searchText.Substring(0, dashIndex);
+
+                Prisoner foundPrisoner = Prisoner.seekByNumber(prisonerNumber);
+                if (foundPrisoner == null)
+                {
+                    foreach (Prisoner p in Program.Prisoners)
+                    {
+                        if (p.getPrisonerNumber().StartsWith(prisonerNumber, StringComparison.OrdinalIgnoreCase))
+                        {
+                            foundPrisoner = p;
+                            break;
+                        }
+                    }
+                }
+
+                if (foundPrisoner == null)
+                {
+                    MessageBox.Show("No prisoner found matching \"" + searchText + "\".", "Not Found", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                selectedPrisonerId = foundPrisoner.getId();
+            }
+
+            filterStartDate = dtpFilterStartDate.Value;
+            filterEndDate = dtpFilterEndDate.Value;
             filteredPrisonerId = selectedPrisonerId;
             refreshList(filterStartDate, filterEndDate, filteredPrisonerId);
         }
 
         private void btnClearFilters_Click(object sender, EventArgs e)
         {
-            dtpFilterDate.Value = DateTime.Today;
-            cmbFilterPrisoner.SelectedIndex = 0;
+            dtpFilterStartDate.Value = DateTime.Today;
+            dtpFilterEndDate.Value = DateTime.Today;
+            cmbFilterPrisoner.Text = "";
             filterStartDate = null;
             filterEndDate = null;
             filteredPrisonerId = null;
