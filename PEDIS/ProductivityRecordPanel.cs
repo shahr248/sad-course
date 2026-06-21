@@ -196,7 +196,7 @@ namespace PEDIS
             if (result == DialogResult.Yes)
             {
                 productivity.delete();
-                refreshList(filterDate, filteredPrisonerId, filteredWorkOrderId);
+                refreshList(filterStartDate, filterEndDate, filteredPrisonerId, filteredWorkOrderId);
             }
         }
 
