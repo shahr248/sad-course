@@ -128,9 +128,10 @@ namespace PEDIS
             this.btnReports.Click += new System.EventHandler(this.btnReports_Click);
 
             // btnLogout
-            this.btnLogout.Location = new System.Drawing.Point(20, 700);
+            this.btnLogout.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+            this.btnLogout.Location = new System.Drawing.Point(844, 20);
             this.btnLogout.Name = "btnLogout";
-            this.btnLogout.Size = new System.Drawing.Size(120, 40);
+            this.btnLogout.Size = new System.Drawing.Size(160, 40);
             this.btnLogout.TabIndex = 8;
             this.btnLogout.Text = "🚪 Logout";
             this.btnLogout.BackColor = System.Drawing.Color.FromArgb(192, 57, 43);
