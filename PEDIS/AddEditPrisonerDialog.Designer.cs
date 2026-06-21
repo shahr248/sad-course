@@ -7,6 +7,8 @@ namespace PEDIS
         private System.Windows.Forms.TextBox txtPrisonerNumber;
         private System.Windows.Forms.Label lblFullName;
         private System.Windows.Forms.TextBox txtFullName;
+        private System.Windows.Forms.Label lblDepartment;
+        private System.Windows.Forms.TextBox txtDepartment;
         private System.Windows.Forms.Label lblFactory;
         private System.Windows.Forms.ComboBox cbFactory;
         private System.Windows.Forms.Label lblActivityStatus;
@@ -34,6 +36,8 @@ namespace PEDIS
             this.txtPrisonerNumber = new System.Windows.Forms.TextBox();
             this.lblFullName = new System.Windows.Forms.Label();
             this.txtFullName = new System.Windows.Forms.TextBox();
+            this.lblDepartment = new System.Windows.Forms.Label();
+            this.txtDepartment = new System.Windows.Forms.TextBox();
             this.lblFactory = new System.Windows.Forms.Label();
             this.cbFactory = new System.Windows.Forms.ComboBox();
             this.lblActivityStatus = new System.Windows.Forms.Label();
@@ -69,61 +73,72 @@ namespace PEDIS
             this.txtFullName.Location = new System.Drawing.Point(150, 60);
             this.txtFullName.Size = new System.Drawing.Size(300, 25);
 
+            // lblDepartment
+            this.lblDepartment.AutoSize = true;
+            this.lblDepartment.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.lblDepartment.Location = new System.Drawing.Point(20, 100);
+            this.lblDepartment.Text = "Department:";
+
+            // txtDepartment
+            this.txtDepartment.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.txtDepartment.Location = new System.Drawing.Point(150, 100);
+            this.txtDepartment.Size = new System.Drawing.Size(300, 25);
+
             // lblFactory
             this.lblFactory.AutoSize = true;
             this.lblFactory.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.lblFactory.Location = new System.Drawing.Point(20, 100);
+            this.lblFactory.Location = new System.Drawing.Point(20, 140);
             this.lblFactory.Text = "Factory:";
 
             // cbFactory
             this.cbFactory.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.cbFactory.Location = new System.Drawing.Point(150, 100);
+            this.cbFactory.Location = new System.Drawing.Point(150, 140);
             this.cbFactory.Size = new System.Drawing.Size(300, 25);
 
             // lblActivityStatus
             this.lblActivityStatus.AutoSize = true;
             this.lblActivityStatus.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.lblActivityStatus.Location = new System.Drawing.Point(20, 140);
+            this.lblActivityStatus.Location = new System.Drawing.Point(20, 180);
             this.lblActivityStatus.Text = "Activity Status:";
 
             // cbActivityStatus
             this.cbActivityStatus.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.cbActivityStatus.Location = new System.Drawing.Point(150, 140);
+            this.cbActivityStatus.Location = new System.Drawing.Point(150, 180);
             this.cbActivityStatus.Size = new System.Drawing.Size(300, 25);
 
             // lblRole
             this.lblRole.AutoSize = true;
             this.lblRole.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.lblRole.Location = new System.Drawing.Point(20, 180);
+            this.lblRole.Location = new System.Drawing.Point(20, 220);
             this.lblRole.Text = "Role:";
 
             // cbRole
             this.cbRole.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.cbRole.Location = new System.Drawing.Point(150, 180);
+            this.cbRole.Location = new System.Drawing.Point(150, 220);
             this.cbRole.Size = new System.Drawing.Size(300, 25);
 
             // lblHourlyRate
             this.lblHourlyRate.AutoSize = true;
             this.lblHourlyRate.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.lblHourlyRate.Location = new System.Drawing.Point(20, 220);
+            this.lblHourlyRate.Location = new System.Drawing.Point(20, 260);
             this.lblHourlyRate.Text = "Hourly Rate:";
 
             // txtHourlyRate
             this.txtHourlyRate.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.txtHourlyRate.Location = new System.Drawing.Point(150, 220);
+            this.txtHourlyRate.Location = new System.Drawing.Point(150, 260);
             this.txtHourlyRate.Size = new System.Drawing.Size(300, 25);
             this.txtHourlyRate.Text = "0.00";
 
             // chkQualified
             this.chkQualified.AutoSize = true;
             this.chkQualified.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.chkQualified.Location = new System.Drawing.Point(150, 260);
+            this.chkQualified.Location = new System.Drawing.Point(150, 300);
             this.chkQualified.Text = "Qualified";
             this.chkQualified.Size = new System.Drawing.Size(100, 20);
 
             // btnSave
             this.btnSave.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.btnSave.Location = new System.Drawing.Point(150, 310);
+            this.btnSave.Location = new System.Drawing.Point(150, 350);
             this.btnSave.Size = new System.Drawing.Size(100, 35);
             this.btnSave.Text = "Save";
             this.btnSave.BackColor = System.Drawing.Color.FromArgb(46, 204, 113);
@@ -133,7 +148,7 @@ namespace PEDIS
 
             // btnCancel
             this.btnCancel.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.btnCancel.Location = new System.Drawing.Point(260, 310);
+            this.btnCancel.Location = new System.Drawing.Point(260, 350);
             this.btnCancel.Size = new System.Drawing.Size(100, 35);
             this.btnCancel.Text = "Cancel";
             this.btnCancel.BackColor = System.Drawing.Color.FromArgb(149, 165, 166);
@@ -145,7 +160,7 @@ namespace PEDIS
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(236, 240, 241);
-            this.ClientSize = new System.Drawing.Size(500, 400);
+            this.ClientSize = new System.Drawing.Size(500, 440);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnSave);
             this.Controls.Add(this.chkQualified);
@@ -157,6 +172,8 @@ namespace PEDIS
             this.Controls.Add(this.lblActivityStatus);
             this.Controls.Add(this.cbFactory);
             this.Controls.Add(this.lblFactory);
+            this.Controls.Add(this.txtDepartment);
+            this.Controls.Add(this.lblDepartment);
             this.Controls.Add(this.txtFullName);
             this.Controls.Add(this.lblFullName);
             this.Controls.Add(this.txtPrisonerNumber);

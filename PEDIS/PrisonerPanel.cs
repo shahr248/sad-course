@@ -8,7 +8,10 @@ namespace PEDIS
         public delegate void BackHandler();
         public event BackHandler onBack;
 
+        private enum PrisonerFilterMode { All, ActiveInmates, PresentToday, ExpiringSafetyTraining }
+
         private DepartmentManagement currentUser;
+        private PrisonerFilterMode currentFilter = PrisonerFilterMode.All;
 
         public PrisonerPanel()
         {
@@ -25,6 +28,23 @@ namespace PEDIS
             refreshList();
         }
 
+        private bool matchesFilter(Prisoner prisoner)
+        {
+            switch (currentFilter)
+            {
+                case PrisonerFilterMode.ActiveInmates:
+                    return prisoner.getActivityStatus() != PrisonerActivityStatus.Archived;
+                case PrisonerFilterMode.PresentToday:
+                    return Program.AttendanceRecords.Exists(a =>
+                        a.getPrisonerId() == prisoner.getId() && a.getAttendanceDate().Date == DateTime.Today);
+                case PrisonerFilterMode.ExpiringSafetyTraining:
+                    return prisoner.getSafetyTrainingValidity().HasValue &&
+                        prisoner.getSafetyTrainingValidity().Value.Date <= DateTime.Today.AddMonths(1);
+                default:
+                    return true;
+            }
+        }
+
         private void refreshList()
         {
             lvPrisoners.Items.Clear();
@@ -37,10 +57,13 @@ namespace PEDIS
                         continue;
                 }
 
+                if (!matchesFilter(prisoner))
+                    continue;
+
                 ListViewItem item = new ListViewItem(prisoner.getPrisonerNumber());
                 item.SubItems.Add(prisoner.getFullName());
                 item.SubItems.Add(prisoner.getFactory()?.ToString() ?? "");
-                item.SubItems.Add(prisoner.getDepartment()?.ToString() ?? "");
+                item.SubItems.Add(prisoner.getDepartment().ToString());
                 item.SubItems.Add(prisoner.getActivityStatus().ToString());
                 item.SubItems.Add(prisoner.getRole()?.ToString() ?? "");
                 item.SubItems.Add(prisoner.getHourlyRate().ToString("C"));
@@ -51,6 +74,30 @@ namespace PEDIS
                 item.Tag = prisoner;
                 lvPrisoners.Items.Add(item);
             }
+        }
+
+        private void btnFilterAll_Click(object sender, EventArgs e)
+        {
+            currentFilter = PrisonerFilterMode.All;
+            refreshList();
+        }
+
+        private void btnFilterActive_Click(object sender, EventArgs e)
+        {
+            currentFilter = PrisonerFilterMode.ActiveInmates;
+            refreshList();
+        }
+
+        private void btnFilterPresentToday_Click(object sender, EventArgs e)
+        {
+            currentFilter = PrisonerFilterMode.PresentToday;
+            refreshList();
+        }
+
+        private void btnFilterExpiringSafety_Click(object sender, EventArgs e)
+        {
+            currentFilter = PrisonerFilterMode.ExpiringSafetyTraining;
+            refreshList();
         }
 
         private void btnView_Click(object sender, EventArgs e)

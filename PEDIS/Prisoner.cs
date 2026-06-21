@@ -10,7 +10,7 @@ namespace PEDIS
         private string prisonerNumber;
         private string fullName;
         private Factory? factory;
-        private int? department;
+        private int department;
         private PrisonerActivityStatus activityStatus;
         private PrisonerRole? role;
         private DateTime? safetyTrainingValidity;
@@ -22,7 +22,7 @@ namespace PEDIS
         private List<AttendanceRecord> attendanceRecords;
         private List<ProductivityRecord> productivityRecords;
 
-        public Prisoner(int id, string prisonerNum, string fullName, Factory? factory, int? dept, PrisonerActivityStatus status, 
+        public Prisoner(int id, string prisonerNum, string fullName, Factory? factory, int dept, PrisonerActivityStatus status,
                        PrisonerRole? role, DateTime? safetyTrain, DateTime? workStart, DateTime? release, 
                        bool qualified, bool sabbat, decimal hourly, bool isNew)
         {
@@ -50,7 +50,7 @@ namespace PEDIS
         public string getPrisonerNumber() { return this.prisonerNumber; }
         public string getFullName() { return this.fullName; }
         public Factory? getFactory() { return this.factory; }
-        public int? getDepartment() { return this.department; }
+        public int getDepartment() { return this.department; }
         public PrisonerActivityStatus getActivityStatus() { return this.activityStatus; }
         public PrisonerRole? getRole() { return this.role; }
         public DateTime? getSafetyTrainingValidity() { return this.safetyTrainingValidity; }
@@ -62,7 +62,7 @@ namespace PEDIS
 
         public void setFullName(string name) { this.fullName = name; }
         public void setFactory(Factory? factory) { this.factory = factory; }
-        public void setDepartment(int? dept) { this.department = dept; }
+        public void setDepartment(int dept) { this.department = dept; }
         public void setActivityStatus(PrisonerActivityStatus status) { this.activityStatus = status; }
         public void setRole(PrisonerRole? role) { this.role = role; }
         public void setSafetyTrainingValidity(DateTime? date) { this.safetyTrainingValidity = date; }
@@ -120,7 +120,7 @@ namespace PEDIS
             cmd.Parameters.AddWithValue("@prisoner_number", this.prisonerNumber);
             cmd.Parameters.AddWithValue("@full_name", this.fullName);
             cmd.Parameters.AddWithValue("@factory", this.factory.HasValue ? EnumHelpers.ToDbString(this.factory.Value) : (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@department", this.department ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@department", this.department);
             cmd.Parameters.AddWithValue("@activity_status", EnumHelpers.ToDbString(this.activityStatus));
             cmd.Parameters.AddWithValue("@role", this.role.HasValue ? EnumHelpers.ToDbString(this.role.Value) : (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@safety_training_validity", this.safetyTrainingValidity ?? (object)DBNull.Value);
@@ -141,7 +141,7 @@ namespace PEDIS
             cmd.Parameters.AddWithValue("@prisoner_number", this.prisonerNumber);
             cmd.Parameters.AddWithValue("@full_name", this.fullName);
             cmd.Parameters.AddWithValue("@factory", this.factory.HasValue ? EnumHelpers.ToDbString(this.factory.Value) : (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@department", this.department ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@department", this.department);
             cmd.Parameters.AddWithValue("@activity_status", EnumHelpers.ToDbString(this.activityStatus));
             cmd.Parameters.AddWithValue("@role", this.role.HasValue ? EnumHelpers.ToDbString(this.role.Value) : (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@safety_training_validity", this.safetyTrainingValidity ?? (object)DBNull.Value);
@@ -179,7 +179,7 @@ namespace PEDIS
                 string prisonerNum = reader.GetValue(1).ToString();
                 string fullName = reader.GetValue(2).ToString();
                 Factory? factory = reader.IsDBNull(3) ? null : EnumHelpers.FactoryFromDb(reader.GetValue(3).ToString());
-                int? dept = reader.IsDBNull(4) ? null : Convert.ToInt32(reader.GetValue(4));
+                int dept = Convert.ToInt32(reader.GetValue(4));
                 PrisonerActivityStatus status = EnumHelpers.ActivityStatusFromDb(reader.GetValue(5).ToString());
                 PrisonerRole? role = reader.IsDBNull(6) ? null : EnumHelpers.PrisonerRoleFromDb(reader.GetValue(6).ToString());
                 DateTime? safetyTrain = reader.IsDBNull(7) ? null : Convert.ToDateTime(reader.GetValue(7));

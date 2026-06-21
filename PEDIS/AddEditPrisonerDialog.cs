@@ -38,6 +38,7 @@ namespace PEDIS
 
             txtPrisonerNumber.Text = prisoner.getPrisonerNumber();
             txtFullName.Text = prisoner.getFullName();
+            txtDepartment.Text = prisoner.getDepartment().ToString();
 
             // Set factory (or "Unassigned" if null)
             if (prisoner.getFactory().HasValue)
@@ -81,6 +82,12 @@ namespace PEDIS
             if (string.IsNullOrWhiteSpace(txtFullName.Text))
             {
                 MessageBox.Show("Please enter a full name.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return false;
+            }
+
+            if (!int.TryParse(txtDepartment.Text, out int department) || department <= 0)
+            {
+                MessageBox.Show("Please enter a valid department (positive number). This is the inmate's home wing/department, independent of the employment department.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return false;
             }
 
@@ -137,6 +144,7 @@ namespace PEDIS
                     }
 
                     prisonerToEdit.setFullName(txtFullName.Text);
+                    prisonerToEdit.setDepartment(int.Parse(txtDepartment.Text));
                     prisonerToEdit.setFactory(selectedFactory);
                     prisonerToEdit.setActivityStatus((PrisonerActivityStatus)cbActivityStatus.SelectedItem);
                     prisonerToEdit.setRole(selectedRole);
@@ -176,7 +184,7 @@ namespace PEDIS
                         txtPrisonerNumber.Text,
                         txtFullName.Text,
                         selectedFactory,
-                        null,
+                        int.Parse(txtDepartment.Text),
                         (PrisonerActivityStatus)cbActivityStatus.SelectedItem,
                         selectedRole,
                         null,
