@@ -26,8 +26,8 @@ namespace PEDIS
                 ListViewItem item = new ListViewItem(attendance.getId().ToString());
                 item.SubItems.Add(attendance.getPrisoner().getFullName());
                 item.SubItems.Add(attendance.getAttendanceDate().ToString("yyyy-MM-dd"));
-                item.SubItems.Add(attendance.getEntryTime().ToString("HH:mm"));
-                item.SubItems.Add(attendance.getExitTime().ToString("HH:mm"));
+                item.SubItems.Add(attendance.getEntryTime()?.ToString() ?? "");
+                item.SubItems.Add(attendance.getExitTime()?.ToString() ?? "");
                 item.Tag = attendance;
                 lvAttendance.Items.Add(item);
             }
@@ -45,8 +45,8 @@ namespace PEDIS
             string info = "ID: " + attendance.getId() + "\n" +
                          "Prisoner: " + attendance.getPrisoner().getFullName() + "\n" +
                          "Date: " + attendance.getAttendanceDate().ToString("yyyy-MM-dd") + "\n" +
-                         "Time In: " + attendance.getEntryTime().ToString("HH:mm") + "\n" +
-                         "Time Out: " + attendance.getExitTime().ToString("HH:mm");
+                         "Time In: " + (attendance.getEntryTime()?.ToString() ?? "") + "\n" +
+                         "Time Out: " + (attendance.getExitTime()?.ToString() ?? "");
             MessageBox.Show(info, "Attendance Record Details", MessageBoxButtons.OK);
         }
 
