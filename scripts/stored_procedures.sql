@@ -4,13 +4,6 @@ GO
 -- ============================================================================
 -- STORED PROCEDURES - CRUD Operations for PEDIS Tables
 -- ============================================================================
--- Pattern: sp_<entity>_<operation>
--- - create: INSERT (PK as first parameter, no SCOPE_IDENTITY)
--- - update: UPDATE by PK
--- - delete: DELETE by PK
--- - get_all: SELECT all rows
--- - get_by_id: SELECT single row by PK
--- ============================================================================
 
 -- ============================================================================
 -- EmploymentDepartment CRUD
@@ -297,13 +290,12 @@ END;
 GO
 
 -- ============================================================================
--- Prisoner CRUD
+-- Prisoner CRUD (Updated: removed prisoner_name, changed min_salary to hourly_rate)
 -- ============================================================================
 
 CREATE PROCEDURE sp_Prisoner_create
     @prisoner_id INT,
     @prisoner_number NVARCHAR(50),
-    @prisoner_name NVARCHAR(50) = NULL,
     @full_name NVARCHAR(50),
     @factory NVARCHAR(30) = NULL,
     @department NVARCHAR(50) = NULL,
@@ -314,23 +306,22 @@ CREATE PROCEDURE sp_Prisoner_create
     @release_date DATE = NULL,
     @qualified BIT = 0,
     @shabbat_keeping BIT = 0,
-    @min_salary DECIMAL(10,2) = NULL
+    @hourly_rate DECIMAL(10,2) = 14.70
 AS
 BEGIN
     SET NOCOUNT ON;
     INSERT INTO Prisoner
-        (prisoner_id, prisoner_number, prisoner_name, full_name, factory, department, activity_status, role,
-         safety_training_validity, work_start_date, release_date, qualified, shabbat_keeping, min_salary, created_at)
+        (prisoner_id, prisoner_number, full_name, factory, department, activity_status, role,
+         safety_training_validity, work_start_date, release_date, qualified, shabbat_keeping, hourly_rate, created_at)
     VALUES
-        (@prisoner_id, @prisoner_number, @prisoner_name, @full_name, @factory, @department, @activity_status, @role,
-         @safety_training_validity, @work_start_date, @release_date, @qualified, @shabbat_keeping, @min_salary, GETUTCDATE());
+        (@prisoner_id, @prisoner_number, @full_name, @factory, @department, @activity_status, @role,
+         @safety_training_validity, @work_start_date, @release_date, @qualified, @shabbat_keeping, @hourly_rate, GETUTCDATE());
 END;
 GO
 
 CREATE PROCEDURE sp_Prisoner_update
     @prisoner_id INT,
     @prisoner_number NVARCHAR(50),
-    @prisoner_name NVARCHAR(50) = NULL,
     @full_name NVARCHAR(50),
     @factory NVARCHAR(30) = NULL,
     @department NVARCHAR(50) = NULL,
@@ -341,13 +332,12 @@ CREATE PROCEDURE sp_Prisoner_update
     @release_date DATE = NULL,
     @qualified BIT = 0,
     @shabbat_keeping BIT = 0,
-    @min_salary DECIMAL(10,2) = NULL
+    @hourly_rate DECIMAL(10,2) = 14.70
 AS
 BEGIN
     SET NOCOUNT ON;
     UPDATE Prisoner
     SET prisoner_number = @prisoner_number,
-        prisoner_name = @prisoner_name,
         full_name = @full_name,
         factory = @factory,
         department = @department,
@@ -358,7 +348,7 @@ BEGIN
         release_date = @release_date,
         qualified = @qualified,
         shabbat_keeping = @shabbat_keeping,
-        min_salary = @min_salary,
+        hourly_rate = @hourly_rate,
         modified_at = GETUTCDATE()
     WHERE prisoner_id = @prisoner_id;
 END;
@@ -465,7 +455,7 @@ END;
 GO
 
 -- ============================================================================
--- ProductionOrder CRUD
+-- ProductionOrder CRUD (Updated: added completed_quantity, contract_id now NOT NULL)
 -- ============================================================================
 
 CREATE PROCEDURE sp_ProductionOrder_create
@@ -473,8 +463,9 @@ CREATE PROCEDURE sp_ProductionOrder_create
     @order_number NVARCHAR(50),
     @customer_company_id INT,
     @product_id INT,
-    @contract_id INT = NULL,
+    @contract_id INT,
     @quantity INT,
+    @completed_quantity INT = 0,
     @submission_date DATE,
     @delivery_deadline DATE,
     @order_status NVARCHAR(50)
@@ -482,9 +473,9 @@ AS
 BEGIN
     SET NOCOUNT ON;
     INSERT INTO ProductionOrder
-        (production_order_id, order_number, customer_company_id, product_id, contract_id, quantity, submission_date, delivery_deadline, order_status, created_at)
+        (production_order_id, order_number, customer_company_id, product_id, contract_id, quantity, completed_quantity, submission_date, delivery_deadline, order_status, created_at)
     VALUES
-        (@production_order_id, @order_number, @customer_company_id, @product_id, @contract_id, @quantity, @submission_date, @delivery_deadline, @order_status, GETUTCDATE());
+        (@production_order_id, @order_number, @customer_company_id, @product_id, @contract_id, @quantity, @completed_quantity, @submission_date, @delivery_deadline, @order_status, GETUTCDATE());
 END;
 GO
 
@@ -493,8 +484,9 @@ CREATE PROCEDURE sp_ProductionOrder_update
     @order_number NVARCHAR(50),
     @customer_company_id INT,
     @product_id INT,
-    @contract_id INT = NULL,
+    @contract_id INT,
     @quantity INT,
+    @completed_quantity INT = 0,
     @submission_date DATE,
     @delivery_deadline DATE,
     @order_status NVARCHAR(50)
@@ -507,6 +499,7 @@ BEGIN
         product_id = @product_id,
         contract_id = @contract_id,
         quantity = @quantity,
+        completed_quantity = @completed_quantity,
         submission_date = @submission_date,
         delivery_deadline = @delivery_deadline,
         order_status = @order_status,
@@ -542,7 +535,7 @@ END;
 GO
 
 -- ============================================================================
--- WorkOrder CRUD
+-- WorkOrder CRUD (Updated: removed completed_quantity)
 -- ============================================================================
 
 CREATE PROCEDURE sp_WorkOrder_create
@@ -550,7 +543,6 @@ CREATE PROCEDURE sp_WorkOrder_create
     @work_order_number NVARCHAR(50),
     @production_order_id INT,
     @required_quantity INT,
-    @completed_quantity INT = 0,
     @start_date DATE,
     @deadline DATE,
     @factory NVARCHAR(30),
@@ -560,9 +552,9 @@ AS
 BEGIN
     SET NOCOUNT ON;
     INSERT INTO WorkOrder
-        (work_order_id, work_order_number, production_order_id, required_quantity, completed_quantity, start_date, deadline, factory, status, hold_reason, created_at)
+        (work_order_id, work_order_number, production_order_id, required_quantity, start_date, deadline, factory, status, hold_reason, created_at)
     VALUES
-        (@work_order_id, @work_order_number, @production_order_id, @required_quantity, @completed_quantity, @start_date, @deadline, @factory, @status, @hold_reason, GETUTCDATE());
+        (@work_order_id, @work_order_number, @production_order_id, @required_quantity, @start_date, @deadline, @factory, @status, @hold_reason, GETUTCDATE());
 END;
 GO
 
@@ -571,7 +563,6 @@ CREATE PROCEDURE sp_WorkOrder_update
     @work_order_number NVARCHAR(50),
     @production_order_id INT,
     @required_quantity INT,
-    @completed_quantity INT = 0,
     @start_date DATE,
     @deadline DATE,
     @factory NVARCHAR(30),
@@ -584,7 +575,6 @@ BEGIN
     SET work_order_number = @work_order_number,
         production_order_id = @production_order_id,
         required_quantity = @required_quantity,
-        completed_quantity = @completed_quantity,
         start_date = @start_date,
         deadline = @deadline,
         factory = @factory,

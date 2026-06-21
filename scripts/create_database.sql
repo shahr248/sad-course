@@ -64,7 +64,6 @@ CREATE TABLE DepartmentManagement (
 CREATE TABLE Prisoner (
     prisoner_id INT NOT NULL PRIMARY KEY,
     prisoner_number NVARCHAR(50) NOT NULL UNIQUE,
-    prisoner_name NVARCHAR(50),
     full_name NVARCHAR(50) NOT NULL,
     factory NVARCHAR(30) NULL,
     department NVARCHAR(50),
@@ -75,11 +74,12 @@ CREATE TABLE Prisoner (
     release_date DATE,
     qualified BIT DEFAULT 0,
     shabbat_keeping BIT DEFAULT 0,
-    min_salary DECIMAL(10,2),
+    hourly_rate DECIMAL(10,2) NOT NULL DEFAULT 14.70,
     created_at DATETIME2 NOT NULL DEFAULT GETUTCDATE(),
     modified_at DATETIME2 NULL,
     CONSTRAINT CHK_Prisoner_Factory CHECK (factory IS NULL OR factory IN ('MaimonSpices', 'Technosak', 'SewingWorkshop', 'TzitzitWorkshop')),
-    CONSTRAINT CHK_Prisoner_ActivityStatus CHECK (activity_status IN ('pendingPrisonAdministrationApproval', 'pendingDepartmentManagerApproval', 'pendingPlacement', 'idle', 'onShiftWorking', 'waitingForMaterials', 'inProfessionalTraining', 'inSafetyTraining', 'temporarilyUnavailable', 'archived'))
+    CONSTRAINT CHK_Prisoner_ActivityStatus CHECK (activity_status IN ('pendingPrisonAdministrationApproval', 'pendingDepartmentManagerApproval', 'pendingPlacement', 'idle', 'onShiftWorking', 'waitingForMaterials', 'inProfessionalTraining', 'inSafetyTraining', 'temporarilyUnavailable', 'archived')),
+    CONSTRAINT CHK_Prisoner_Role CHECK (role IS NULL OR role IN ('supervisor', 'general'))
 );
 
 CREATE TABLE Contract (
@@ -109,8 +109,9 @@ CREATE TABLE ProductionOrder (
     order_number NVARCHAR(50) NOT NULL UNIQUE,
     customer_company_id INT NOT NULL,
     product_id INT NOT NULL,
-    contract_id INT NULL,
+    contract_id INT NOT NULL,
     quantity INT NOT NULL,
+    completed_quantity INT NOT NULL DEFAULT 0,
     submission_date DATE NOT NULL,
     delivery_deadline DATE NOT NULL,
     order_status NVARCHAR(50) NOT NULL,
@@ -130,7 +131,6 @@ CREATE TABLE WorkOrder (
     work_order_number NVARCHAR(50) NOT NULL UNIQUE,
     production_order_id INT NOT NULL,
     required_quantity INT NOT NULL,
-    completed_quantity INT NOT NULL DEFAULT 0,
     start_date DATE NOT NULL,
     deadline DATE NOT NULL,
     factory NVARCHAR(30) NOT NULL,

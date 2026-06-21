@@ -1,7 +1,7 @@
 USE sadcourse3;
 
 -- ============================================================================
--- SEED DATA - PEDIS Test Database
+-- SEED DATA - PEDIS Test Database (Updated: Male prisoners only, hourly rates, role constraints)
 -- ============================================================================
 -- Load Order: Base entities → Core entities → Orders → Transactional records
 -- FK references ensure no orphans
@@ -230,126 +230,118 @@ EXEC sp_DepartmentManagement_create
     @employment_department_id = 2;
 
 -- ============================================================================
--- 5. Prisoner (15 rows) - Inmates in Employment Program
+-- 5. Prisoner (15 rows) - Male inmates in Employment Program
 -- ============================================================================
 
 EXEC sp_Prisoner_create
     @prisoner_id = 1,
     @prisoner_number = 'P123456',
-    @prisoner_name = 'Inmate A',
-    @full_name = 'David Moshe Cohen',
+    @full_name = 'Benjamin Hoffman',
     @factory = 'MaimonSpices',
     @department = 'Grinding',
     @activity_status = 'onShiftWorking',
-    @role = 'Spice Grinder',
+    @role = 'supervisor',
     @safety_training_validity = '2027-06-20',
     @work_start_date = '2025-06-20',
     @release_date = '2028-12-31',
     @qualified = 1,
     @shabbat_keeping = 0,
-    @min_salary = 2500.00;
+    @hourly_rate = 15.50;
 
 EXEC sp_Prisoner_create
     @prisoner_id = 2,
     @prisoner_number = 'P123457',
-    @prisoner_name = 'Inmate B',
-    @full_name = 'Rachel Leah Levi',
+    @full_name = 'Noam Tzur',
     @factory = 'Technosak',
     @department = 'Molding',
     @activity_status = 'onShiftWorking',
-    @role = 'Plastic Molder',
+    @role = 'general',
     @safety_training_validity = '2027-03-15',
     @work_start_date = '2025-03-15',
     @release_date = '2027-06-30',
     @qualified = 1,
     @shabbat_keeping = 1,
-    @min_salary = 2300.00;
+    @hourly_rate = 14.70;
 
 EXEC sp_Prisoner_create
     @prisoner_id = 3,
     @prisoner_number = 'P123458',
-    @prisoner_name = 'Inmate C',
-    @full_name = 'Yosi Mordecai Gaber',
+    @full_name = 'Erez Nir',
     @factory = 'SewingWorkshop',
     @department = 'Sewing',
     @activity_status = 'inSafetyTraining',
-    @role = 'Textile Operator',
+    @role = NULL,
     @safety_training_validity = NULL,
     @work_start_date = '2026-06-01',
     @release_date = '2029-01-15',
     @qualified = 0,
     @shabbat_keeping = 0,
-    @min_salary = 2000.00;
+    @hourly_rate = 14.70;
 
 EXEC sp_Prisoner_create
     @prisoner_id = 4,
     @prisoner_number = 'P123459',
-    @prisoner_name = 'Inmate D',
-    @full_name = 'Ariel Benjamin Rotman',
+    @full_name = 'Gideon Moran',
     @factory = 'TzitzitWorkshop',
     @department = 'Tzitzit Assembly',
     @activity_status = 'onShiftWorking',
-    @role = 'Tzitzit Assembler',
+    @role = 'general',
     @safety_training_validity = '2026-12-01',
     @work_start_date = '2025-12-01',
     @release_date = '2026-09-30',
     @qualified = 1,
     @shabbat_keeping = 1,
-    @min_salary = 2100.00;
+    @hourly_rate = 15.00;
 
 EXEC sp_Prisoner_create
     @prisoner_id = 5,
     @prisoner_number = 'P123460',
-    @prisoner_name = 'Inmate E',
-    @full_name = 'Shlomo Kalman Ravitz',
+    @full_name = 'Hanan Zalman',
     @factory = 'MaimonSpices',
     @department = 'Packaging',
     @activity_status = 'waitingForMaterials',
-    @role = 'Packager',
+    @role = 'general',
     @safety_training_validity = '2027-09-10',
     @work_start_date = '2025-09-10',
     @release_date = '2030-03-20',
     @qualified = 1,
     @shabbat_keeping = 0,
-    @min_salary = 2200.00;
+    @hourly_rate = 14.70;
 
 EXEC sp_Prisoner_create
     @prisoner_id = 6,
     @prisoner_number = 'P123461',
-    @prisoner_name = 'Inmate F',
-    @full_name = 'Avi Shaul Kaplan',
+    @full_name = 'Ilan Fishel',
     @factory = 'Technosak',
     @department = 'Quality Control',
     @activity_status = 'onShiftWorking',
-    @role = 'QC Inspector',
+    @role = 'supervisor',
     @safety_training_validity = '2027-05-15',
     @work_start_date = '2025-05-15',
     @release_date = '2028-08-10',
     @qualified = 1,
     @shabbat_keeping = 1,
-    @min_salary = 2600.00;
+    @hourly_rate = 16.00;
 
 EXEC sp_Prisoner_create
     @prisoner_id = 7,
     @prisoner_number = 'P123462',
-    @prisoner_name = 'Inmate G',
-    @full_name = 'Sarah Miriam Stern',
+    @full_name = 'Jaffe Reuven',
     @factory = 'SewingWorkshop',
     @department = 'Cutting',
     @activity_status = 'inProfessionalTraining',
-    @role = 'Cutter',
+    @role = NULL,
     @safety_training_validity = '2027-02-28',
     @work_start_date = '2025-02-28',
     @release_date = '2027-11-30',
     @qualified = 0,
     @shabbat_keeping = 0,
-    @min_salary = 2150.00;
+    @hourly_rate = 14.70;
 
 EXEC sp_Prisoner_create
     @prisoner_id = 8,
     @prisoner_number = 'P123463',
-    @prisoner_name = 'Inmate H',
-    @full_name = 'Moshe Netanel Rosen',
+    @full_name = 'Kfir Netanel',
     @factory = NULL,
     @department = NULL,
     @activity_status = 'pendingPlacement',
@@ -359,29 +351,27 @@ EXEC sp_Prisoner_create
     @release_date = '2025-12-15',
     @qualified = 0,
     @shabbat_keeping = 0,
-    @min_salary = NULL;
+    @hourly_rate = 14.70;
 
 EXEC sp_Prisoner_create
     @prisoner_id = 9,
     @prisoner_number = 'P123464',
-    @prisoner_name = 'Inmate I',
-    @full_name = 'Eliyahu Yosef Wasserman',
+    @full_name = 'Lior Shimon',
     @factory = 'MaimonSpices',
     @department = 'Grinding',
     @activity_status = 'onShiftWorking',
-    @role = 'Spice Grinder',
+    @role = 'general',
     @safety_training_validity = '2027-11-01',
     @work_start_date = '2025-11-01',
     @release_date = '2031-04-05',
     @qualified = 1,
     @shabbat_keeping = 1,
-    @min_salary = 2400.00;
+    @hourly_rate = 15.50;
 
 EXEC sp_Prisoner_create
     @prisoner_id = 10,
     @prisoner_number = 'P123465',
-    @prisoner_name = 'Inmate J',
-    @full_name = 'Lisa Chana Goldberg',
+    @full_name = 'Meir Pinchas',
     @factory = NULL,
     @department = NULL,
     @activity_status = 'temporarilyUnavailable',
@@ -391,61 +381,57 @@ EXEC sp_Prisoner_create
     @release_date = '2029-06-20',
     @qualified = 1,
     @shabbat_keeping = 0,
-    @min_salary = 2350.00;
+    @hourly_rate = 15.00;
 
 EXEC sp_Prisoner_create
     @prisoner_id = 11,
     @prisoner_number = 'P123466',
-    @prisoner_name = 'Inmate K',
-    @full_name = 'Tzion Meir Friedman',
+    @full_name = 'Naftali Zeev',
     @factory = 'TzitzitWorkshop',
     @department = 'Tzitzit Assembly',
     @activity_status = 'onShiftWorking',
-    @role = 'Tzitzit Assembler',
+    @role = 'general',
     @safety_training_validity = '2026-08-22',
     @work_start_date = '2025-08-22',
     @release_date = '2027-05-10',
     @qualified = 1,
     @shabbat_keeping = 1,
-    @min_salary = 2050.00;
+    @hourly_rate = 14.70;
 
 EXEC sp_Prisoner_create
     @prisoner_id = 12,
     @prisoner_number = 'P123467',
-    @prisoner_name = 'Inmate L',
-    @full_name = 'Daphna Noa Katz',
+    @full_name = 'Ori Yaakov',
     @factory = 'SewingWorkshop',
     @department = 'Sewing',
     @activity_status = 'onShiftWorking',
-    @role = 'Textile Operator',
+    @role = 'general',
     @safety_training_validity = '2027-04-10',
     @work_start_date = '2025-04-10',
     @release_date = '2028-10-30',
     @qualified = 1,
     @shabbat_keeping = 0,
-    @min_salary = 2250.00;
+    @hourly_rate = 15.20;
 
 EXEC sp_Prisoner_create
     @prisoner_id = 13,
     @prisoner_number = 'P123468',
-    @prisoner_name = 'Inmate M',
-    @full_name = 'Amnon David Rabin',
+    @full_name = 'Pinchas Meor',
     @factory = 'Technosak',
     @department = 'Molding',
     @activity_status = 'idle',
-    @role = 'Plastic Molder',
+    @role = 'general',
     @safety_training_validity = '2026-10-05',
     @work_start_date = '2025-10-05',
     @release_date = '2026-07-20',
     @qualified = 1,
     @shabbat_keeping = 0,
-    @min_salary = 2300.00;
+    @hourly_rate = 14.70;
 
 EXEC sp_Prisoner_create
     @prisoner_id = 14,
     @prisoner_number = 'P123469',
-    @prisoner_name = 'Inmate N',
-    @full_name = 'Chaim Yaakov Landau',
+    @full_name = 'Ronen Yehuda',
     @factory = NULL,
     @department = NULL,
     @activity_status = 'pendingDepartmentManagerApproval',
@@ -455,23 +441,22 @@ EXEC sp_Prisoner_create
     @release_date = '2028-02-14',
     @qualified = 0,
     @shabbat_keeping = 1,
-    @min_salary = NULL;
+    @hourly_rate = 14.70;
 
 EXEC sp_Prisoner_create
     @prisoner_id = 15,
     @prisoner_number = 'P123470',
-    @prisoner_name = 'Inmate O',
-    @full_name = 'Ronit Esther Bloch',
+    @full_name = 'Shlomo Kalman',
     @factory = 'MaimonSpices',
     @department = 'Packaging',
     @activity_status = 'onShiftWorking',
-    @role = 'Packager',
+    @role = 'supervisor',
     @safety_training_validity = '2027-07-18',
     @work_start_date = '2025-07-18',
     @release_date = '2030-09-25',
     @qualified = 1,
     @shabbat_keeping = 0,
-    @min_salary = 2200.00;
+    @hourly_rate = 16.00;
 
 -- ============================================================================
 -- 6. Contract (5 rows)
@@ -525,10 +510,10 @@ EXEC sp_Contract_create
     @start_date = '2026-04-01',
     @price_per_unit = 55.00,
     @payment_terms = 'Net 30, FOB destination',
-    @contract_status = 'Inactive';
+    @contract_status = 'Active';
 
 -- ============================================================================
--- 7. ProductionOrder (8 rows)
+-- 7. ProductionOrder (8 rows) - Contract_id now NOT NULL, added completed_quantity
 -- ============================================================================
 
 EXEC sp_ProductionOrder_create
@@ -538,6 +523,7 @@ EXEC sp_ProductionOrder_create
     @product_id = 1,
     @contract_id = 1,
     @quantity = 5000,
+    @completed_quantity = 2500,
     @submission_date = '2026-06-01',
     @delivery_deadline = '2026-07-15',
     @order_status = 'inProduction';
@@ -549,6 +535,7 @@ EXEC sp_ProductionOrder_create
     @product_id = 3,
     @contract_id = 2,
     @quantity = 10000,
+    @completed_quantity = 3000,
     @submission_date = '2026-06-05',
     @delivery_deadline = '2026-08-01',
     @order_status = 'inProduction';
@@ -560,6 +547,7 @@ EXEC sp_ProductionOrder_create
     @product_id = 4,
     @contract_id = 3,
     @quantity = 500,
+    @completed_quantity = 500,
     @submission_date = '2026-05-20',
     @delivery_deadline = '2026-07-01',
     @order_status = 'readyForPickup';
@@ -571,6 +559,7 @@ EXEC sp_ProductionOrder_create
     @product_id = 2,
     @contract_id = 4,
     @quantity = 3000,
+    @completed_quantity = 3000,
     @submission_date = '2026-04-10',
     @delivery_deadline = '2026-06-15',
     @order_status = 'delivered';
@@ -580,8 +569,9 @@ EXEC sp_ProductionOrder_create
     @order_number = 'ORD-2026-0005',
     @customer_company_id = 6,
     @product_id = 6,
-    @contract_id = NULL,
+    @contract_id = 5,
     @quantity = 2000,
+    @completed_quantity = 0,
     @submission_date = '2026-06-10',
     @delivery_deadline = '2026-07-20',
     @order_status = 'recieved';
@@ -593,6 +583,7 @@ EXEC sp_ProductionOrder_create
     @product_id = 1,
     @contract_id = 1,
     @quantity = 3000,
+    @completed_quantity = 1500,
     @submission_date = '2026-05-15',
     @delivery_deadline = '2026-08-10',
     @order_status = 'inProduction';
@@ -602,8 +593,9 @@ EXEC sp_ProductionOrder_create
     @order_number = 'ORD-2026-0007',
     @customer_company_id = 7,
     @product_id = 2,
-    @contract_id = NULL,
+    @contract_id = 4,
     @quantity = 1500,
+    @completed_quantity = 0,
     @submission_date = '2026-06-12',
     @delivery_deadline = '2026-07-25',
     @order_status = 'onHold';
@@ -613,14 +605,15 @@ EXEC sp_ProductionOrder_create
     @order_number = 'ORD-2026-0008',
     @customer_company_id = 8,
     @product_id = 3,
-    @contract_id = NULL,
+    @contract_id = 2,
     @quantity = 5000,
+    @completed_quantity = 2000,
     @submission_date = '2026-06-08',
     @delivery_deadline = '2026-08-20',
     @order_status = 'inProduction';
 
 -- ============================================================================
--- 8. WorkOrder (12 rows)
+-- 8. WorkOrder (12 rows) - Removed completed_quantity from WorkOrder
 -- ============================================================================
 
 EXEC sp_WorkOrder_create
@@ -628,7 +621,6 @@ EXEC sp_WorkOrder_create
     @work_order_number = 'WO-2026-0001',
     @production_order_id = 1,
     @required_quantity = 5000,
-    @completed_quantity = 2500,
     @start_date = '2026-06-15',
     @deadline = '2026-07-15',
     @factory = 'MaimonSpices',
@@ -640,7 +632,6 @@ EXEC sp_WorkOrder_create
     @work_order_number = 'WO-2026-0002',
     @production_order_id = 2,
     @required_quantity = 10000,
-    @completed_quantity = 3000,
     @start_date = '2026-06-20',
     @deadline = '2026-08-01',
     @factory = 'Technosak',
@@ -652,7 +643,6 @@ EXEC sp_WorkOrder_create
     @work_order_number = 'WO-2026-0003',
     @production_order_id = 3,
     @required_quantity = 500,
-    @completed_quantity = 500,
     @start_date = '2026-05-20',
     @deadline = '2026-07-01',
     @factory = 'SewingWorkshop',
@@ -664,7 +654,6 @@ EXEC sp_WorkOrder_create
     @work_order_number = 'WO-2026-0004',
     @production_order_id = 4,
     @required_quantity = 3000,
-    @completed_quantity = 3000,
     @start_date = '2026-04-10',
     @deadline = '2026-06-15',
     @factory = 'MaimonSpices',
@@ -676,7 +665,6 @@ EXEC sp_WorkOrder_create
     @work_order_number = 'WO-2026-0005',
     @production_order_id = 5,
     @required_quantity = 2000,
-    @completed_quantity = 0,
     @start_date = '2026-06-20',
     @deadline = '2026-07-20',
     @factory = 'TzitzitWorkshop',
@@ -688,7 +676,6 @@ EXEC sp_WorkOrder_create
     @work_order_number = 'WO-2026-0006',
     @production_order_id = 6,
     @required_quantity = 3000,
-    @completed_quantity = 1500,
     @start_date = '2026-06-01',
     @deadline = '2026-08-10',
     @factory = 'MaimonSpices',
@@ -700,7 +687,6 @@ EXEC sp_WorkOrder_create
     @work_order_number = 'WO-2026-0007',
     @production_order_id = 7,
     @required_quantity = 1500,
-    @completed_quantity = 0,
     @start_date = '2026-06-25',
     @deadline = '2026-07-25',
     @factory = 'MaimonSpices',
@@ -712,7 +698,6 @@ EXEC sp_WorkOrder_create
     @work_order_number = 'WO-2026-0008',
     @production_order_id = 8,
     @required_quantity = 5000,
-    @completed_quantity = 2000,
     @start_date = '2026-06-18',
     @deadline = '2026-08-20',
     @factory = 'Technosak',
@@ -724,7 +709,6 @@ EXEC sp_WorkOrder_create
     @work_order_number = 'WO-2026-0009',
     @production_order_id = 1,
     @required_quantity = 5000,
-    @completed_quantity = 2500,
     @start_date = '2026-07-01',
     @deadline = '2026-07-20',
     @factory = 'MaimonSpices',
@@ -736,7 +720,6 @@ EXEC sp_WorkOrder_create
     @work_order_number = 'WO-2026-0010',
     @production_order_id = 2,
     @required_quantity = 10000,
-    @completed_quantity = 5000,
     @start_date = '2026-06-15',
     @deadline = '2026-07-30',
     @factory = 'Technosak',
@@ -748,7 +731,6 @@ EXEC sp_WorkOrder_create
     @work_order_number = 'WO-2026-0011',
     @production_order_id = 3,
     @required_quantity = 500,
-    @completed_quantity = 500,
     @start_date = '2026-06-10',
     @deadline = '2026-07-01',
     @factory = 'SewingWorkshop',
@@ -760,7 +742,6 @@ EXEC sp_WorkOrder_create
     @work_order_number = 'WO-2026-0012',
     @production_order_id = 6,
     @required_quantity = 3000,
-    @completed_quantity = 1000,
     @start_date = '2026-05-25',
     @deadline = '2026-08-05',
     @factory = 'MaimonSpices',
