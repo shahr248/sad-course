@@ -760,7 +760,7 @@ BEGIN
     BEGIN TRAN;
     BEGIN TRY
         UPDATE Prisoner
-        SET activity_status = 'PendingDepartmentManagerApproval'
+        SET activity_status = 'pendingDepartmentManagerApproval'
         WHERE prisoner_id = @prisoner_id;
         COMMIT TRAN;
     END TRY
@@ -779,7 +779,7 @@ BEGIN
     BEGIN TRAN;
     BEGIN TRY
         UPDATE Prisoner
-        SET activity_status = 'Archived'
+        SET activity_status = 'archived'
         WHERE prisoner_id = @prisoner_id;
         COMMIT TRAN;
     END TRY
@@ -798,7 +798,7 @@ BEGIN
     BEGIN TRAN;
     BEGIN TRY
         UPDATE Prisoner
-        SET activity_status = 'PendingPlacement'
+        SET activity_status = 'pendingPlacement'
         WHERE prisoner_id = @prisoner_id;
         COMMIT TRAN;
     END TRY
@@ -817,7 +817,7 @@ BEGIN
     BEGIN TRAN;
     BEGIN TRY
         UPDATE Prisoner
-        SET activity_status = 'Archived'
+        SET activity_status = 'archived'
         WHERE prisoner_id = @prisoner_id;
         COMMIT TRAN;
     END TRY
@@ -837,7 +837,7 @@ BEGIN
     BEGIN TRAN;
     BEGIN TRY
         UPDATE Prisoner
-        SET activity_status = 'Idle',
+        SET activity_status = 'idle',
             factory = @factory
         WHERE prisoner_id = @prisoner_id;
         COMMIT TRAN;
@@ -858,12 +858,15 @@ BEGIN
     BEGIN TRAN;
     BEGIN TRY
         UPDATE Prisoner
-        SET activity_status = 'OnShiftWorking'
+        SET activity_status = 'onShiftWorking'
         WHERE prisoner_id = @prisoner_id;
 
         -- Create DailyAttendance entry if not exists
-        INSERT INTO AttendanceRecord (prisoner_id, attendance_date, factory, entry_time)
-        SELECT @prisoner_id, CAST(GETUTCDATE() AS DATE), factory, CAST(GETUTCDATE() AS TIME)
+        DECLARE @new_attendance_id INT;
+        SELECT @new_attendance_id = ISNULL(MAX(attendance_record_id), 0) + 1 FROM AttendanceRecord;
+
+        INSERT INTO AttendanceRecord (attendance_record_id, prisoner_id, attendance_date, factory, entry_time)
+        SELECT @new_attendance_id, @prisoner_id, CAST(GETUTCDATE() AS DATE), factory, CAST(GETUTCDATE() AS TIME)
         FROM Prisoner WHERE prisoner_id = @prisoner_id;
 
         COMMIT TRAN;
@@ -884,7 +887,7 @@ BEGIN
     BEGIN TRAN;
     BEGIN TRY
         UPDATE Prisoner
-        SET activity_status = 'WaitingForMaterials'
+        SET activity_status = 'waitingForMaterials'
         WHERE prisoner_id = @prisoner_id;
 
         -- Create Alert (R16) - simplified: no Alert table implementation yet
@@ -907,7 +910,7 @@ BEGIN
     BEGIN TRAN;
     BEGIN TRY
         UPDATE Prisoner
-        SET activity_status = 'Idle'
+        SET activity_status = 'idle'
         WHERE prisoner_id = @prisoner_id;
 
         -- Update DailyAttendance exit_time (update latest record for today)
@@ -934,7 +937,7 @@ BEGIN
     BEGIN TRAN;
     BEGIN TRY
         UPDATE Prisoner
-        SET activity_status = 'OnShiftWorking'
+        SET activity_status = 'onShiftWorking'
         WHERE prisoner_id = @prisoner_id;
 
         -- Clear Alert (R16) - simplified
@@ -957,7 +960,7 @@ BEGIN
     BEGIN TRAN;
     BEGIN TRY
         UPDATE Prisoner
-        SET activity_status = 'Idle'
+        SET activity_status = 'idle'
         WHERE prisoner_id = @prisoner_id;
 
         -- Update DailyAttendance if in progress
@@ -984,7 +987,7 @@ BEGIN
     BEGIN TRAN;
     BEGIN TRY
         UPDATE Prisoner
-        SET activity_status = 'InProfessionalTraining'
+        SET activity_status = 'inProfessionalTraining'
         WHERE prisoner_id = @prisoner_id;
 
         COMMIT TRAN;
@@ -1004,7 +1007,7 @@ BEGIN
     BEGIN TRAN;
     BEGIN TRY
         UPDATE Prisoner
-        SET activity_status = 'Idle'
+        SET activity_status = 'idle'
         WHERE prisoner_id = @prisoner_id;
 
         COMMIT TRAN;
@@ -1024,7 +1027,7 @@ BEGIN
     BEGIN TRAN;
     BEGIN TRY
         UPDATE Prisoner
-        SET activity_status = 'InSafetyTraining'
+        SET activity_status = 'inSafetyTraining'
         WHERE prisoner_id = @prisoner_id;
 
         COMMIT TRAN;
@@ -1044,7 +1047,7 @@ BEGIN
     BEGIN TRAN;
     BEGIN TRY
         UPDATE Prisoner
-        SET activity_status = 'Idle',
+        SET activity_status = 'idle',
             safety_training_validity = DATEADD(YEAR, 1, GETUTCDATE())
         WHERE prisoner_id = @prisoner_id;
 
@@ -1066,7 +1069,7 @@ BEGIN
     BEGIN TRAN;
     BEGIN TRY
         UPDATE Prisoner
-        SET activity_status = 'TemporarilyUnavailable'
+        SET activity_status = 'temporarilyUnavailable'
         WHERE prisoner_id = @prisoner_id;
 
         -- Create Alert (R16)
@@ -1089,7 +1092,7 @@ BEGIN
     BEGIN TRAN;
     BEGIN TRY
         UPDATE Prisoner
-        SET activity_status = 'Idle'
+        SET activity_status = 'idle'
         WHERE prisoner_id = @prisoner_id;
 
         -- Clear Alert (R16)
@@ -1112,7 +1115,7 @@ BEGIN
     BEGIN TRAN;
     BEGIN TRY
         UPDATE Prisoner
-        SET activity_status = 'Archived'
+        SET activity_status = 'archived'
         WHERE prisoner_id = @prisoner_id;
 
         COMMIT TRAN;
@@ -1132,7 +1135,7 @@ BEGIN
     BEGIN TRAN;
     BEGIN TRY
         UPDATE Prisoner
-        SET activity_status = 'Archived'
+        SET activity_status = 'archived'
         WHERE prisoner_id = @prisoner_id;
 
         -- Cease PayrollRecord generation (R10) - mark as inactive in PayrollRecord
@@ -1160,7 +1163,7 @@ BEGIN
     BEGIN TRAN;
     BEGIN TRY
         UPDATE ProductionOrder
-        SET order_status = 'InProduction'
+        SET order_status = 'inProduction'
         WHERE production_order_id = @production_order_id;
 
         -- Create WorkOrders (R2, R3) - simplified: assume caller creates separately
@@ -1183,7 +1186,7 @@ BEGIN
     BEGIN TRAN;
     BEGIN TRY
         UPDATE ProductionOrder
-        SET order_status = 'Cancelled'
+        SET order_status = 'cancelled'
         WHERE production_order_id = @production_order_id;
 
         -- Notify customer (R12) - simplified
@@ -1207,7 +1210,7 @@ BEGIN
     BEGIN TRAN;
     BEGIN TRY
         UPDATE ProductionOrder
-        SET order_status = 'OnHold'
+        SET order_status = 'onHold'
         WHERE production_order_id = @production_order_id;
 
         -- Create Alert (R16)
@@ -1230,7 +1233,7 @@ BEGIN
     BEGIN TRAN;
     BEGIN TRY
         UPDATE ProductionOrder
-        SET order_status = 'InProduction'
+        SET order_status = 'inProduction'
         WHERE production_order_id = @production_order_id;
 
         -- Clear Alert (R16)
@@ -1253,7 +1256,7 @@ BEGIN
     BEGIN TRAN;
     BEGIN TRY
         UPDATE ProductionOrder
-        SET order_status = 'ReadyForPickup'
+        SET order_status = 'readyForPickup'
         WHERE production_order_id = @production_order_id;
 
         -- Notify customer (R12)
@@ -1276,7 +1279,7 @@ BEGIN
     BEGIN TRAN;
     BEGIN TRY
         UPDATE ProductionOrder
-        SET order_status = 'Delivered'
+        SET order_status = 'delivered'
         WHERE production_order_id = @production_order_id;
 
         -- Generate PayrollRecords (R10) for all inmates who worked on this order
@@ -1299,7 +1302,7 @@ BEGIN
     BEGIN TRAN;
     BEGIN TRY
         UPDATE ProductionOrder
-        SET order_status = 'Cancelled'
+        SET order_status = 'cancelled'
         WHERE production_order_id = @production_order_id;
 
         -- Notify customer (R12)
@@ -1327,7 +1330,7 @@ BEGIN
     BEGIN TRAN;
     BEGIN TRY
         UPDATE WorkOrder
-        SET status = 'InProcess'
+        SET status = 'inProcess'
         WHERE work_order_id = @work_order_id;
 
         -- Create AttendanceRecord entries for assigned inmates
@@ -1350,7 +1353,7 @@ BEGIN
     BEGIN TRAN;
     BEGIN TRY
         UPDATE WorkOrder
-        SET status = 'HasntEnteredIntoProductionYet'
+        SET status = 'hasntEnteredIntoProductionYet'
         WHERE work_order_id = @work_order_id;
 
         -- Clear AttendanceRecords for this work order
@@ -1378,7 +1381,7 @@ BEGIN
     BEGIN TRAN;
     BEGIN TRY
         UPDATE WorkOrder
-        SET status = 'Completed'
+        SET status = 'completed'
         WHERE work_order_id = @work_order_id;
 
         -- Check if parent ProductionOrder is ready for pickup
@@ -1402,7 +1405,7 @@ BEGIN
     BEGIN TRY
         -- Mark as abandoned (no explicit state, but update internal flags)
         UPDATE WorkOrder
-        SET status = 'HasntEnteredIntoProductionYet'
+        SET status = 'hasntEnteredIntoProductionYet'
         WHERE work_order_id = @work_order_id;
 
         COMMIT TRAN;
@@ -1516,7 +1519,7 @@ BEGIN
     BEGIN TRY
         -- Update Prisoner to OnShiftWorking
         UPDATE Prisoner
-        SET activity_status = 'OnShiftWorking'
+        SET activity_status = 'onShiftWorking'
         WHERE prisoner_id = @prisoner_id;
 
         COMMIT TRAN;
@@ -1559,7 +1562,7 @@ BEGIN
     BEGIN TRY
         -- Update Prisoner to Idle
         UPDATE Prisoner
-        SET activity_status = 'Idle'
+        SET activity_status = 'idle'
         WHERE prisoner_id = @prisoner_id;
 
         -- Log hours worked to contribute to PayrollRecord (R10)
