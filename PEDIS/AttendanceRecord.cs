@@ -116,5 +116,91 @@ namespace PEDIS
             }
             return null;
         }
+
+        // ============================================================================
+        // STATE TRANSITION METHODS (3 implicit states: Pending, In Progress, Complete)
+        // Implicit states inferred from entry_time/exit_time values
+        // ============================================================================
+
+        /// <summary>
+        /// Transition: (Create) → Pending
+        /// Prisoner clocks in (R5). Create new AttendanceRecord with entry_time = NOW.
+        /// Side effect: update Prisoner status to OnShiftWorking.
+        /// </summary>
+        public void recordEntry(DateTime entryTime)
+        {
+            if (this.entryTime.HasValue)
+                throw new Exception("כשגיאה: כלא כבר נרשם כנוכח היום");
+
+            this.entryTime = new TimeSpan(entryTime.Hour, entryTime.Minute, entryTime.Second);
+            this.update();
+
+            // Side effect: update prisoner status
+            if (this.prisoner != null)
+            {
+                SqlCommand cmd = new SqlCommand();
+                cmd.CommandText = "EXECUTE sp_AttendanceRecord_recordEntry @attendance_record_id, @prisoner_id";
+                cmd.Parameters.AddWithValue("@attendance_record_id", this.attendanceRecordId);
+                cmd.Parameters.AddWithValue("@prisoner_id", this.prisonerId);
+                SQL_CON sc = new SQL_CON();
+                sc.execute_non_query(cmd);
+            }
+        }
+
+        /// <summary>
+        /// Transition: Pending → Pending (with temp exit recorded)
+        /// Prisoner exits temporarily (e.g., lunch break). Record temporary exit time.
+        /// </summary>
+        public void recordTemporaryExit(DateTime tempExitTime)
+        {
+            if (!this.entryTime.HasValue)
+                throw new Exception("כשגיאה: כלא לא נרשם כנוכח");
+
+            if (this.exitTime.HasValue)
+                throw new Exception("כשגיאה: כלא כבר רשום כעזב");
+
+            SqlCommand cmd = new SqlCommand();
+            cmd.CommandText = "EXECUTE sp_AttendanceRecord_recordTemporaryExit @attendance_record_id, @temp_exit_time";
+            cmd.Parameters.AddWithValue("@attendance_record_id", this.attendanceRecordId);
+            cmd.Parameters.AddWithValue("@temp_exit_time", new TimeSpan(tempExitTime.Hour, tempExitTime.Minute, tempExitTime.Second));
+            SQL_CON sc = new SQL_CON();
+            sc.execute_non_query(cmd);
+        }
+
+        /// <summary>
+        /// Transition: Pending → Complete
+        /// Prisoner clocks out (R5). Record exit_time and calculate total hours worked.
+        /// Side effect: update Prisoner status to Idle; calc hours_worked contribution to PayrollRecord (R10).
+        /// </summary>
+        public void recordExit(DateTime exitTime)
+        {
+            if (!this.entryTime.HasValue)
+                throw new Exception("כשגיאה: כלא לא נרשם כנוכח");
+
+            if (this.exitTime.HasValue)
+                throw new Exception("כשגיאה: כלא כבר רשום כעזב");
+
+            this.exitTime = new TimeSpan(exitTime.Hour, exitTime.Minute, exitTime.Second);
+            this.update();
+
+            // Side effect: calculate hours worked and update prisoner
+            if (this.prisoner != null)
+            {
+                SqlCommand cmd = new SqlCommand();
+                cmd.CommandText = "EXECUTE sp_AttendanceRecord_recordExit @attendance_record_id, @prisoner_id, @hours_worked";
+
+                decimal hoursWorked = 0;
+                if (this.entryTime.HasValue && this.exitTime.HasValue)
+                {
+                    hoursWorked = (decimal)(this.exitTime.Value.TotalSeconds - this.entryTime.Value.TotalSeconds) / 3600;
+                }
+
+                cmd.Parameters.AddWithValue("@attendance_record_id", this.attendanceRecordId);
+                cmd.Parameters.AddWithValue("@prisoner_id", this.prisonerId);
+                cmd.Parameters.AddWithValue("@hours_worked", hoursWorked);
+                SQL_CON sc = new SQL_CON();
+                sc.execute_non_query(cmd);
+            }
+        }
     }
 }

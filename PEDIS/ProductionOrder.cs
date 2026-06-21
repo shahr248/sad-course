@@ -179,5 +179,152 @@ namespace PEDIS
             }
             return null;
         }
+
+        // ============================================================================
+        // STATE TRANSITION METHODS (7 transitions for ProductionOrderStatus)
+        // ============================================================================
+
+        /// <summary>
+        /// Transition: Received → InProduction
+        /// Accept order and assign factory (R2, R3). Guard: factory has capacity; deadline achievable.
+        /// Side effect: create WorkOrders, assign inmates (R4), notify Factory Manager.
+        /// </summary>
+        public void acceptOrder(int factoryId)
+        {
+            if (this.orderStatus != ProductionOrderStatus.Received)
+                throw new Exception("כשגיאה: הזמנה לא בסטטוס קבלה");
+
+            SqlCommand cmd = new SqlCommand();
+            cmd.CommandText = "EXECUTE sp_ProductionOrder_acceptOrder @production_order_id, @factory_id";
+            cmd.Parameters.AddWithValue("@production_order_id", this.productionOrderId);
+            cmd.Parameters.AddWithValue("@factory_id", factoryId);
+            SQL_CON sc = new SQL_CON();
+            sc.execute_non_query(cmd);
+
+            this.orderStatus = ProductionOrderStatus.InProduction;
+            this.update();
+        }
+
+        /// <summary>
+        /// Transition: Received → Cancelled
+        /// Reject order or insufficient capacity. Side effect: notify customer (R12).
+        /// </summary>
+        public void cancelOrder()
+        {
+            if (this.orderStatus != ProductionOrderStatus.Received)
+                throw new Exception("כשגיאה: הזמנה לא בסטטוס קבלה");
+
+            SqlCommand cmd = new SqlCommand();
+            cmd.CommandText = "EXECUTE sp_ProductionOrder_cancelOrder @production_order_id";
+            cmd.Parameters.AddWithValue("@production_order_id", this.productionOrderId);
+            SQL_CON sc = new SQL_CON();
+            sc.execute_non_query(cmd);
+
+            this.orderStatus = ProductionOrderStatus.Cancelled;
+            this.update();
+        }
+
+        /// <summary>
+        /// Transition: InProduction → OnHold
+        /// Materials unavailable (R7), quality issue, or security incident.
+        /// Side effect: create Alert (R16), notify Factory Manager.
+        /// </summary>
+        public void holdOrder(string reason)
+        {
+            if (this.orderStatus != ProductionOrderStatus.InProduction)
+                throw new Exception("כשגיאה: הזמנה לא בייצור");
+
+            SqlCommand cmd = new SqlCommand();
+            cmd.CommandText = "EXECUTE sp_ProductionOrder_holdOrder @production_order_id, @reason";
+            cmd.Parameters.AddWithValue("@production_order_id", this.productionOrderId);
+            cmd.Parameters.AddWithValue("@reason", reason ?? (object)DBNull.Value);
+            SQL_CON sc = new SQL_CON();
+            sc.execute_non_query(cmd);
+
+            this.orderStatus = ProductionOrderStatus.OnHold;
+            this.update();
+        }
+
+        /// <summary>
+        /// Transition: OnHold → InProduction
+        /// Issue resolved (materials restocked, quality rework complete).
+        /// Side effect: clear Alert, resume WorkOrders, notify Factory Manager.
+        /// </summary>
+        public void resumeOrder()
+        {
+            if (this.orderStatus != ProductionOrderStatus.OnHold)
+                throw new Exception("כשגיאה: הזמנה לא בהחזקה");
+
+            SqlCommand cmd = new SqlCommand();
+            cmd.CommandText = "EXECUTE sp_ProductionOrder_resumeOrder @production_order_id";
+            cmd.Parameters.AddWithValue("@production_order_id", this.productionOrderId);
+            SQL_CON sc = new SQL_CON();
+            sc.execute_non_query(cmd);
+
+            this.orderStatus = ProductionOrderStatus.InProduction;
+            this.update();
+        }
+
+        /// <summary>
+        /// Transition: InProduction → ReadyForPickup
+        /// All units completed (R6) and quality passed (R6). Guard: completed_quantity >= quantity; quality pass.
+        /// Side effect: notify customer (R12) "Order ready".
+        /// </summary>
+        public void markReadyForPickup()
+        {
+            if (this.orderStatus != ProductionOrderStatus.InProduction)
+                throw new Exception("כשגיאה: הזמנה לא בייצור");
+
+            // Guard: check quantity and quality (simplified - assume quality tracked elsewhere)
+            if (this.completedQuantity < this.quantity)
+                throw new Exception("כשגיאה: לא הושלמה כמות יחידות מספקת");
+
+            SqlCommand cmd = new SqlCommand();
+            cmd.CommandText = "EXECUTE sp_ProductionOrder_markReadyForPickup @production_order_id";
+            cmd.Parameters.AddWithValue("@production_order_id", this.productionOrderId);
+            SQL_CON sc = new SQL_CON();
+            sc.execute_non_query(cmd);
+
+            this.orderStatus = ProductionOrderStatus.ReadyForPickup;
+            this.update();
+        }
+
+        /// <summary>
+        /// Transition: ReadyForPickup → Delivered
+        /// Customer pickup confirmed (R8). Side effect: generate PayrollRecords (R10) for all inmates worked on order.
+        /// </summary>
+        public void markDelivered()
+        {
+            if (this.orderStatus != ProductionOrderStatus.ReadyForPickup)
+                throw new Exception("כשגיאה: הזמנה לא מוכנה לאיסוף");
+
+            SqlCommand cmd = new SqlCommand();
+            cmd.CommandText = "EXECUTE sp_ProductionOrder_markDelivered @production_order_id";
+            cmd.Parameters.AddWithValue("@production_order_id", this.productionOrderId);
+            SQL_CON sc = new SQL_CON();
+            sc.execute_non_query(cmd);
+
+            this.orderStatus = ProductionOrderStatus.Delivered;
+            this.update();
+        }
+
+        /// <summary>
+        /// Transition: OnHold → Cancelled
+        /// Hold cannot be resolved; cancel order. Side effect: notify customer, archive.
+        /// </summary>
+        public void cancelOnHold()
+        {
+            if (this.orderStatus != ProductionOrderStatus.OnHold)
+                throw new Exception("כשגיאה: הזמנה לא בהחזקה");
+
+            SqlCommand cmd = new SqlCommand();
+            cmd.CommandText = "EXECUTE sp_ProductionOrder_cancelOnHold @production_order_id";
+            cmd.Parameters.AddWithValue("@production_order_id", this.productionOrderId);
+            SQL_CON sc = new SQL_CON();
+            sc.execute_non_query(cmd);
+
+            this.orderStatus = ProductionOrderStatus.Cancelled;
+            this.update();
+        }
     }
 }

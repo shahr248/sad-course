@@ -204,5 +204,359 @@ namespace PEDIS
             }
             return null;
         }
+
+        // ============================================================================
+        // STATE TRANSITION METHODS (18 transitions for PrisonerActivityStatus)
+        // ============================================================================
+
+        /// <summary>
+        /// Transition: PendingPrisonAdministrationApproval → PendingDepartmentManagerApproval
+        /// Prison admin has approved prisoner enrollment; move to dept manager review.
+        /// </summary>
+        public void approvePrison()
+        {
+            if (this.activityStatus != PrisonerActivityStatus.PendingPrisonAdministrationApproval)
+                throw new Exception("כשגיאה: הכלא לא בסטטוס קבלה מינהלית");
+
+            SqlCommand cmd = new SqlCommand();
+            cmd.CommandText = "EXECUTE sp_Prisoner_approvePrison @prisoner_id";
+            cmd.Parameters.AddWithValue("@prisoner_id", this.prisonerId);
+            SQL_CON sc = new SQL_CON();
+            sc.execute_non_query(cmd);
+
+            this.activityStatus = PrisonerActivityStatus.PendingDepartmentManagerApproval;
+            this.update();
+        }
+
+        /// <summary>
+        /// Transition: PendingPrisonAdministrationApproval → Archived
+        /// Prison admin rejects prisoner; archive record immediately.
+        /// </summary>
+        public void rejectPrison()
+        {
+            if (this.activityStatus != PrisonerActivityStatus.PendingPrisonAdministrationApproval)
+                throw new Exception("כשגיאה: הכלא לא בסטטוס קבלה מינהלית");
+
+            SqlCommand cmd = new SqlCommand();
+            cmd.CommandText = "EXECUTE sp_Prisoner_rejectPrison @prisoner_id";
+            cmd.Parameters.AddWithValue("@prisoner_id", this.prisonerId);
+            SQL_CON sc = new SQL_CON();
+            sc.execute_non_query(cmd);
+
+            this.activityStatus = PrisonerActivityStatus.Archived;
+            this.update();
+        }
+
+        /// <summary>
+        /// Transition: PendingDepartmentManagerApproval → PendingPlacement
+        /// Department manager approves; prisoner ready for factory assignment (R4).
+        /// Guard: no security holds
+        /// </summary>
+        public void approveDeptManager()
+        {
+            if (this.activityStatus != PrisonerActivityStatus.PendingDepartmentManagerApproval)
+                throw new Exception("כשגיאה: כלא לא בסטטוס ממתין לאישור מנהל");
+
+            SqlCommand cmd = new SqlCommand();
+            cmd.CommandText = "EXECUTE sp_Prisoner_approveDeptManager @prisoner_id";
+            cmd.Parameters.AddWithValue("@prisoner_id", this.prisonerId);
+            SQL_CON sc = new SQL_CON();
+            sc.execute_non_query(cmd);
+
+            this.activityStatus = PrisonerActivityStatus.PendingPlacement;
+            this.update();
+        }
+
+        /// <summary>
+        /// Transition: PendingDepartmentManagerApproval → Archived
+        /// Department manager rejects prisoner; archive record.
+        /// </summary>
+        public void rejectDeptManager()
+        {
+            if (this.activityStatus != PrisonerActivityStatus.PendingDepartmentManagerApproval)
+                throw new Exception("כשגיאה: כלא לא בסטטוס ממתין לאישור מנהל");
+
+            SqlCommand cmd = new SqlCommand();
+            cmd.CommandText = "EXECUTE sp_Prisoner_rejectDeptManager @prisoner_id";
+            cmd.Parameters.AddWithValue("@prisoner_id", this.prisonerId);
+            SQL_CON sc = new SQL_CON();
+            sc.execute_non_query(cmd);
+
+            this.activityStatus = PrisonerActivityStatus.Archived;
+            this.update();
+        }
+
+        /// <summary>
+        /// Transition: PendingPlacement → Idle
+        /// Assign prisoner to factory (R4). Guard: factory has capacity, prisoner available.
+        /// </summary>
+        public void assignToFactory(Factory factory)
+        {
+            if (this.activityStatus != PrisonerActivityStatus.PendingPlacement)
+                throw new Exception("כשגיאה: כלא לא בסטטוס ממתין להקצאה");
+
+            SqlCommand cmd = new SqlCommand();
+            cmd.CommandText = "EXECUTE sp_Prisoner_assignToFactory @prisoner_id, @factory";
+            cmd.Parameters.AddWithValue("@prisoner_id", this.prisonerId);
+            cmd.Parameters.AddWithValue("@factory", EnumHelpers.ToDbString(factory));
+            SQL_CON sc = new SQL_CON();
+            sc.execute_non_query(cmd);
+
+            this.factory = factory;
+            this.activityStatus = PrisonerActivityStatus.Idle;
+            this.update();
+        }
+
+        /// <summary>
+        /// Transition: Idle → OnShiftWorking
+        /// Prisoner clocks in to assigned task (R5). Guard: certs current (R9), task exists.
+        /// Side effect: create DailyAttendance entry_time
+        /// </summary>
+        public void clockIn(int workOrderId)
+        {
+            if (this.activityStatus != PrisonerActivityStatus.Idle)
+                throw new Exception("כשגיאה: כלא לא בסטטוס יושב");
+
+            // Guard: check safety cert validity (R9)
+            if (this.safetyTrainingValidity.HasValue && this.safetyTrainingValidity.Value < DateTime.Now)
+                throw new Exception("כשגיאה: תעודת בטיחות של כלא פגה");
+
+            SqlCommand cmd = new SqlCommand();
+            cmd.CommandText = "EXECUTE sp_Prisoner_clockIn @prisoner_id, @work_order_id";
+            cmd.Parameters.AddWithValue("@prisoner_id", this.prisonerId);
+            cmd.Parameters.AddWithValue("@work_order_id", workOrderId);
+            SQL_CON sc = new SQL_CON();
+            sc.execute_non_query(cmd);
+
+            this.activityStatus = PrisonerActivityStatus.OnShiftWorking;
+            this.update();
+        }
+
+        /// <summary>
+        /// Transition: OnShiftWorking → WaitingForMaterials
+        /// Prisoner pauses due to unavailable materials (R7). Side effect: create Alert (R16).
+        /// </summary>
+        public void pauseForMaterials(string reason)
+        {
+            if (this.activityStatus != PrisonerActivityStatus.OnShiftWorking)
+                throw new Exception("כשגיאה: כלא לא עובד כעת");
+
+            SqlCommand cmd = new SqlCommand();
+            cmd.CommandText = "EXECUTE sp_Prisoner_pauseForMaterials @prisoner_id, @reason";
+            cmd.Parameters.AddWithValue("@prisoner_id", this.prisonerId);
+            cmd.Parameters.AddWithValue("@reason", reason ?? (object)DBNull.Value);
+            SQL_CON sc = new SQL_CON();
+            sc.execute_non_query(cmd);
+
+            this.activityStatus = PrisonerActivityStatus.WaitingForMaterials;
+            this.update();
+        }
+
+        /// <summary>
+        /// Transition: OnShiftWorking → Idle
+        /// Prisoner clocks out (R5). Side effect: update DailyAttendance exit_time, calc hours.
+        /// </summary>
+        public void clockOut()
+        {
+            if (this.activityStatus != PrisonerActivityStatus.OnShiftWorking)
+                throw new Exception("כשגיאה: כלא לא עובד כעת");
+
+            SqlCommand cmd = new SqlCommand();
+            cmd.CommandText = "EXECUTE sp_Prisoner_clockOut @prisoner_id";
+            cmd.Parameters.AddWithValue("@prisoner_id", this.prisonerId);
+            SQL_CON sc = new SQL_CON();
+            sc.execute_non_query(cmd);
+
+            this.activityStatus = PrisonerActivityStatus.Idle;
+            this.update();
+        }
+
+        /// <summary>
+        /// Transition: WaitingForMaterials → OnShiftWorking
+        /// Materials restocked (R7). Side effect: clear Alert, resume task.
+        /// </summary>
+        public void resumeFromMaterials()
+        {
+            if (this.activityStatus != PrisonerActivityStatus.WaitingForMaterials)
+                throw new Exception("כשגיאה: כלא לא ממתין לחומרים");
+
+            SqlCommand cmd = new SqlCommand();
+            cmd.CommandText = "EXECUTE sp_Prisoner_resumeFromMaterials @prisoner_id";
+            cmd.Parameters.AddWithValue("@prisoner_id", this.prisonerId);
+            SQL_CON sc = new SQL_CON();
+            sc.execute_non_query(cmd);
+
+            this.activityStatus = PrisonerActivityStatus.OnShiftWorking;
+            this.update();
+        }
+
+        /// <summary>
+        /// Transition: WaitingForMaterials → Idle
+        /// Task cancelled or shift ends while waiting for materials.
+        /// </summary>
+        public void abortTask()
+        {
+            if (this.activityStatus != PrisonerActivityStatus.WaitingForMaterials)
+                throw new Exception("כשגיאה: כלא לא ממתין לחומרים");
+
+            SqlCommand cmd = new SqlCommand();
+            cmd.CommandText = "EXECUTE sp_Prisoner_abortTask @prisoner_id";
+            cmd.Parameters.AddWithValue("@prisoner_id", this.prisonerId);
+            SQL_CON sc = new SQL_CON();
+            sc.execute_non_query(cmd);
+
+            this.activityStatus = PrisonerActivityStatus.Idle;
+            this.update();
+        }
+
+        /// <summary>
+        /// Transition: Idle → InProfessionalTraining
+        /// Enroll prisoner in job skills training.
+        /// </summary>
+        public void enrollInProfessionalTraining()
+        {
+            if (this.activityStatus != PrisonerActivityStatus.Idle)
+                throw new Exception("כשגיאה: כלא לא בסטטוס יושב");
+
+            SqlCommand cmd = new SqlCommand();
+            cmd.CommandText = "EXECUTE sp_Prisoner_enrollInProfessionalTraining @prisoner_id";
+            cmd.Parameters.AddWithValue("@prisoner_id", this.prisonerId);
+            SQL_CON sc = new SQL_CON();
+            sc.execute_non_query(cmd);
+
+            this.activityStatus = PrisonerActivityStatus.InProfessionalTraining;
+            this.update();
+        }
+
+        /// <summary>
+        /// Transition: InProfessionalTraining → Idle
+        /// Professional training completed; prisoner available for work again.
+        /// </summary>
+        public void completeProfessionalTraining()
+        {
+            if (this.activityStatus != PrisonerActivityStatus.InProfessionalTraining)
+                throw new Exception("כשגיאה: כלא לא בהדרכה מקצועית");
+
+            SqlCommand cmd = new SqlCommand();
+            cmd.CommandText = "EXECUTE sp_Prisoner_completeProfessionalTraining @prisoner_id";
+            cmd.Parameters.AddWithValue("@prisoner_id", this.prisonerId);
+            SQL_CON sc = new SQL_CON();
+            sc.execute_non_query(cmd);
+
+            this.activityStatus = PrisonerActivityStatus.Idle;
+            this.update();
+        }
+
+        /// <summary>
+        /// Transition: Idle → InSafetyTraining
+        /// Enroll prisoner in safety/compliance training.
+        /// </summary>
+        public void enrollInSafetyTraining()
+        {
+            if (this.activityStatus != PrisonerActivityStatus.Idle)
+                throw new Exception("כשגיאה: כלא לא בסטטוס יושב");
+
+            SqlCommand cmd = new SqlCommand();
+            cmd.CommandText = "EXECUTE sp_Prisoner_enrollInSafetyTraining @prisoner_id";
+            cmd.Parameters.AddWithValue("@prisoner_id", this.prisonerId);
+            SQL_CON sc = new SQL_CON();
+            sc.execute_non_query(cmd);
+
+            this.activityStatus = PrisonerActivityStatus.InSafetyTraining;
+            this.update();
+        }
+
+        /// <summary>
+        /// Transition: InSafetyTraining → Idle
+        /// Safety training completed and cert acquired (R9).
+        /// Side effect: create SafetyCertification record.
+        /// </summary>
+        public void completeSafetyTraining()
+        {
+            if (this.activityStatus != PrisonerActivityStatus.InSafetyTraining)
+                throw new Exception("כשגיאה: כלא לא בהדרכת בטיחות");
+
+            SqlCommand cmd = new SqlCommand();
+            cmd.CommandText = "EXECUTE sp_Prisoner_completeSafetyTraining @prisoner_id";
+            cmd.Parameters.AddWithValue("@prisoner_id", this.prisonerId);
+            SQL_CON sc = new SQL_CON();
+            sc.execute_non_query(cmd);
+
+            // Update safety training validity (set to 1 year from now)
+            this.safetyTrainingValidity = DateTime.Now.AddYears(1);
+            this.activityStatus = PrisonerActivityStatus.Idle;
+            this.update();
+        }
+
+        /// <summary>
+        /// Transition: Any → TemporarilyUnavailable
+        /// Place prisoner on hold (security, medical, court). Side effect: create Alert (R16).
+        /// </summary>
+        public void placeOnHold(string reason)
+        {
+            SqlCommand cmd = new SqlCommand();
+            cmd.CommandText = "EXECUTE sp_Prisoner_placeOnHold @prisoner_id, @reason";
+            cmd.Parameters.AddWithValue("@prisoner_id", this.prisonerId);
+            cmd.Parameters.AddWithValue("@reason", reason ?? (object)DBNull.Value);
+            SQL_CON sc = new SQL_CON();
+            sc.execute_non_query(cmd);
+
+            this.activityStatus = PrisonerActivityStatus.TemporarilyUnavailable;
+            this.update();
+        }
+
+        /// <summary>
+        /// Transition: TemporarilyUnavailable → Idle
+        /// Hold released; prisoner available for work again. Side effect: clear Alert.
+        /// </summary>
+        public void releaseFromHold()
+        {
+            if (this.activityStatus != PrisonerActivityStatus.TemporarilyUnavailable)
+                throw new Exception("כשגיאה: כלא לא בהחזקה זמנית");
+
+            SqlCommand cmd = new SqlCommand();
+            cmd.CommandText = "EXECUTE sp_Prisoner_releaseFromHold @prisoner_id";
+            cmd.Parameters.AddWithValue("@prisoner_id", this.prisonerId);
+            SQL_CON sc = new SQL_CON();
+            sc.execute_non_query(cmd);
+
+            this.activityStatus = PrisonerActivityStatus.Idle;
+            this.update();
+        }
+
+        /// <summary>
+        /// Transition: TemporarilyUnavailable → Archived
+        /// Permanent unavailability; archive prisoner.
+        /// </summary>
+        public void archiveUnavailable()
+        {
+            if (this.activityStatus != PrisonerActivityStatus.TemporarilyUnavailable)
+                throw new Exception("כשגיאה: כלא לא בהחזקה זמנית");
+
+            SqlCommand cmd = new SqlCommand();
+            cmd.CommandText = "EXECUTE sp_Prisoner_archiveUnavailable @prisoner_id";
+            cmd.Parameters.AddWithValue("@prisoner_id", this.prisonerId);
+            SQL_CON sc = new SQL_CON();
+            sc.execute_non_query(cmd);
+
+            this.activityStatus = PrisonerActivityStatus.Archived;
+            this.update();
+        }
+
+        /// <summary>
+        /// Transition: Any → Archived
+        /// Release date reached or program termination. Side effect: cease PayrollRecord generation (R10).
+        /// </summary>
+        public void archive()
+        {
+            SqlCommand cmd = new SqlCommand();
+            cmd.CommandText = "EXECUTE sp_Prisoner_archive @prisoner_id";
+            cmd.Parameters.AddWithValue("@prisoner_id", this.prisonerId);
+            SQL_CON sc = new SQL_CON();
+            sc.execute_non_query(cmd);
+
+            this.activityStatus = PrisonerActivityStatus.Archived;
+            this.update();
+        }
     }
 }

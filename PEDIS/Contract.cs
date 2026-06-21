@@ -159,5 +159,86 @@ namespace PEDIS
             }
             return null;
         }
+
+        // ============================================================================
+        // STATE TRANSITION METHODS (4 transitions for ContractStatus)
+        // ============================================================================
+
+        /// <summary>
+        /// Transition: Active → Inactive
+        /// Manual suspension by Dept Manager. Side effect: prevent new ProductionOrders under this contract (R3).
+        /// </summary>
+        public void suspend()
+        {
+            if (this.contractStatus != ContractStatus.Active)
+                throw new Exception("כשגיאה: חוזה לא פעיל");
+
+            SqlCommand cmd = new SqlCommand();
+            cmd.CommandText = "EXECUTE sp_Contract_suspend @contract_id";
+            cmd.Parameters.AddWithValue("@contract_id", this.contractId);
+            SQL_CON sc = new SQL_CON();
+            sc.execute_non_query(cmd);
+
+            this.contractStatus = ContractStatus.Inactive;
+            this.update();
+        }
+
+        /// <summary>
+        /// Transition: Inactive → Active
+        /// Manual reactivation by Dept Manager. Side effect: re-enable ProductionOrder acceptance (R3).
+        /// </summary>
+        public void reactivate()
+        {
+            if (this.contractStatus != ContractStatus.Inactive)
+                throw new Exception("כשגיאה: חוזה לא לא פעיל");
+
+            SqlCommand cmd = new SqlCommand();
+            cmd.CommandText = "EXECUTE sp_Contract_reactivate @contract_id";
+            cmd.Parameters.AddWithValue("@contract_id", this.contractId);
+            SQL_CON sc = new SQL_CON();
+            sc.execute_non_query(cmd);
+
+            this.contractStatus = ContractStatus.Active;
+            this.update();
+        }
+
+        /// <summary>
+        /// Transition: Active/Inactive → Expired
+        /// End date reached (daily check). Side effect: archive contract, block new orders, notify customer (R12).
+        /// Guard: TODAY >= contract.end_date (but this is date-driven, typically called by background job)
+        /// </summary>
+        public void expire()
+        {
+            if (this.contractStatus != ContractStatus.Active && this.contractStatus != ContractStatus.Inactive)
+                throw new Exception("כשגיאה: חוזה כבר פג");
+
+            SqlCommand cmd = new SqlCommand();
+            cmd.CommandText = "EXECUTE sp_Contract_expire @contract_id";
+            cmd.Parameters.AddWithValue("@contract_id", this.contractId);
+            SQL_CON sc = new SQL_CON();
+            sc.execute_non_query(cmd);
+
+            this.contractStatus = ContractStatus.Expired;
+            this.update();
+        }
+
+        /// <summary>
+        /// Transition: Expired → (terminal)
+        /// Archive expired contract. No further transitions allowed.
+        /// </summary>
+        public void archive()
+        {
+            if (this.contractStatus != ContractStatus.Expired)
+                throw new Exception("כשגיאה: חוזה לא פג");
+
+            SqlCommand cmd = new SqlCommand();
+            cmd.CommandText = "EXECUTE sp_Contract_archive @contract_id";
+            cmd.Parameters.AddWithValue("@contract_id", this.contractId);
+            SQL_CON sc = new SQL_CON();
+            sc.execute_non_query(cmd);
+
+            // No new state; contract remains Expired but marked as archived in DB
+            this.update();
+        }
     }
 }

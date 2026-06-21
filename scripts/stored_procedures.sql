@@ -747,3 +747,887 @@ BEGIN
     SELECT * FROM ProductivityRecord WHERE productivity_record_id = @productivity_record_id;
 END;
 GO
+
+-- ============================================================================
+-- PRISONER STATE TRANSITION PROCEDURES
+-- ============================================================================
+
+CREATE PROCEDURE sp_Prisoner_approvePrison
+    @prisoner_id INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+    BEGIN TRAN;
+    BEGIN TRY
+        UPDATE Prisoner
+        SET activity_status = 'PendingDepartmentManagerApproval'
+        WHERE prisoner_id = @prisoner_id;
+        COMMIT TRAN;
+    END TRY
+    BEGIN CATCH
+        ROLLBACK TRAN;
+        THROW;
+    END CATCH
+END;
+GO
+
+CREATE PROCEDURE sp_Prisoner_rejectPrison
+    @prisoner_id INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+    BEGIN TRAN;
+    BEGIN TRY
+        UPDATE Prisoner
+        SET activity_status = 'Archived'
+        WHERE prisoner_id = @prisoner_id;
+        COMMIT TRAN;
+    END TRY
+    BEGIN CATCH
+        ROLLBACK TRAN;
+        THROW;
+    END CATCH
+END;
+GO
+
+CREATE PROCEDURE sp_Prisoner_approveDeptManager
+    @prisoner_id INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+    BEGIN TRAN;
+    BEGIN TRY
+        UPDATE Prisoner
+        SET activity_status = 'PendingPlacement'
+        WHERE prisoner_id = @prisoner_id;
+        COMMIT TRAN;
+    END TRY
+    BEGIN CATCH
+        ROLLBACK TRAN;
+        THROW;
+    END CATCH
+END;
+GO
+
+CREATE PROCEDURE sp_Prisoner_rejectDeptManager
+    @prisoner_id INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+    BEGIN TRAN;
+    BEGIN TRY
+        UPDATE Prisoner
+        SET activity_status = 'Archived'
+        WHERE prisoner_id = @prisoner_id;
+        COMMIT TRAN;
+    END TRY
+    BEGIN CATCH
+        ROLLBACK TRAN;
+        THROW;
+    END CATCH
+END;
+GO
+
+CREATE PROCEDURE sp_Prisoner_assignToFactory
+    @prisoner_id INT,
+    @factory NVARCHAR(50)
+AS
+BEGIN
+    SET NOCOUNT ON;
+    BEGIN TRAN;
+    BEGIN TRY
+        UPDATE Prisoner
+        SET activity_status = 'Idle',
+            factory = @factory
+        WHERE prisoner_id = @prisoner_id;
+        COMMIT TRAN;
+    END TRY
+    BEGIN CATCH
+        ROLLBACK TRAN;
+        THROW;
+    END CATCH
+END;
+GO
+
+CREATE PROCEDURE sp_Prisoner_clockIn
+    @prisoner_id INT,
+    @work_order_id INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+    BEGIN TRAN;
+    BEGIN TRY
+        UPDATE Prisoner
+        SET activity_status = 'OnShiftWorking'
+        WHERE prisoner_id = @prisoner_id;
+
+        -- Create DailyAttendance entry if not exists
+        INSERT INTO AttendanceRecord (prisoner_id, attendance_date, factory, entry_time)
+        SELECT @prisoner_id, CAST(GETUTCDATE() AS DATE), factory, CAST(GETUTCDATE() AS TIME)
+        FROM Prisoner WHERE prisoner_id = @prisoner_id;
+
+        COMMIT TRAN;
+    END TRY
+    BEGIN CATCH
+        ROLLBACK TRAN;
+        THROW;
+    END CATCH
+END;
+GO
+
+CREATE PROCEDURE sp_Prisoner_pauseForMaterials
+    @prisoner_id INT,
+    @reason NVARCHAR(MAX) = NULL
+AS
+BEGIN
+    SET NOCOUNT ON;
+    BEGIN TRAN;
+    BEGIN TRY
+        UPDATE Prisoner
+        SET activity_status = 'WaitingForMaterials'
+        WHERE prisoner_id = @prisoner_id;
+
+        -- Create Alert (R16) - simplified: no Alert table implementation yet
+        -- FUTURE: INSERT INTO Alert (...) VALUES (...)
+
+        COMMIT TRAN;
+    END TRY
+    BEGIN CATCH
+        ROLLBACK TRAN;
+        THROW;
+    END CATCH
+END;
+GO
+
+CREATE PROCEDURE sp_Prisoner_clockOut
+    @prisoner_id INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+    BEGIN TRAN;
+    BEGIN TRY
+        UPDATE Prisoner
+        SET activity_status = 'Idle'
+        WHERE prisoner_id = @prisoner_id;
+
+        -- Update DailyAttendance exit_time (update latest record for today)
+        UPDATE AttendanceRecord
+        SET exit_time = CAST(GETUTCDATE() AS TIME)
+        WHERE prisoner_id = @prisoner_id
+          AND attendance_date = CAST(GETUTCDATE() AS DATE)
+          AND exit_time IS NULL;
+
+        COMMIT TRAN;
+    END TRY
+    BEGIN CATCH
+        ROLLBACK TRAN;
+        THROW;
+    END CATCH
+END;
+GO
+
+CREATE PROCEDURE sp_Prisoner_resumeFromMaterials
+    @prisoner_id INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+    BEGIN TRAN;
+    BEGIN TRY
+        UPDATE Prisoner
+        SET activity_status = 'OnShiftWorking'
+        WHERE prisoner_id = @prisoner_id;
+
+        -- Clear Alert (R16) - simplified
+        -- FUTURE: DELETE FROM Alert WHERE prisoner_id = @prisoner_id AND ...
+
+        COMMIT TRAN;
+    END TRY
+    BEGIN CATCH
+        ROLLBACK TRAN;
+        THROW;
+    END CATCH
+END;
+GO
+
+CREATE PROCEDURE sp_Prisoner_abortTask
+    @prisoner_id INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+    BEGIN TRAN;
+    BEGIN TRY
+        UPDATE Prisoner
+        SET activity_status = 'Idle'
+        WHERE prisoner_id = @prisoner_id;
+
+        -- Update DailyAttendance if in progress
+        UPDATE AttendanceRecord
+        SET exit_time = CAST(GETUTCDATE() AS TIME)
+        WHERE prisoner_id = @prisoner_id
+          AND attendance_date = CAST(GETUTCDATE() AS DATE)
+          AND exit_time IS NULL;
+
+        COMMIT TRAN;
+    END TRY
+    BEGIN CATCH
+        ROLLBACK TRAN;
+        THROW;
+    END CATCH
+END;
+GO
+
+CREATE PROCEDURE sp_Prisoner_enrollInProfessionalTraining
+    @prisoner_id INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+    BEGIN TRAN;
+    BEGIN TRY
+        UPDATE Prisoner
+        SET activity_status = 'InProfessionalTraining'
+        WHERE prisoner_id = @prisoner_id;
+
+        COMMIT TRAN;
+    END TRY
+    BEGIN CATCH
+        ROLLBACK TRAN;
+        THROW;
+    END CATCH
+END;
+GO
+
+CREATE PROCEDURE sp_Prisoner_completeProfessionalTraining
+    @prisoner_id INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+    BEGIN TRAN;
+    BEGIN TRY
+        UPDATE Prisoner
+        SET activity_status = 'Idle'
+        WHERE prisoner_id = @prisoner_id;
+
+        COMMIT TRAN;
+    END TRY
+    BEGIN CATCH
+        ROLLBACK TRAN;
+        THROW;
+    END CATCH
+END;
+GO
+
+CREATE PROCEDURE sp_Prisoner_enrollInSafetyTraining
+    @prisoner_id INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+    BEGIN TRAN;
+    BEGIN TRY
+        UPDATE Prisoner
+        SET activity_status = 'InSafetyTraining'
+        WHERE prisoner_id = @prisoner_id;
+
+        COMMIT TRAN;
+    END TRY
+    BEGIN CATCH
+        ROLLBACK TRAN;
+        THROW;
+    END CATCH
+END;
+GO
+
+CREATE PROCEDURE sp_Prisoner_completeSafetyTraining
+    @prisoner_id INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+    BEGIN TRAN;
+    BEGIN TRY
+        UPDATE Prisoner
+        SET activity_status = 'Idle',
+            safety_training_validity = DATEADD(YEAR, 1, GETUTCDATE())
+        WHERE prisoner_id = @prisoner_id;
+
+        COMMIT TRAN;
+    END TRY
+    BEGIN CATCH
+        ROLLBACK TRAN;
+        THROW;
+    END CATCH
+END;
+GO
+
+CREATE PROCEDURE sp_Prisoner_placeOnHold
+    @prisoner_id INT,
+    @reason NVARCHAR(MAX) = NULL
+AS
+BEGIN
+    SET NOCOUNT ON;
+    BEGIN TRAN;
+    BEGIN TRY
+        UPDATE Prisoner
+        SET activity_status = 'TemporarilyUnavailable'
+        WHERE prisoner_id = @prisoner_id;
+
+        -- Create Alert (R16)
+        -- FUTURE: INSERT INTO Alert (...) VALUES (...)
+
+        COMMIT TRAN;
+    END TRY
+    BEGIN CATCH
+        ROLLBACK TRAN;
+        THROW;
+    END CATCH
+END;
+GO
+
+CREATE PROCEDURE sp_Prisoner_releaseFromHold
+    @prisoner_id INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+    BEGIN TRAN;
+    BEGIN TRY
+        UPDATE Prisoner
+        SET activity_status = 'Idle'
+        WHERE prisoner_id = @prisoner_id;
+
+        -- Clear Alert (R16)
+        -- FUTURE: DELETE FROM Alert WHERE prisoner_id = @prisoner_id AND ...
+
+        COMMIT TRAN;
+    END TRY
+    BEGIN CATCH
+        ROLLBACK TRAN;
+        THROW;
+    END CATCH
+END;
+GO
+
+CREATE PROCEDURE sp_Prisoner_archiveUnavailable
+    @prisoner_id INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+    BEGIN TRAN;
+    BEGIN TRY
+        UPDATE Prisoner
+        SET activity_status = 'Archived'
+        WHERE prisoner_id = @prisoner_id;
+
+        COMMIT TRAN;
+    END TRY
+    BEGIN CATCH
+        ROLLBACK TRAN;
+        THROW;
+    END CATCH
+END;
+GO
+
+CREATE PROCEDURE sp_Prisoner_archive
+    @prisoner_id INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+    BEGIN TRAN;
+    BEGIN TRY
+        UPDATE Prisoner
+        SET activity_status = 'Archived'
+        WHERE prisoner_id = @prisoner_id;
+
+        -- Cease PayrollRecord generation (R10) - mark as inactive in PayrollRecord
+        -- FUTURE: UPDATE PayrollRecord SET is_active = 0 WHERE prisoner_id = @prisoner_id
+
+        COMMIT TRAN;
+    END TRY
+    BEGIN CATCH
+        ROLLBACK TRAN;
+        THROW;
+    END CATCH
+END;
+GO
+
+-- ============================================================================
+-- PRODUCTION ORDER STATE TRANSITION PROCEDURES
+-- ============================================================================
+
+CREATE PROCEDURE sp_ProductionOrder_acceptOrder
+    @production_order_id INT,
+    @factory_id INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+    BEGIN TRAN;
+    BEGIN TRY
+        UPDATE ProductionOrder
+        SET order_status = 'InProduction'
+        WHERE production_order_id = @production_order_id;
+
+        -- Create WorkOrders (R2, R3) - simplified: assume caller creates separately
+        -- FUTURE: INSERT INTO WorkOrder (...) SELECT ... FROM ProductionOrder
+
+        COMMIT TRAN;
+    END TRY
+    BEGIN CATCH
+        ROLLBACK TRAN;
+        THROW;
+    END CATCH
+END;
+GO
+
+CREATE PROCEDURE sp_ProductionOrder_cancelOrder
+    @production_order_id INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+    BEGIN TRAN;
+    BEGIN TRY
+        UPDATE ProductionOrder
+        SET order_status = 'Cancelled'
+        WHERE production_order_id = @production_order_id;
+
+        -- Notify customer (R12) - simplified
+        -- FUTURE: INSERT INTO Notification (...) VALUES (...)
+
+        COMMIT TRAN;
+    END TRY
+    BEGIN CATCH
+        ROLLBACK TRAN;
+        THROW;
+    END CATCH
+END;
+GO
+
+CREATE PROCEDURE sp_ProductionOrder_holdOrder
+    @production_order_id INT,
+    @reason NVARCHAR(MAX) = NULL
+AS
+BEGIN
+    SET NOCOUNT ON;
+    BEGIN TRAN;
+    BEGIN TRY
+        UPDATE ProductionOrder
+        SET order_status = 'OnHold'
+        WHERE production_order_id = @production_order_id;
+
+        -- Create Alert (R16)
+        -- FUTURE: INSERT INTO Alert (...) VALUES (...)
+
+        COMMIT TRAN;
+    END TRY
+    BEGIN CATCH
+        ROLLBACK TRAN;
+        THROW;
+    END CATCH
+END;
+GO
+
+CREATE PROCEDURE sp_ProductionOrder_resumeOrder
+    @production_order_id INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+    BEGIN TRAN;
+    BEGIN TRY
+        UPDATE ProductionOrder
+        SET order_status = 'InProduction'
+        WHERE production_order_id = @production_order_id;
+
+        -- Clear Alert (R16)
+        -- FUTURE: DELETE FROM Alert WHERE production_order_id = @production_order_id AND ...
+
+        COMMIT TRAN;
+    END TRY
+    BEGIN CATCH
+        ROLLBACK TRAN;
+        THROW;
+    END CATCH
+END;
+GO
+
+CREATE PROCEDURE sp_ProductionOrder_markReadyForPickup
+    @production_order_id INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+    BEGIN TRAN;
+    BEGIN TRY
+        UPDATE ProductionOrder
+        SET order_status = 'ReadyForPickup'
+        WHERE production_order_id = @production_order_id;
+
+        -- Notify customer (R12)
+        -- FUTURE: INSERT INTO Notification (...) VALUES (...)
+
+        COMMIT TRAN;
+    END TRY
+    BEGIN CATCH
+        ROLLBACK TRAN;
+        THROW;
+    END CATCH
+END;
+GO
+
+CREATE PROCEDURE sp_ProductionOrder_markDelivered
+    @production_order_id INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+    BEGIN TRAN;
+    BEGIN TRY
+        UPDATE ProductionOrder
+        SET order_status = 'Delivered'
+        WHERE production_order_id = @production_order_id;
+
+        -- Generate PayrollRecords (R10) for all inmates who worked on this order
+        -- FUTURE: Complex query to insert PayrollRecords based on ProductivityRecords
+
+        COMMIT TRAN;
+    END TRY
+    BEGIN CATCH
+        ROLLBACK TRAN;
+        THROW;
+    END CATCH
+END;
+GO
+
+CREATE PROCEDURE sp_ProductionOrder_cancelOnHold
+    @production_order_id INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+    BEGIN TRAN;
+    BEGIN TRY
+        UPDATE ProductionOrder
+        SET order_status = 'Cancelled'
+        WHERE production_order_id = @production_order_id;
+
+        -- Notify customer (R12)
+        -- FUTURE: INSERT INTO Notification (...) VALUES (...)
+
+        COMMIT TRAN;
+    END TRY
+    BEGIN CATCH
+        ROLLBACK TRAN;
+        THROW;
+    END CATCH
+END;
+GO
+
+-- ============================================================================
+-- WORK ORDER STATE TRANSITION PROCEDURES
+-- ============================================================================
+
+CREATE PROCEDURE sp_WorkOrder_enterProduction
+    @work_order_id INT,
+    @inmate_count INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+    BEGIN TRAN;
+    BEGIN TRY
+        UPDATE WorkOrder
+        SET status = 'InProcess'
+        WHERE work_order_id = @work_order_id;
+
+        -- Create AttendanceRecord entries for assigned inmates
+        -- FUTURE: INSERT INTO AttendanceRecord (...) FOR EACH inmate
+
+        COMMIT TRAN;
+    END TRY
+    BEGIN CATCH
+        ROLLBACK TRAN;
+        THROW;
+    END CATCH
+END;
+GO
+
+CREATE PROCEDURE sp_WorkOrder_resetAssignment
+    @work_order_id INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+    BEGIN TRAN;
+    BEGIN TRY
+        UPDATE WorkOrder
+        SET status = 'HasntEnteredIntoProductionYet'
+        WHERE work_order_id = @work_order_id;
+
+        -- Clear AttendanceRecords for this work order
+        -- FUTURE: DELETE FROM AttendanceRecord WHERE work_order_id = @work_order_id
+
+        -- Reset completed_quantity in parent ProductionOrder
+        UPDATE ProductionOrder
+        SET completed_quantity = 0
+        WHERE production_order_id = (SELECT production_order_id FROM WorkOrder WHERE work_order_id = @work_order_id);
+
+        COMMIT TRAN;
+    END TRY
+    BEGIN CATCH
+        ROLLBACK TRAN;
+        THROW;
+    END CATCH
+END;
+GO
+
+CREATE PROCEDURE sp_WorkOrder_markComplete
+    @work_order_id INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+    BEGIN TRAN;
+    BEGIN TRY
+        UPDATE WorkOrder
+        SET status = 'Completed'
+        WHERE work_order_id = @work_order_id;
+
+        -- Check if parent ProductionOrder is ready for pickup
+        -- FUTURE: UPDATE ProductionOrder IF all WorkOrders completed
+
+        COMMIT TRAN;
+    END TRY
+    BEGIN CATCH
+        ROLLBACK TRAN;
+        THROW;
+    END CATCH
+END;
+GO
+
+CREATE PROCEDURE sp_WorkOrder_cancel
+    @work_order_id INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+    BEGIN TRAN;
+    BEGIN TRY
+        -- Mark as abandoned (no explicit state, but update internal flags)
+        UPDATE WorkOrder
+        SET status = 'HasntEnteredIntoProductionYet'
+        WHERE work_order_id = @work_order_id;
+
+        COMMIT TRAN;
+    END TRY
+    BEGIN CATCH
+        ROLLBACK TRAN;
+        THROW;
+    END CATCH
+END;
+GO
+
+-- ============================================================================
+-- CONTRACT STATE TRANSITION PROCEDURES
+-- ============================================================================
+
+CREATE PROCEDURE sp_Contract_suspend
+    @contract_id INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+    BEGIN TRAN;
+    BEGIN TRY
+        UPDATE Contract
+        SET contract_status = 'Inactive'
+        WHERE contract_id = @contract_id;
+
+        COMMIT TRAN;
+    END TRY
+    BEGIN CATCH
+        ROLLBACK TRAN;
+        THROW;
+    END CATCH
+END;
+GO
+
+CREATE PROCEDURE sp_Contract_reactivate
+    @contract_id INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+    BEGIN TRAN;
+    BEGIN TRY
+        UPDATE Contract
+        SET contract_status = 'Active'
+        WHERE contract_id = @contract_id;
+
+        COMMIT TRAN;
+    END TRY
+    BEGIN CATCH
+        ROLLBACK TRAN;
+        THROW;
+    END CATCH
+END;
+GO
+
+CREATE PROCEDURE sp_Contract_expire
+    @contract_id INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+    BEGIN TRAN;
+    BEGIN TRY
+        UPDATE Contract
+        SET contract_status = 'Expired'
+        WHERE contract_id = @contract_id;
+
+        -- Notify customer (R12)
+        -- FUTURE: INSERT INTO Notification (...) VALUES (...)
+
+        COMMIT TRAN;
+    END TRY
+    BEGIN CATCH
+        ROLLBACK TRAN;
+        THROW;
+    END CATCH
+END;
+GO
+
+CREATE PROCEDURE sp_Contract_archive
+    @contract_id INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+    BEGIN TRAN;
+    BEGIN TRY
+        -- No new state, but mark as archived in DB (could add archived_at timestamp)
+        UPDATE Contract
+        SET modified_at = GETUTCDATE()
+        WHERE contract_id = @contract_id;
+
+        COMMIT TRAN;
+    END TRY
+    BEGIN CATCH
+        ROLLBACK TRAN;
+        THROW;
+    END CATCH
+END;
+GO
+
+-- ============================================================================
+-- ATTENDANCE RECORD STATE TRANSITION PROCEDURES
+-- ============================================================================
+
+CREATE PROCEDURE sp_AttendanceRecord_recordEntry
+    @attendance_record_id INT,
+    @prisoner_id INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+    BEGIN TRAN;
+    BEGIN TRY
+        -- Update Prisoner to OnShiftWorking
+        UPDATE Prisoner
+        SET activity_status = 'OnShiftWorking'
+        WHERE prisoner_id = @prisoner_id;
+
+        COMMIT TRAN;
+    END TRY
+    BEGIN CATCH
+        ROLLBACK TRAN;
+        THROW;
+    END CATCH
+END;
+GO
+
+CREATE PROCEDURE sp_AttendanceRecord_recordTemporaryExit
+    @attendance_record_id INT,
+    @temp_exit_time TIME
+AS
+BEGIN
+    SET NOCOUNT ON;
+    BEGIN TRAN;
+    BEGIN TRY
+        -- Record temporary exit (simplified: no separate table, just log in SP)
+        -- FUTURE: INSERT INTO AttendanceBreak (...) VALUES (...)
+
+        COMMIT TRAN;
+    END TRY
+    BEGIN CATCH
+        ROLLBACK TRAN;
+        THROW;
+    END CATCH
+END;
+GO
+
+CREATE PROCEDURE sp_AttendanceRecord_recordExit
+    @attendance_record_id INT,
+    @prisoner_id INT,
+    @hours_worked DECIMAL(5,2)
+AS
+BEGIN
+    SET NOCOUNT ON;
+    BEGIN TRAN;
+    BEGIN TRY
+        -- Update Prisoner to Idle
+        UPDATE Prisoner
+        SET activity_status = 'Idle'
+        WHERE prisoner_id = @prisoner_id;
+
+        -- Log hours worked to contribute to PayrollRecord (R10)
+        -- FUTURE: UPDATE PayrollRecord SET total_hours = total_hours + @hours_worked
+
+        COMMIT TRAN;
+    END TRY
+    BEGIN CATCH
+        ROLLBACK TRAN;
+        THROW;
+    END CATCH
+END;
+GO
+
+-- ============================================================================
+-- PRODUCTIVITY RECORD STATE TRANSITION PROCEDURES
+-- ============================================================================
+
+CREATE PROCEDURE sp_ProductivityRecord_submitProduction
+    @productivity_record_id INT,
+    @units_produced INT,
+    @defective_units INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+    BEGIN TRAN;
+    BEGIN TRY
+        -- Calculate quality rate
+        DECLARE @quality_rate DECIMAL(5,2) = 0;
+        IF @units_produced > 0
+            SET @quality_rate = CAST((@units_produced - @defective_units) AS DECIMAL) / @units_produced * 100;
+
+        -- Record quality metrics (simplified)
+        -- FUTURE: INSERT INTO QualityMetric (...) VALUES (...)
+
+        COMMIT TRAN;
+    END TRY
+    BEGIN CATCH
+        ROLLBACK TRAN;
+        THROW;
+    END CATCH
+END;
+GO
+
+CREATE PROCEDURE sp_ProductivityRecord_approveProduction
+    @productivity_record_id INT,
+    @work_order_id INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+    BEGIN TRAN;
+    BEGIN TRY
+        -- Update WorkOrder.completed_quantity
+        DECLARE @units_produced INT;
+        SELECT @units_produced = quantity_produced FROM ProductivityRecord
+        WHERE productivity_record_id = @productivity_record_id;
+
+        -- Increment WorkOrder completed_quantity
+        -- FUTURE: More complex logic to track actual units
+
+        -- Check if WorkOrder is complete (all units produced)
+        -- FUTURE: IF WorkOrder.completed_quantity >= WorkOrder.required_quantity THEN mark complete
+
+        COMMIT TRAN;
+    END TRY
+    BEGIN CATCH
+        ROLLBACK TRAN;
+        THROW;
+    END CATCH
+END;
+GO

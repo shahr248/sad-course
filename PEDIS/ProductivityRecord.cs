@@ -131,5 +131,60 @@ namespace PEDIS
             }
             return null;
         }
+
+        // ============================================================================
+        // STATE TRANSITION METHODS (2 implicit states: Pending, Verified)
+        // Implicit states inferred from verification status
+        // ============================================================================
+
+        /// <summary>
+        /// Transition: (Create) → Pending
+        /// Worker inputs units produced during shift (R6). Create ProductivityRecord with units_produced.
+        /// Side effect: calculate productivity rate.
+        /// </summary>
+        public void submitProduction(int unitsProduced, int defectiveUnits)
+        {
+            if (unitsProduced < 0)
+                throw new Exception("כשגיאה: כמות יחידות לא תקנית");
+
+            this.quantityProduced = unitsProduced;
+            this.create();
+            this.update();
+
+            SqlCommand cmd = new SqlCommand();
+            cmd.CommandText = "EXECUTE sp_ProductivityRecord_submitProduction @productivity_record_id, @units_produced, @defective_units";
+            cmd.Parameters.AddWithValue("@productivity_record_id", this.productivityRecordId);
+            cmd.Parameters.AddWithValue("@units_produced", unitsProduced);
+            cmd.Parameters.AddWithValue("@defective_units", defectiveUnits);
+            SQL_CON sc = new SQL_CON();
+            sc.execute_non_query(cmd);
+        }
+
+        /// <summary>
+        /// Transition: Pending → Verified
+        /// Supervisor QA review (manual or auto-check quality).
+        /// Side effect: update WorkOrder.completed_quantity, check if WorkOrder complete (R6).
+        /// Also feed into PerformanceEvaluation (R11) and PayrollRecord (R10).
+        /// </summary>
+        public void approveProduction()
+        {
+            SqlCommand cmd = new SqlCommand();
+            cmd.CommandText = "EXECUTE sp_ProductivityRecord_approveProduction @productivity_record_id, @work_order_id";
+            cmd.Parameters.AddWithValue("@productivity_record_id", this.productivityRecordId);
+            cmd.Parameters.AddWithValue("@work_order_id", this.workOrderId);
+            SQL_CON sc = new SQL_CON();
+            sc.execute_non_query(cmd);
+
+            // Side effect: update parent WorkOrder completed quantity
+            if (this.workOrder != null)
+            {
+                int currentCompleted = this.workOrder.getProductionOrder() != null ?
+                    this.workOrder.getProductionOrder().getCompletedQuantity() : 0;
+                this.workOrder.getProductionOrder()?.setCompletedQuantity(currentCompleted + this.quantityProduced);
+                this.workOrder.getProductionOrder()?.update();
+            }
+
+            this.update();
+        }
     }
 }
