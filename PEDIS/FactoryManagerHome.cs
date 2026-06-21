@@ -8,6 +8,9 @@ namespace PEDIS
         public delegate void LogoutHandler();
         public event LogoutHandler onLogout;
 
+        public delegate void ShowPanelHandler(UserControl panel);
+        public event ShowPanelHandler onShowPanel;
+
         private DepartmentManagement currentUser;
 
         public FactoryManagerHome()

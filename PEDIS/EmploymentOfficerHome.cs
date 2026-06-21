@@ -8,6 +8,9 @@ namespace PEDIS
         public delegate void LogoutHandler();
         public event LogoutHandler onLogout;
 
+        public delegate void ShowPanelHandler(UserControl panel);
+        public event ShowPanelHandler onShowPanel;
+
         private DepartmentManagement currentUser;
 
         public EmploymentOfficerHome()
@@ -33,7 +36,9 @@ namespace PEDIS
 
         private void btnPrisoners_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Prisoner Management Panel\n(To be implemented)", "Feature", MessageBoxButtons.OK);
+            EmploymentDepartmentPanel panel = new EmploymentDepartmentPanel();
+            panel.onBack += () => onShowPanel?.Invoke(this);
+            onShowPanel?.Invoke(panel);
         }
 
         private void btnOrders_Click(object sender, EventArgs e)

@@ -70,12 +70,11 @@ namespace PEDIS
             {
                 employmentOfficerHome = new EmploymentOfficerHome();
                 employmentOfficerHome.onLogout += handleLogout;
+                employmentOfficerHome.onShowPanel += showPanel;
             }
 
             employmentOfficerHome.setCurrentUser(user);
-            clearPanel();
-            this.Controls.Add(employmentOfficerHome);
-            employmentOfficerHome.Dock = DockStyle.Fill;
+            showPanel(employmentOfficerHome);
         }
 
         private void showFactoryManagerHome(DepartmentManagement user)
@@ -84,18 +83,24 @@ namespace PEDIS
             {
                 factoryManagerHome = new FactoryManagerHome();
                 factoryManagerHome.onLogout += handleLogout;
+                factoryManagerHome.onShowPanel += showPanel;
             }
 
             factoryManagerHome.setCurrentUser(user);
-            clearPanel();
-            this.Controls.Add(factoryManagerHome);
-            factoryManagerHome.Dock = DockStyle.Fill;
+            showPanel(factoryManagerHome);
         }
 
         private void handleLogout()
         {
             this.currentUser = null;
             showLoginPanel();
+        }
+
+        public void showPanel(UserControl panel)
+        {
+            clearPanel();
+            this.Controls.Add(panel);
+            panel.Dock = DockStyle.Fill;
         }
 
         private void clearPanel()
