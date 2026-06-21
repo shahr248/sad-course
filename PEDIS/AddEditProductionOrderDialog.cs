@@ -89,11 +89,13 @@ namespace PEDIS
         private void PopulateOrderStatuses()
         {
             cbOrderStatus.Items.Clear();
-            foreach (ProductionOrderStatus status in System.Enum.GetValues(typeof(ProductionOrderStatus)))
+            ProductionOrderStatus[] statuses = (ProductionOrderStatus[])System.Enum.GetValues(typeof(ProductionOrderStatus));
+            foreach (ProductionOrderStatus status in statuses)
             {
                 cbOrderStatus.Items.Add(status);
             }
-            cbOrderStatus.SelectedIndex = 0;
+            if (cbOrderStatus.Items.Count > 0)
+                cbOrderStatus.SelectedIndex = 0;
         }
 
         public void setPrisonOrderToEdit(ProductionOrder po)
