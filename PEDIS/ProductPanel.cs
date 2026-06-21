@@ -24,7 +24,7 @@ namespace PEDIS
             foreach (Product product in Program.Products)
             {
                 ListViewItem item = new ListViewItem(product.getId().ToString());
-                item.SubItems.Add(product.getProductName());
+                item.SubItems.Add(product.getName());
                 item.SubItems.Add(product.getUnitOfMeasure().ToString());
                 item.SubItems.Add(product.getDescription() ?? "");
                 item.Tag = product;
@@ -42,7 +42,7 @@ namespace PEDIS
 
             Product product = (Product)lvProducts.SelectedItems[0].Tag;
             string info = "ID: " + product.getId() + "\n" +
-                         "Name: " + product.getProductName() + "\n" +
+                         "Name: " + product.getName() + "\n" +
                          "Unit of Measure: " + product.getUnitOfMeasure() + "\n" +
                          "Description: " + (product.getDescription() ?? "N/A");
             MessageBox.Show(info, "Product Details", MessageBoxButtons.OK);
@@ -73,7 +73,7 @@ namespace PEDIS
 
             Product product = (Product)lvProducts.SelectedItems[0].Tag;
             DialogResult result = MessageBox.Show(
-                "Are you sure you want to delete product: " + product.getProductName() + "?",
+                "Are you sure you want to delete product: " + product.getName() + "?",
                 "Confirm Delete",
                 MessageBoxButtons.YesNo);
 

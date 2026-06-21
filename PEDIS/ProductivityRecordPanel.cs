@@ -24,11 +24,11 @@ namespace PEDIS
             foreach (ProductivityRecord productivity in Program.ProductivityRecords)
             {
                 ListViewItem item = new ListViewItem(productivity.getId().ToString());
-                item.SubItems.Add(productivity.getPrisonerName());
-                item.SubItems.Add(productivity.getWorkOrderNumber());
-                item.SubItems.Add(productivity.getDate().ToString("yyyy-MM-dd"));
-                item.SubItems.Add(productivity.getUnitsProduced().ToString());
-                item.SubItems.Add(productivity.getQualityScore().ToString("F2"));
+                item.SubItems.Add(productivity.getPrisoner().getFullName());
+                item.SubItems.Add(productivity.getWorkOrder().getWorkOrderNumber());
+                item.SubItems.Add(productivity.getProductivityDate().ToString("yyyy-MM-dd"));
+                item.SubItems.Add(productivity.getQuantityProduced().ToString());
+                item.SubItems.Add(productivity.getProductivityType().ToString());
                 item.Tag = productivity;
                 lvProductivity.Items.Add(item);
             }
@@ -44,11 +44,11 @@ namespace PEDIS
 
             ProductivityRecord productivity = (ProductivityRecord)lvProductivity.SelectedItems[0].Tag;
             string info = "ID: " + productivity.getId() + "\n" +
-                         "Prisoner: " + productivity.getPrisonerName() + "\n" +
-                         "Work Order #: " + productivity.getWorkOrderNumber() + "\n" +
-                         "Date: " + productivity.getDate().ToString("yyyy-MM-dd") + "\n" +
-                         "Units Produced: " + productivity.getUnitsProduced() + "\n" +
-                         "Quality Score: " + productivity.getQualityScore().ToString("F2");
+                         "Prisoner: " + productivity.getPrisoner().getFullName() + "\n" +
+                         "Work Order #: " + productivity.getWorkOrder().getWorkOrderNumber() + "\n" +
+                         "Date: " + productivity.getProductivityDate().ToString("yyyy-MM-dd") + "\n" +
+                         "Units Produced: " + productivity.getQuantityProduced() + "\n" +
+                         "Type: " + productivity.getProductivityType();
             MessageBox.Show(info, "Productivity Record Details", MessageBoxButtons.OK);
         }
 
@@ -77,7 +77,7 @@ namespace PEDIS
 
             ProductivityRecord productivity = (ProductivityRecord)lvProductivity.SelectedItems[0].Tag;
             DialogResult result = MessageBox.Show(
-                "Are you sure you want to delete productivity record for: " + productivity.getPrisonerName() + " on " + productivity.getDate().ToString("yyyy-MM-dd") + "?",
+                "Are you sure you want to delete productivity record for: " + productivity.getPrisoner().getFullName() + " on " + productivity.getProductivityDate().ToString("yyyy-MM-dd") + "?",
                 "Confirm Delete",
                 MessageBoxButtons.YesNo);
 

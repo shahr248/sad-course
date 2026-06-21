@@ -24,8 +24,8 @@ namespace PEDIS
             foreach (CustomerCompany company in Program.CustomerCompanies)
             {
                 ListViewItem item = new ListViewItem(company.getId().ToString());
-                item.SubItems.Add(company.getCompanyName());
-                item.SubItems.Add(company.getContactPerson() ?? "");
+                item.SubItems.Add(company.getName());
+                item.SubItems.Add(company.getContactName() ?? "");
                 item.SubItems.Add(company.getPhoneNumber() ?? "");
                 item.SubItems.Add(company.getEmail() ?? "");
                 item.Tag = company;
@@ -43,8 +43,8 @@ namespace PEDIS
 
             CustomerCompany company = (CustomerCompany)lvCompanies.SelectedItems[0].Tag;
             string info = "ID: " + company.getId() + "\n" +
-                         "Name: " + company.getCompanyName() + "\n" +
-                         "Contact: " + (company.getContactPerson() ?? "N/A") + "\n" +
+                         "Name: " + company.getName() + "\n" +
+                         "Contact: " + (company.getContactName() ?? "N/A") + "\n" +
                          "Phone: " + (company.getPhoneNumber() ?? "N/A") + "\n" +
                          "Email: " + (company.getEmail() ?? "N/A");
             MessageBox.Show(info, "Company Details", MessageBoxButtons.OK);
@@ -75,7 +75,7 @@ namespace PEDIS
 
             CustomerCompany company = (CustomerCompany)lvCompanies.SelectedItems[0].Tag;
             DialogResult result = MessageBox.Show(
-                "Are you sure you want to delete company: " + company.getCompanyName() + "?",
+                "Are you sure you want to delete company: " + company.getName() + "?",
                 "Confirm Delete",
                 MessageBoxButtons.YesNo);
 

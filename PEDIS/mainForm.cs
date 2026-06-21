@@ -35,7 +35,7 @@ namespace PEDIS
                 loginPanel.onLoginSuccess += handleLoginSuccess;
             }
 
-            clearPanel();
+            this.Controls.Clear();
             this.Controls.Add(loginPanel);
             loginPanel.Dock = DockStyle.Fill;
             loginPanel.Focus();

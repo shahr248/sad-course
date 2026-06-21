@@ -25,9 +25,9 @@ namespace PEDIS
             {
                 ListViewItem item = new ListViewItem(order.getId().ToString());
                 item.SubItems.Add(order.getOrderNumber());
-                item.SubItems.Add(order.getStatus().ToString());
-                item.SubItems.Add(order.getOrderDate().ToString("yyyy-MM-dd"));
-                item.SubItems.Add(order.getDueDate().ToString("yyyy-MM-dd"));
+                item.SubItems.Add(order.getOrderStatus().ToString());
+                item.SubItems.Add(order.getSubmissionDate().ToString("yyyy-MM-dd"));
+                item.SubItems.Add(order.getDeliveryDeadline().ToString("yyyy-MM-dd"));
                 item.Tag = order;
                 lvOrders.Items.Add(item);
             }
@@ -44,9 +44,9 @@ namespace PEDIS
             ProductionOrder order = (ProductionOrder)lvOrders.SelectedItems[0].Tag;
             string info = "ID: " + order.getId() + "\n" +
                          "Order #: " + order.getOrderNumber() + "\n" +
-                         "Status: " + order.getStatus() + "\n" +
-                         "Order Date: " + order.getOrderDate().ToString("yyyy-MM-dd") + "\n" +
-                         "Due Date: " + order.getDueDate().ToString("yyyy-MM-dd");
+                         "Status: " + order.getOrderStatus() + "\n" +
+                         "Order Date: " + order.getSubmissionDate().ToString("yyyy-MM-dd") + "\n" +
+                         "Due Date: " + order.getDeliveryDeadline().ToString("yyyy-MM-dd");
             MessageBox.Show(info, "Production Order Details", MessageBoxButtons.OK);
         }
 

@@ -25,9 +25,8 @@ namespace PEDIS
             {
                 ListViewItem item = new ListViewItem(contract.getId().ToString());
                 item.SubItems.Add(contract.getContractNumber());
-                item.SubItems.Add(contract.getStatus().ToString());
+                item.SubItems.Add(contract.getContractStatus().ToString());
                 item.SubItems.Add(contract.getStartDate().ToString("yyyy-MM-dd"));
-                item.SubItems.Add(contract.getEndDate()?.ToString("yyyy-MM-dd") ?? "");
                 item.Tag = contract;
                 lvContracts.Items.Add(item);
             }
@@ -44,9 +43,8 @@ namespace PEDIS
             Contract contract = (Contract)lvContracts.SelectedItems[0].Tag;
             string info = "ID: " + contract.getId() + "\n" +
                          "Number: " + contract.getContractNumber() + "\n" +
-                         "Status: " + contract.getStatus() + "\n" +
-                         "Start Date: " + contract.getStartDate().ToString("yyyy-MM-dd") + "\n" +
-                         "End Date: " + (contract.getEndDate()?.ToString("yyyy-MM-dd") ?? "N/A");
+                         "Status: " + contract.getContractStatus() + "\n" +
+                         "Start Date: " + contract.getStartDate().ToString("yyyy-MM-dd");
             MessageBox.Show(info, "Contract Details", MessageBoxButtons.OK);
         }
 

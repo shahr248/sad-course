@@ -24,11 +24,10 @@ namespace PEDIS
             foreach (AttendanceRecord attendance in Program.AttendanceRecords)
             {
                 ListViewItem item = new ListViewItem(attendance.getId().ToString());
-                item.SubItems.Add(attendance.getPrisonerName());
-                item.SubItems.Add(attendance.getDate().ToString("yyyy-MM-dd"));
-                item.SubItems.Add(attendance.getTimeIn().ToString("HH:mm"));
-                item.SubItems.Add(attendance.getTimeOut().ToString("HH:mm"));
-                item.SubItems.Add(attendance.getStatus().ToString());
+                item.SubItems.Add(attendance.getPrisoner().getFullName());
+                item.SubItems.Add(attendance.getAttendanceDate().ToString("yyyy-MM-dd"));
+                item.SubItems.Add(attendance.getEntryTime().ToString("HH:mm"));
+                item.SubItems.Add(attendance.getExitTime().ToString("HH:mm"));
                 item.Tag = attendance;
                 lvAttendance.Items.Add(item);
             }
@@ -44,11 +43,10 @@ namespace PEDIS
 
             AttendanceRecord attendance = (AttendanceRecord)lvAttendance.SelectedItems[0].Tag;
             string info = "ID: " + attendance.getId() + "\n" +
-                         "Prisoner: " + attendance.getPrisonerName() + "\n" +
-                         "Date: " + attendance.getDate().ToString("yyyy-MM-dd") + "\n" +
-                         "Time In: " + attendance.getTimeIn().ToString("HH:mm") + "\n" +
-                         "Time Out: " + attendance.getTimeOut().ToString("HH:mm") + "\n" +
-                         "Status: " + attendance.getStatus();
+                         "Prisoner: " + attendance.getPrisoner().getFullName() + "\n" +
+                         "Date: " + attendance.getAttendanceDate().ToString("yyyy-MM-dd") + "\n" +
+                         "Time In: " + attendance.getEntryTime().ToString("HH:mm") + "\n" +
+                         "Time Out: " + attendance.getExitTime().ToString("HH:mm");
             MessageBox.Show(info, "Attendance Record Details", MessageBoxButtons.OK);
         }
 
@@ -77,7 +75,7 @@ namespace PEDIS
 
             AttendanceRecord attendance = (AttendanceRecord)lvAttendance.SelectedItems[0].Tag;
             DialogResult result = MessageBox.Show(
-                "Are you sure you want to delete attendance record for: " + attendance.getPrisonerName() + " on " + attendance.getDate().ToString("yyyy-MM-dd") + "?",
+                "Are you sure you want to delete attendance record for: " + attendance.getPrisoner().getFullName() + " on " + attendance.getAttendanceDate().ToString("yyyy-MM-dd") + "?",
                 "Confirm Delete",
                 MessageBoxButtons.YesNo);
 

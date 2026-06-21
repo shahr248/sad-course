@@ -27,7 +27,7 @@ namespace PEDIS
                 item.SubItems.Add(workOrder.getWorkOrderNumber());
                 item.SubItems.Add(workOrder.getStatus().ToString());
                 item.SubItems.Add(workOrder.getStartDate().ToString("yyyy-MM-dd"));
-                item.SubItems.Add(workOrder.getEndDate().ToString("yyyy-MM-dd"));
+                item.SubItems.Add(workOrder.getDeadline().ToString("yyyy-MM-dd"));
                 item.Tag = workOrder;
                 lvWorkOrders.Items.Add(item);
             }
@@ -46,7 +46,7 @@ namespace PEDIS
                          "Work Order #: " + workOrder.getWorkOrderNumber() + "\n" +
                          "Status: " + workOrder.getStatus() + "\n" +
                          "Start Date: " + workOrder.getStartDate().ToString("yyyy-MM-dd") + "\n" +
-                         "End Date: " + workOrder.getEndDate().ToString("yyyy-MM-dd");
+                         "End Date: " + workOrder.getDeadline().ToString("yyyy-MM-dd");
             MessageBox.Show(info, "Work Order Details", MessageBoxButtons.OK);
         }
 
