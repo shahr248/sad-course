@@ -25,26 +25,6 @@ namespace PEDIS
         private ProductionOrder orderToEdit;
         private bool isEditMode;
 
-        private Label lblTitle;
-        private Label lblOrderNumber;
-        private TextBox txtOrderNumber;
-        private Label lblCustomerCompany;
-        private ComboBox cbCustomerCompany;
-        private Label lblProduct;
-        private ComboBox cbProduct;
-        private Label lblContract;
-        private ComboBox cbContract;
-        private Label lblQuantity;
-        private TextBox txtQuantity;
-        private Label lblSubmissionDate;
-        private DateTimePicker dtpSubmissionDate;
-        private Label lblDeliveryDeadline;
-        private DateTimePicker dtpDeliveryDeadline;
-        private Label lblOrderStatus;
-        private ComboBox cbOrderStatus;
-        private Button btnSave;
-        private Button btnCancel;
-
         public AddEditProductionOrderDialog(ProductionOrder orderToEdit = null)
         {
             this.orderToEdit = orderToEdit;
