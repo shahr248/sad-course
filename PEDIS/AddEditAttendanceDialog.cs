@@ -21,10 +21,9 @@ namespace PEDIS
             this.attendanceToEdit = attendance;
             this.isEditMode = true;
             this.Text = "Edit Attendance Record";
-            if (attendance != null)
-            {
-                LoadAttendanceData(attendance);
-            }
+            // Combo box items are populated in the Load handler, which hasn't fired yet at this
+            // point (ShowDialog() hasn't been called) -- defer applying record values until then,
+            // otherwise SelectedItem assignments below would have nothing to match against.
         }
 
         private void LoadAttendanceData(AttendanceRecord attendance)
@@ -183,15 +182,24 @@ namespace PEDIS
             }
             cbPrisoner.DropDownStyle = ComboBoxStyle.DropDownList;
 
+            cbFactory.Items.Clear();
             foreach (var factory in Enum.GetValues(typeof(Factory)))
                 cbFactory.Items.Add(factory);
             cbFactory.DropDownStyle = ComboBoxStyle.DropDownList;
-            if (cbFactory.Items.Count > 0)
-                cbFactory.SelectedIndex = 0;
 
-            dtpAttendanceDate.Value = DateTime.Today;
-            dtpEntryTime.Value = new DateTime(2000, 1, 1, 8, 0, 0);
-            dtpExitTime.Value = new DateTime(2000, 1, 1, 16, 0, 0);
+            if (isEditMode && attendanceToEdit != null)
+            {
+                LoadAttendanceData(attendanceToEdit);
+            }
+            else
+            {
+                if (cbFactory.Items.Count > 0)
+                    cbFactory.SelectedIndex = 0;
+
+                dtpAttendanceDate.Value = DateTime.Today;
+                dtpEntryTime.Value = new DateTime(2000, 1, 1, 8, 0, 0);
+                dtpExitTime.Value = new DateTime(2000, 1, 1, 16, 0, 0);
+            }
         }
 
         private void chkEntryTime_CheckedChanged(object sender, EventArgs e)

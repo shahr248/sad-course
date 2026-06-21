@@ -204,7 +204,11 @@ namespace PEDIS
 
         private void btnAdd_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Add Productivity Record - Feature coming soon", "Not Implemented", MessageBoxButtons.OK);
+            AddEditProductivityRecordDialog dialog = new AddEditProductivityRecordDialog();
+            if (dialog.ShowDialog() == DialogResult.OK)
+            {
+                refreshList(filterStartDate, filterEndDate, filteredPrisonerId, filteredWorkOrderId);
+            }
         }
 
         private void btnEdit_Click(object sender, EventArgs e)
@@ -214,7 +218,14 @@ namespace PEDIS
                 MessageBox.Show("Please select a productivity record to edit", "Selection Required", MessageBoxButtons.OK);
                 return;
             }
-            MessageBox.Show("Edit Productivity Record - Feature coming soon", "Not Implemented", MessageBoxButtons.OK);
+
+            ProductivityRecord productivity = (ProductivityRecord)lvProductivity.SelectedItems[0].Tag;
+            AddEditProductivityRecordDialog dialog = new AddEditProductivityRecordDialog();
+            dialog.setRecordToEdit(productivity);
+            if (dialog.ShowDialog() == DialogResult.OK)
+            {
+                refreshList(filterStartDate, filterEndDate, filteredPrisonerId, filteredWorkOrderId);
+            }
         }
 
         private void btnDelete_Click(object sender, EventArgs e)
