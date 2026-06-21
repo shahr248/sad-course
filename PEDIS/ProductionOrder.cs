@@ -191,7 +191,7 @@ namespace PEDIS
         /// </summary>
         public void acceptOrder(int factoryId)
         {
-            if (this.orderStatus != ProductionOrderStatus.Received)
+            if (this.orderStatus != ProductionOrderStatus.Recieved)
                 throw new Exception("כשגיאה: הזמנה לא בסטטוס קבלה");
 
             SqlCommand cmd = new SqlCommand();
@@ -211,7 +211,7 @@ namespace PEDIS
         /// </summary>
         public void cancelOrder()
         {
-            if (this.orderStatus != ProductionOrderStatus.Received)
+            if (this.orderStatus != ProductionOrderStatus.Recieved)
                 throw new Exception("כשגיאה: הזמנה לא בסטטוס קבלה");
 
             SqlCommand cmd = new SqlCommand();
