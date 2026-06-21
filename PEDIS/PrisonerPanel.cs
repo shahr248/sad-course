@@ -8,9 +8,16 @@ namespace PEDIS
         public delegate void BackHandler();
         public event BackHandler onBack;
 
+        private DepartmentManagement currentUser;
+
         public PrisonerPanel()
         {
             InitializeComponent();
+        }
+
+        public void setCurrentUser(DepartmentManagement user)
+        {
+            this.currentUser = user;
         }
 
         private void PrisonerPanel_Load(object sender, EventArgs e)
@@ -23,9 +30,16 @@ namespace PEDIS
             lvPrisoners.Items.Clear();
             foreach (Prisoner prisoner in Program.Prisoners)
             {
+                // Factory Manager filtering: only show prisoners from their assigned factory
+                if (currentUser != null && currentUser.getRole() == DepartmentManagementRole.FactoryManager)
+                {
+                    if (prisoner.getFactory() != currentUser.getFactory())
+                        continue;
+                }
+
                 ListViewItem item = new ListViewItem(prisoner.getPrisonerNumber());
                 item.SubItems.Add(prisoner.getFullName());
-                item.SubItems.Add(prisoner.getFactory()?.ToString() ?? "N/A");
+                item.SubItems.Add(prisoner.getFactory()?.ToString() ?? "");
                 item.SubItems.Add(prisoner.getActivityStatus().ToString());
                 item.SubItems.Add(prisoner.getRole()?.ToString() ?? "");
                 item.SubItems.Add(prisoner.getHourlyRate().ToString("C"));
@@ -46,9 +60,9 @@ namespace PEDIS
             Prisoner prisoner = (Prisoner)lvPrisoners.SelectedItems[0].Tag;
             string info = "Number: " + prisoner.getPrisonerNumber() + "\n" +
                          "Name: " + prisoner.getFullName() + "\n" +
-                         "Factory: " + (prisoner.getFactory()?.ToString() ?? "N/A") + "\n" +
+                         "Factory: " + (prisoner.getFactory()?.ToString() ?? "") + "\n" +
                          "Status: " + prisoner.getActivityStatus() + "\n" +
-                         "Role: " + (prisoner.getRole()?.ToString() ?? "N/A") + "\n" +
+                         "Role: " + (prisoner.getRole()?.ToString() ?? "") + "\n" +
                          "Hourly Rate: " + prisoner.getHourlyRate().ToString("C") + "\n" +
                          "Qualified: " + (prisoner.getQualified() ? "Yes" : "No");
             MessageBox.Show(info, "Prisoner Details", MessageBoxButtons.OK);
@@ -56,7 +70,11 @@ namespace PEDIS
 
         private void btnAdd_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Add Prisoner - Feature coming soon", "Not Implemented", MessageBoxButtons.OK);
+            AddEditPrisonerDialog dialog = new AddEditPrisonerDialog();
+            if (dialog.ShowDialog() == DialogResult.OK)
+            {
+                refreshList();
+            }
         }
 
         private void btnEdit_Click(object sender, EventArgs e)
@@ -67,7 +85,13 @@ namespace PEDIS
                 return;
             }
 
-            MessageBox.Show("Edit Prisoner - Feature coming soon", "Not Implemented", MessageBoxButtons.OK);
+            Prisoner prisoner = (Prisoner)lvPrisoners.SelectedItems[0].Tag;
+            AddEditPrisonerDialog dialog = new AddEditPrisonerDialog();
+            dialog.setPrisonerToEdit(prisoner);
+            if (dialog.ShowDialog() == DialogResult.OK)
+            {
+                refreshList();
+            }
         }
 
         private void btnDelete_Click(object sender, EventArgs e)

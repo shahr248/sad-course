@@ -37,6 +37,8 @@ namespace PEDIS
         private void btnPrisoners_Click(object sender, EventArgs e)
         {
             PrisonerPanel panel = new PrisonerPanel();
+            if (currentUser != null)
+                panel.setCurrentUser(currentUser);
             panel.onBack += () => onShowPanel?.Invoke(this);
             onShowPanel?.Invoke(panel);
         }
@@ -44,6 +46,8 @@ namespace PEDIS
         private void btnOrders_Click(object sender, EventArgs e)
         {
             ProductionOrderPanel panel = new ProductionOrderPanel();
+            if (currentUser != null)
+                panel.setCurrentUser(currentUser);
             panel.onBack += () => onShowPanel?.Invoke(this);
             onShowPanel?.Invoke(panel);
         }
