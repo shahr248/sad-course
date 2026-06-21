@@ -372,3 +372,80 @@ Alert (polymorphic; no direct FK, used for notifications)
 
 This ensures no missing foreign key references during initialization.
 
+---
+
+## Entry Flow — WinForms Navigation Architecture
+
+### Authentication Model
+
+**Single Credential Entity**: `DepartmentManagement`
+- `username` (unique login ID)
+- `password` (plaintext for course project)
+- `role` (3 values: departmentManager, deputyOfDepartmentManager, factoryManager)
+- `factory` (assigned facility for Factory Manager; NULL for Employment Officers)
+
+### Human Actors & Role-Based Routing
+
+| Actor | Role | Home Panel | Responsibilities |
+|---|---|---|---|
+| Employment Officer | departmentManager, deputyOfDepartmentManager | EmploymentOfficerHome | Prisoner mgmt, order tracking, contract mgmt, reporting |
+| Factory Manager | factoryManager | FactoryManagerHome | Assignment, attendance, productivity, inventory, work orders |
+
+### Entry Point Architecture
+
+```
+mainForm (entry point)
+  ├── Program.Main() 
+  │   └── Program.initLists() → Load all entities from DB
+  │
+  └── LoginPanel (first screen)
+      ├── Input: username, password
+      ├── Validate: seek DepartmentManagement record matching credentials
+      └── On success: route to role-specific home panel
+          ├── departmentManager → EmploymentOfficerHome
+          ├── deputyOfDepartmentManager → EmploymentOfficerHome
+          └── factoryManager → FactoryManagerHome
+
+EmploymentOfficerHome
+├── Button: Prisoners (placeholder)
+├── Button: Orders (placeholder)
+├── Button: Contracts (placeholder)
+├── Button: Work Orders (placeholder)
+├── Button: Attendance (placeholder)
+├── Button: Reports (placeholder)
+└── Button: Logout → return to LoginPanel
+
+FactoryManagerHome
+├── Button: Prisoners (placeholder)
+├── Button: Attendance (placeholder)
+├── Button: Productivity (placeholder)
+├── Button: Work Orders (placeholder)
+├── Button: Inventory (placeholder)
+├── Button: Reports (placeholder)
+└── Button: Logout → return to LoginPanel
+```
+
+### Implementation Notes
+
+**mainForm.cs**
+- Single MDI container (ShowDialog pattern with panel swapping)
+- `showLoginPanel()` — displays login screen on startup
+- `handleLoginSuccess(DepartmentManagement user)` — routes to home based on role
+- `handleLogout()` — clears current user, returns to login
+
+**LoginPanel.cs (UserControl)**
+- Credential validation via `Program.DepartmentManagements` list
+- Event: `onLoginSuccess` fires with authenticated DepartmentManagement object
+- Keyboard: Enter key triggers login
+
+**EmploymentOfficerHome.cs & FactoryManagerHome.cs (UserControl)**
+- Placeholder buttons route to future CRUD/feature panels
+- Display current user info (username + role)
+- Event: `onLogout` fires to return to login
+
+### Security Notes
+- Authentication is **NOT** a formal requirement; login flow is for demonstration only
+- Passwords stored plaintext (course project, not production)
+- No session management; single user per window
+- Role-based access control via enum `DepartmentManagementRole`
+
