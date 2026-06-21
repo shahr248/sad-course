@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using System.Windows.Forms;
 
 namespace PEDIS
@@ -34,22 +33,15 @@ namespace PEDIS
                 // Factory Manager filtering: only show orders assigned to their factory
                 if (currentUser != null && currentUser.getRole() == DepartmentManagementRole.FactoryManager)
                 {
-                    var workOrders = order.getWorkOrders();
-                    if (workOrders == null || workOrders.Count == 0)
-                        continue;
-
-                    // Check if any work order belongs to this factory manager's factory
-                    var hasFactoryMatch = workOrders.Any(wo => wo.getFactory() == currentUser.getFactory());
-                    if (!hasFactoryMatch)
+                    if (order.getCustomerCompany() == null || order.getFactory() != currentUser.getFactory())
                         continue;
                 }
 
                 ListViewItem item = new ListViewItem(order.getId().ToString());
                 item.SubItems.Add(order.getOrderNumber());
 
-                // Add Factory from first work order
-                var firstWorkOrder = order.getWorkOrders()?.FirstOrDefault();
-                string factory = firstWorkOrder != null ? firstWorkOrder.getFactory().ToString() : "";
+                // Add Factory from the customer company
+                string factory = order.getCustomerCompany() != null ? order.getFactory().ToString() : "";
                 item.SubItems.Add(factory);
 
                 // Add Customer Company
@@ -73,8 +65,7 @@ namespace PEDIS
             }
 
             ProductionOrder order = (ProductionOrder)lvOrders.SelectedItems[0].Tag;
-            var firstWorkOrder = order.getWorkOrders()?.FirstOrDefault();
-            string factory = firstWorkOrder != null ? firstWorkOrder.getFactory().ToString() : "";
+            string factory = order.getCustomerCompany() != null ? order.getFactory().ToString() : "";
             string company = order.getCustomerCompany() != null ? order.getCustomerCompany().getName() : "N/A";
 
             string info = "ID: " + order.getId() + "\n" +

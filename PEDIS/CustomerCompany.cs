@@ -15,10 +15,11 @@ namespace PEDIS
         private string billingAddress;
         private string email;
         private string activityStatus;
+        private Factory factory;
         private List<Contract> contracts;
         private List<ProductionOrder> productionOrders;
 
-        public CustomerCompany(int id, string compId, string name, string contact, string phone, string delivery, string billing, string email, string status, bool isNew)
+        public CustomerCompany(int id, string compId, string name, string contact, string phone, string delivery, string billing, string email, string status, Factory factory, bool isNew)
         {
             this.customerCompanyId = id;
             this.companyId = compId;
@@ -29,6 +30,7 @@ namespace PEDIS
             this.billingAddress = billing;
             this.email = email;
             this.activityStatus = status;
+            this.factory = factory;
             if (isNew)
             {
                 this.create();
@@ -45,6 +47,7 @@ namespace PEDIS
         public string getBillingAddress() { return this.billingAddress; }
         public string getEmail() { return this.email; }
         public string getActivityStatus() { return this.activityStatus; }
+        public Factory getFactory() { return this.factory; }
 
         public void setCompanyId(string id) { this.companyId = id; }
         public void setName(string name) { this.companyName = name; }
@@ -54,6 +57,7 @@ namespace PEDIS
         public void setBillingAddress(string address) { this.billingAddress = address; }
         public void setEmail(string email) { this.email = email; }
         public void setActivityStatus(string status) { this.activityStatus = status; }
+        public void setFactory(Factory factory) { this.factory = factory; }
 
         public List<Contract> getContracts()
         {
@@ -108,7 +112,7 @@ namespace PEDIS
         public void create()
         {
             SqlCommand cmd = new SqlCommand();
-            cmd.CommandText = "EXECUTE sp_CustomerCompany_create @customer_company_id, @company_id, @company_name, @contact_name, @phone_number, @delivery_address, @billing_address, @email, @activity_status";
+            cmd.CommandText = "EXECUTE sp_CustomerCompany_create @customer_company_id, @company_id, @company_name, @contact_name, @phone_number, @delivery_address, @billing_address, @email, @activity_status, @factory";
             cmd.Parameters.AddWithValue("@customer_company_id", this.customerCompanyId);
             cmd.Parameters.AddWithValue("@company_id", this.companyId);
             cmd.Parameters.AddWithValue("@company_name", this.companyName);
@@ -118,6 +122,7 @@ namespace PEDIS
             cmd.Parameters.AddWithValue("@billing_address", this.billingAddress ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@email", this.email ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@activity_status", this.activityStatus ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@factory", EnumHelpers.ToDbString(this.factory));
             SQL_CON sc = new SQL_CON();
             sc.execute_non_query(cmd);
         }
@@ -125,7 +130,7 @@ namespace PEDIS
         public void update()
         {
             SqlCommand cmd = new SqlCommand();
-            cmd.CommandText = "EXECUTE sp_CustomerCompany_update @customer_company_id, @company_id, @company_name, @contact_name, @phone_number, @delivery_address, @billing_address, @email, @activity_status";
+            cmd.CommandText = "EXECUTE sp_CustomerCompany_update @customer_company_id, @company_id, @company_name, @contact_name, @phone_number, @delivery_address, @billing_address, @email, @activity_status, @factory";
             cmd.Parameters.AddWithValue("@customer_company_id", this.customerCompanyId);
             cmd.Parameters.AddWithValue("@company_id", this.companyId);
             cmd.Parameters.AddWithValue("@company_name", this.companyName);
@@ -135,6 +140,7 @@ namespace PEDIS
             cmd.Parameters.AddWithValue("@billing_address", this.billingAddress ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@email", this.email ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@activity_status", this.activityStatus ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@factory", EnumHelpers.ToDbString(this.factory));
             SQL_CON sc = new SQL_CON();
             sc.execute_non_query(cmd);
         }
@@ -169,8 +175,9 @@ namespace PEDIS
                 string billing = reader.IsDBNull(6) ? null : reader.GetValue(6).ToString();
                 string email = reader.IsDBNull(7) ? null : reader.GetValue(7).ToString();
                 string status = reader.IsDBNull(8) ? null : reader.GetValue(8).ToString();
+                Factory factory = EnumHelpers.FactoryFromDb(reader.GetValue(11).ToString());
 
-                CustomerCompany cc = new CustomerCompany(id, compId, name, contact, phone, delivery, billing, email, status, false);
+                CustomerCompany cc = new CustomerCompany(id, compId, name, contact, phone, delivery, billing, email, status, factory, false);
                 Program.CustomerCompanies.Add(cc);
             }
             reader.Close();

@@ -12,14 +12,13 @@ namespace PEDIS
         private int requiredQuantity;
         private DateTime startDate;
         private DateTime deadline;
-        private Factory factory;
         private WorkOrderStatus status;
         private string holdReason;
         private ProductionOrder productionOrder;
         private List<ProductivityRecord> productivityRecords;
 
         public WorkOrder(int id, string workNum, int prodOrderId, int reqQty, DateTime start, DateTime deadline,
-                        Factory factory, WorkOrderStatus status, string holdReason, bool isNew)
+                        WorkOrderStatus status, string holdReason, bool isNew)
         {
             this.workOrderId = id;
             this.workOrderNumber = workNum;
@@ -27,7 +26,6 @@ namespace PEDIS
             this.requiredQuantity = reqQty;
             this.startDate = start;
             this.deadline = deadline;
-            this.factory = factory;
             this.status = status;
             this.holdReason = holdReason;
             this.productionOrder = ProductionOrder.seekById(prodOrderId);
@@ -46,7 +44,6 @@ namespace PEDIS
         public int getRequiredQuantity() { return this.requiredQuantity; }
         public DateTime getStartDate() { return this.startDate; }
         public DateTime getDeadline() { return this.deadline; }
-        public Factory getFactory() { return this.factory; }
         public WorkOrderStatus getStatus() { return this.status; }
         public string getHoldReason() { return this.holdReason; }
         public ProductionOrder getProductionOrder() { return this.productionOrder; }
@@ -55,7 +52,6 @@ namespace PEDIS
         public void setRequiredQuantity(int qty) { this.requiredQuantity = qty; }
         public void setStartDate(DateTime date) { this.startDate = date; }
         public void setDeadline(DateTime deadline) { this.deadline = deadline; }
-        public void setFactory(Factory factory) { this.factory = factory; }
         public void setStatus(WorkOrderStatus status) { this.status = status; }
         public void setHoldReason(string reason) { this.holdReason = reason; }
 
@@ -82,14 +78,13 @@ namespace PEDIS
         public void create()
         {
             SqlCommand cmd = new SqlCommand();
-            cmd.CommandText = "EXECUTE sp_WorkOrder_create @work_order_id, @work_order_number, @production_order_id, @required_quantity, @start_date, @deadline, @factory, @status, @hold_reason";
+            cmd.CommandText = "EXECUTE sp_WorkOrder_create @work_order_id, @work_order_number, @production_order_id, @required_quantity, @start_date, @deadline, @status, @hold_reason";
             cmd.Parameters.AddWithValue("@work_order_id", this.workOrderId);
             cmd.Parameters.AddWithValue("@work_order_number", this.workOrderNumber);
             cmd.Parameters.AddWithValue("@production_order_id", this.productionOrderId);
             cmd.Parameters.AddWithValue("@required_quantity", this.requiredQuantity);
             cmd.Parameters.AddWithValue("@start_date", this.startDate);
             cmd.Parameters.AddWithValue("@deadline", this.deadline);
-            cmd.Parameters.AddWithValue("@factory", EnumHelpers.ToDbString(this.factory));
             cmd.Parameters.AddWithValue("@status", EnumHelpers.ToDbString(this.status));
             cmd.Parameters.AddWithValue("@hold_reason", this.holdReason ?? (object)DBNull.Value);
             SQL_CON sc = new SQL_CON();
@@ -99,14 +94,13 @@ namespace PEDIS
         public void update()
         {
             SqlCommand cmd = new SqlCommand();
-            cmd.CommandText = "EXECUTE sp_WorkOrder_update @work_order_id, @work_order_number, @production_order_id, @required_quantity, @start_date, @deadline, @factory, @status, @hold_reason";
+            cmd.CommandText = "EXECUTE sp_WorkOrder_update @work_order_id, @work_order_number, @production_order_id, @required_quantity, @start_date, @deadline, @status, @hold_reason";
             cmd.Parameters.AddWithValue("@work_order_id", this.workOrderId);
             cmd.Parameters.AddWithValue("@work_order_number", this.workOrderNumber);
             cmd.Parameters.AddWithValue("@production_order_id", this.productionOrderId);
             cmd.Parameters.AddWithValue("@required_quantity", this.requiredQuantity);
             cmd.Parameters.AddWithValue("@start_date", this.startDate);
             cmd.Parameters.AddWithValue("@deadline", this.deadline);
-            cmd.Parameters.AddWithValue("@factory", EnumHelpers.ToDbString(this.factory));
             cmd.Parameters.AddWithValue("@status", EnumHelpers.ToDbString(this.status));
             cmd.Parameters.AddWithValue("@hold_reason", this.holdReason ?? (object)DBNull.Value);
             SQL_CON sc = new SQL_CON();
@@ -142,11 +136,10 @@ namespace PEDIS
                 int reqQty = Convert.ToInt32(reader.GetValue(3));
                 DateTime start = Convert.ToDateTime(reader.GetValue(4));
                 DateTime deadline = Convert.ToDateTime(reader.GetValue(5));
-                Factory factory = EnumHelpers.FactoryFromDb(reader.GetValue(6).ToString());
-                WorkOrderStatus status = EnumHelpers.WorkOrderStatusFromDb(reader.GetValue(7).ToString());
-                string holdReason = reader.IsDBNull(8) ? null : reader.GetValue(8).ToString();
+                WorkOrderStatus status = EnumHelpers.WorkOrderStatusFromDb(reader.GetValue(6).ToString());
+                string holdReason = reader.IsDBNull(7) ? null : reader.GetValue(7).ToString();
 
-                WorkOrder wo = new WorkOrder(id, workNum, prodOrderId, reqQty, start, deadline, factory, status, holdReason, false);
+                WorkOrder wo = new WorkOrder(id, workNum, prodOrderId, reqQty, start, deadline, status, holdReason, false);
                 Program.WorkOrders.Add(wo);
             }
             reader.Close();

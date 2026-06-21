@@ -63,6 +63,7 @@ namespace PEDIS
         public CustomerCompany getCustomerCompany() { return this.customerCompany; }
         public Product getProduct() { return this.product; }
         public Contract getContract() { return this.contract; }
+        public Factory getFactory() { return this.customerCompany.getFactory(); }
 
         public void setOrderNumber(string num) { this.orderNumber = num; }
         public void setQuantity(int qty) { this.quantity = qty; }
