@@ -74,6 +74,27 @@ namespace PEDIS
                 }
             }
 
+            // Check for duplicate attendance record (same prisoner on same date) - only in Add mode
+            if (!isEditMode)
+            {
+                string selectedPrisoner = cbPrisoner.SelectedItem.ToString();
+                string[] parts = selectedPrisoner.Split(new string[] { " - " }, StringSplitOptions.None);
+                Prisoner prisoner = Prisoner.seekByNumber(parts[0]);
+
+                if (prisoner != null)
+                {
+                    foreach (AttendanceRecord record in Program.AttendanceRecords)
+                    {
+                        if (record.getPrisonerId() == prisoner.getId() &&
+                            record.getAttendanceDate().Date == dtpAttendanceDate.Value.Date)
+                        {
+                            MessageBox.Show("An attendance record already exists for this prisoner on this date.", "Duplicate Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            return false;
+                        }
+                    }
+                }
+            }
+
             return true;
         }
 
@@ -106,7 +127,15 @@ namespace PEDIS
                 }
                 else
                 {
-                    int nextId = Program.AttendanceRecords.Count + 1;
+                    // Find the maximum ID to avoid duplicates
+                    int maxId = 0;
+                    foreach (AttendanceRecord record in Program.AttendanceRecords)
+                    {
+                        if (record.getId() > maxId)
+                            maxId = record.getId();
+                    }
+                    int nextId = maxId + 1;
+
                     AttendanceRecord newRecord = new AttendanceRecord(
                         nextId,
                         prisoner.getId(),

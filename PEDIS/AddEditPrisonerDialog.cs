@@ -39,13 +39,29 @@ namespace PEDIS
             txtPrisonerNumber.Text = prisoner.getPrisonerNumber();
             txtFullName.Text = prisoner.getFullName();
 
+            // Set factory (or "Unassigned" if null)
             if (prisoner.getFactory().HasValue)
-                cbFactory.SelectedItem = prisoner.getFactory().Value;
+            {
+                foreach (object item in cbFactory.Items)
+                {
+                    if (item.ToString() == prisoner.getFactory().ToString())
+                    {
+                        cbFactory.SelectedItem = item;
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                cbFactory.SelectedIndex = 0; // Select "Unassigned"
+            }
 
             cbActivityStatus.SelectedItem = prisoner.getActivityStatus();
 
             if (prisoner.getRole().HasValue)
                 cbRole.SelectedItem = prisoner.getRole().Value;
+            else
+                cbRole.SelectedIndex = 0;
 
             txtHourlyRate.Text = prisoner.getHourlyRate().ToString();
             chkQualified.Checked = prisoner.getQualified();
@@ -80,6 +96,19 @@ namespace PEDIS
                 return false;
             }
 
+            // Check for duplicate prisoner number (only in Add mode)
+            if (!isEditMode)
+            {
+                foreach (Prisoner p in Program.Prisoners)
+                {
+                    if (p.getPrisonerNumber() == txtPrisonerNumber.Text)
+                    {
+                        MessageBox.Show("Prisoner number already exists. Please enter a unique number.", "Duplicate Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return false;
+                    }
+                }
+            }
+
             return true;
         }
 
@@ -93,10 +122,24 @@ namespace PEDIS
                 if (isEditMode)
                 {
                     // Edit existing prisoner
+                    // Handle factory selection (Unassigned = null)
+                    Factory? selectedFactory = null;
+                    if (cbFactory.SelectedItem != null && cbFactory.SelectedItem.ToString() != "(Unassigned)")
+                    {
+                        selectedFactory = (Factory)cbFactory.SelectedItem;
+                    }
+
+                    // Handle role selection (None = null)
+                    PrisonerRole? selectedRole = null;
+                    if (cbRole.SelectedItem != null && cbRole.SelectedItem.ToString() != "(None)")
+                    {
+                        selectedRole = (PrisonerRole)cbRole.SelectedItem;
+                    }
+
                     prisonerToEdit.setFullName(txtFullName.Text);
-                    prisonerToEdit.setFactory(cbFactory.SelectedItem != null ? (Factory?)cbFactory.SelectedItem : null);
+                    prisonerToEdit.setFactory(selectedFactory);
                     prisonerToEdit.setActivityStatus((PrisonerActivityStatus)cbActivityStatus.SelectedItem);
-                    prisonerToEdit.setRole(cbRole.SelectedItem != null ? (PrisonerRole?)cbRole.SelectedItem : null);
+                    prisonerToEdit.setRole(selectedRole);
                     prisonerToEdit.setHourlyRate(decimal.Parse(txtHourlyRate.Text));
                     prisonerToEdit.setQualified(chkQualified.Checked);
                     prisonerToEdit.update();
@@ -105,17 +148,37 @@ namespace PEDIS
                 }
                 else
                 {
-                    // Add new prisoner
-                    int nextId = Program.Prisoners.Count + 1;
+                    // Add new prisoner - find max ID to avoid duplicates
+                    int maxId = 0;
+                    foreach (Prisoner p in Program.Prisoners)
+                    {
+                        if (p.getId() > maxId)
+                            maxId = p.getId();
+                    }
+                    int nextId = maxId + 1;
+
+                    // Handle factory selection (Unassigned = null)
+                    Factory? selectedFactory = null;
+                    if (cbFactory.SelectedItem != null && cbFactory.SelectedItem.ToString() != "(Unassigned)")
+                    {
+                        selectedFactory = (Factory)cbFactory.SelectedItem;
+                    }
+
+                    // Handle role selection (None = null)
+                    PrisonerRole? selectedRole = null;
+                    if (cbRole.SelectedItem != null && cbRole.SelectedItem.ToString() != "(None)")
+                    {
+                        selectedRole = (PrisonerRole)cbRole.SelectedItem;
+                    }
 
                     Prisoner newPrisoner = new Prisoner(
                         nextId,
                         txtPrisonerNumber.Text,
                         txtFullName.Text,
-                        cbFactory.SelectedItem != null ? (Factory?)cbFactory.SelectedItem : null,
+                        selectedFactory,
                         null,
                         (PrisonerActivityStatus)cbActivityStatus.SelectedItem,
-                        cbRole.SelectedItem != null ? (PrisonerRole?)cbRole.SelectedItem : null,
+                        selectedRole,
                         null,
                         null,
                         null,
@@ -145,20 +208,26 @@ namespace PEDIS
 
         private void AddEditPrisonerDialog_Load(object sender, EventArgs e)
         {
-            // Populate Factory ComboBox
+            // Populate Factory ComboBox with "Unassigned" option
+            cbFactory.Items.Add("(Unassigned)");
             foreach (var factory in Enum.GetValues(typeof(Factory)))
                 cbFactory.Items.Add(factory);
             cbFactory.DropDownStyle = ComboBoxStyle.DropDownList;
+            if (!isEditMode)
+                cbFactory.SelectedIndex = 0; // Default to Unassigned for new prisoners
 
             // Populate ActivityStatus ComboBox
             foreach (var status in Enum.GetValues(typeof(PrisonerActivityStatus)))
                 cbActivityStatus.Items.Add(status);
             cbActivityStatus.DropDownStyle = ComboBoxStyle.DropDownList;
 
-            // Populate Role ComboBox
+            // Populate Role ComboBox with empty option
+            cbRole.Items.Add("(None)");
             foreach (var role in Enum.GetValues(typeof(PrisonerRole)))
                 cbRole.Items.Add(role);
             cbRole.DropDownStyle = ComboBoxStyle.DropDownList;
+            if (!isEditMode)
+                cbRole.SelectedIndex = 0; // Default to None for new prisoners
         }
     }
 }

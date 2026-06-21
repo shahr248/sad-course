@@ -218,9 +218,16 @@ namespace PEDIS
             }
             else
             {
-                // Create new
-                int nextId = Program.ProductionOrders.Count + 1;
-                ProductionOrder po = new ProductionOrder(
+                // Create new - find max ID to avoid duplicates
+                int maxId = 0;
+                foreach (ProductionOrder po in Program.ProductionOrders)
+                {
+                    if (po.getId() > maxId)
+                        maxId = po.getId();
+                }
+                int nextId = maxId + 1;
+
+                ProductionOrder newPO = new ProductionOrder(
                     nextId,
                     txtOrderNumber.Text,
                     cc.getId(),
@@ -233,7 +240,7 @@ namespace PEDIS
                     status,
                     true
                 );
-                return po;
+                return newPO;
             }
         }
 
