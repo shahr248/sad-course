@@ -66,7 +66,7 @@ CREATE TABLE Prisoner (
     prisoner_number NVARCHAR(50) NOT NULL UNIQUE,
     full_name NVARCHAR(50) NOT NULL,
     factory NVARCHAR(30) NULL,
-    department NVARCHAR(50),
+    department INT NULL,
     activity_status NVARCHAR(50) NOT NULL,
     role NVARCHAR(50),
     safety_training_validity DATE,

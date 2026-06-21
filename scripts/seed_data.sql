@@ -222,7 +222,7 @@ EXEC sp_Prisoner_create
     @prisoner_number = 'P123456',
     @full_name = 'Benjamin Hoffman',
     @factory = 'MaimonSpices',
-    @department = 'Grinding',
+    @department = 1,
     @activity_status = 'onShiftWorking',
     @role = 'supervisor',
     @safety_training_validity = '2027-06-20',
@@ -230,14 +230,14 @@ EXEC sp_Prisoner_create
     @release_date = '2028-12-31',
     @qualified = 1,
     @shabbat_keeping = 0,
-    @hourly_rate = 15.50;
+    @hourly_rate = 14.70;
 
 EXEC sp_Prisoner_create
     @prisoner_id = 2,
     @prisoner_number = 'P123457',
     @full_name = 'Noam Tzur',
     @factory = 'Technosak',
-    @department = 'Molding',
+    @department = 2,
     @activity_status = 'onShiftWorking',
     @role = 'general',
     @safety_training_validity = '2027-03-15',
@@ -252,7 +252,7 @@ EXEC sp_Prisoner_create
     @prisoner_number = 'P123458',
     @full_name = 'Erez Nir',
     @factory = 'SewingWorkshop',
-    @department = 'Sewing',
+    @department = 3,
     @activity_status = 'inSafetyTraining',
     @role = NULL,
     @safety_training_validity = NULL,
@@ -267,7 +267,7 @@ EXEC sp_Prisoner_create
     @prisoner_number = 'P123459',
     @full_name = 'Gideon Moran',
     @factory = 'TzitzitWorkshop',
-    @department = 'Tzitzit Assembly',
+    @department = 4,
     @activity_status = 'onShiftWorking',
     @role = 'general',
     @safety_training_validity = '2026-12-01',
@@ -275,14 +275,14 @@ EXEC sp_Prisoner_create
     @release_date = '2026-09-30',
     @qualified = 1,
     @shabbat_keeping = 1,
-    @hourly_rate = 15.00;
+    @hourly_rate = 14.70;
 
 EXEC sp_Prisoner_create
     @prisoner_id = 5,
     @prisoner_number = 'P123460',
     @full_name = 'Hanan Zalman',
     @factory = 'MaimonSpices',
-    @department = 'Packaging',
+    @department = 1,
     @activity_status = 'waitingForMaterials',
     @role = 'general',
     @safety_training_validity = '2027-09-10',
@@ -297,7 +297,7 @@ EXEC sp_Prisoner_create
     @prisoner_number = 'P123461',
     @full_name = 'Ilan Fishel',
     @factory = 'Technosak',
-    @department = 'Quality Control',
+    @department = 2,
     @activity_status = 'onShiftWorking',
     @role = 'supervisor',
     @safety_training_validity = '2027-05-15',
@@ -305,14 +305,14 @@ EXEC sp_Prisoner_create
     @release_date = '2028-08-10',
     @qualified = 1,
     @shabbat_keeping = 1,
-    @hourly_rate = 16.00;
+    @hourly_rate = 14.70;
 
 EXEC sp_Prisoner_create
     @prisoner_id = 7,
     @prisoner_number = 'P123462',
     @full_name = 'Jaffe Reuven',
     @factory = 'SewingWorkshop',
-    @department = 'Cutting',
+    @department = 3,
     @activity_status = 'inProfessionalTraining',
     @role = NULL,
     @safety_training_validity = '2027-02-28',
@@ -342,7 +342,7 @@ EXEC sp_Prisoner_create
     @prisoner_number = 'P123464',
     @full_name = 'Lior Shimon',
     @factory = 'MaimonSpices',
-    @department = 'Grinding',
+    @department = 1,
     @activity_status = 'onShiftWorking',
     @role = 'general',
     @safety_training_validity = '2027-11-01',
@@ -350,7 +350,7 @@ EXEC sp_Prisoner_create
     @release_date = '2031-04-05',
     @qualified = 1,
     @shabbat_keeping = 1,
-    @hourly_rate = 15.50;
+    @hourly_rate = 14.70;
 
 EXEC sp_Prisoner_create
     @prisoner_id = 10,
@@ -365,14 +365,14 @@ EXEC sp_Prisoner_create
     @release_date = '2029-06-20',
     @qualified = 1,
     @shabbat_keeping = 0,
-    @hourly_rate = 15.00;
+    @hourly_rate = 14.70;
 
 EXEC sp_Prisoner_create
     @prisoner_id = 11,
     @prisoner_number = 'P123466',
     @full_name = 'Naftali Zeev',
     @factory = 'TzitzitWorkshop',
-    @department = 'Tzitzit Assembly',
+    @department = 4,
     @activity_status = 'onShiftWorking',
     @role = 'general',
     @safety_training_validity = '2026-08-22',
@@ -387,7 +387,7 @@ EXEC sp_Prisoner_create
     @prisoner_number = 'P123467',
     @full_name = 'Ori Yaakov',
     @factory = 'SewingWorkshop',
-    @department = 'Sewing',
+    @department = 3,
     @activity_status = 'onShiftWorking',
     @role = 'general',
     @safety_training_validity = '2027-04-10',
@@ -395,14 +395,14 @@ EXEC sp_Prisoner_create
     @release_date = '2028-10-30',
     @qualified = 1,
     @shabbat_keeping = 0,
-    @hourly_rate = 15.20;
+    @hourly_rate = 14.70;
 
 EXEC sp_Prisoner_create
     @prisoner_id = 13,
     @prisoner_number = 'P123468',
     @full_name = 'Pinchas Meor',
     @factory = 'Technosak',
-    @department = 'Molding',
+    @department = 2,
     @activity_status = 'idle',
     @role = 'general',
     @safety_training_validity = '2026-10-05',
@@ -432,7 +432,7 @@ EXEC sp_Prisoner_create
     @prisoner_number = 'P123470',
     @full_name = 'Shlomo Kalman',
     @factory = 'MaimonSpices',
-    @department = 'Packaging',
+    @department = 1,
     @activity_status = 'onShiftWorking',
     @role = 'supervisor',
     @safety_training_validity = '2027-07-18',
@@ -440,7 +440,7 @@ EXEC sp_Prisoner_create
     @release_date = '2030-09-25',
     @qualified = 1,
     @shabbat_keeping = 0,
-    @hourly_rate = 16.00;
+    @hourly_rate = 14.70;
 
 -- ============================================================================
 -- 6. Contract (5 rows)
