@@ -393,6 +393,7 @@ CREATE PROCEDURE sp_Contract_create
     @customer_company_id INT,
     @product_id INT = NULL,
     @start_date DATE,
+    @end_date DATE = NULL,
     @price_per_unit DECIMAL(10,2) = NULL,
     @payment_terms NVARCHAR(MAX) = NULL,
     @contract_status NVARCHAR(50) = NULL
@@ -400,9 +401,9 @@ AS
 BEGIN
     SET NOCOUNT ON;
     INSERT INTO Contract
-        (contract_id, contract_number, customer_company_id, product_id, start_date, price_per_unit, payment_terms, contract_status, created_at)
+        (contract_id, contract_number, customer_company_id, product_id, start_date, end_date, price_per_unit, payment_terms, contract_status, created_at)
     VALUES
-        (@contract_id, @contract_number, @customer_company_id, @product_id, @start_date, @price_per_unit, @payment_terms, @contract_status, GETUTCDATE());
+        (@contract_id, @contract_number, @customer_company_id, @product_id, @start_date, @end_date, @price_per_unit, @payment_terms, @contract_status, GETUTCDATE());
 END;
 GO
 
@@ -412,6 +413,7 @@ CREATE PROCEDURE sp_Contract_update
     @customer_company_id INT,
     @product_id INT = NULL,
     @start_date DATE,
+    @end_date DATE = NULL,
     @price_per_unit DECIMAL(10,2) = NULL,
     @payment_terms NVARCHAR(MAX) = NULL,
     @contract_status NVARCHAR(50) = NULL
@@ -423,6 +425,7 @@ BEGIN
         customer_company_id = @customer_company_id,
         product_id = @product_id,
         start_date = @start_date,
+        end_date = @end_date,
         price_per_unit = @price_per_unit,
         payment_terms = @payment_terms,
         contract_status = @contract_status,

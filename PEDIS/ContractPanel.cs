@@ -25,9 +25,11 @@ namespace PEDIS
             {
                 ListViewItem item = new ListViewItem(contract.getId().ToString());
                 item.SubItems.Add(contract.getCustomerCompany()?.getName() ?? "N/A");
+                item.SubItems.Add(contract.getFactory()?.ToString() ?? "N/A");
                 item.SubItems.Add(contract.getContractNumber());
                 item.SubItems.Add(contract.getContractStatus().ToString());
                 item.SubItems.Add(contract.getStartDate().ToString("yyyy-MM-dd"));
+                item.SubItems.Add(contract.getEndDate()?.ToString("yyyy-MM-dd") ?? "N/A");
                 item.Tag = contract;
                 lvContracts.Items.Add(item);
             }
@@ -44,10 +46,29 @@ namespace PEDIS
             Contract contract = (Contract)lvContracts.SelectedItems[0].Tag;
             string info = "ID: " + contract.getId() + "\n" +
                          "Company: " + (contract.getCustomerCompany()?.getName() ?? "N/A") + "\n" +
+                         "Factory: " + (contract.getFactory()?.ToString() ?? "N/A") + "\n" +
                          "Number: " + contract.getContractNumber() + "\n" +
                          "Status: " + contract.getContractStatus() + "\n" +
-                         "Start Date: " + contract.getStartDate().ToString("yyyy-MM-dd");
+                         "Start Date: " + contract.getStartDate().ToString("yyyy-MM-dd") + "\n" +
+                         "End Date: " + (contract.getEndDate()?.ToString("yyyy-MM-dd") ?? "N/A");
             MessageBox.Show(info, "Contract Details", MessageBoxButtons.OK);
+        }
+
+        private void lvContracts_DoubleClick(object sender, EventArgs e)
+        {
+            if (lvContracts.SelectedItems.Count == 0)
+                return;
+
+            Contract contract = (Contract)lvContracts.SelectedItems[0].Tag;
+            CustomerCompany company = contract.getCustomerCompany();
+            if (company == null)
+            {
+                MessageBox.Show("This contract has no associated customer company.", "Not Found", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            CustomerCompanyDetailsDialog dialog = new CustomerCompanyDetailsDialog(company);
+            dialog.ShowDialog();
         }
 
         private void btnAdd_Click(object sender, EventArgs e)

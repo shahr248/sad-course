@@ -7,6 +7,7 @@ namespace PEDIS
     {
         private ProductivityRecord recordToEdit;
         private bool isEditMode;
+        private DepartmentManagement currentUser;
 
         public AddEditProductivityRecordDialog()
         {
@@ -14,6 +15,11 @@ namespace PEDIS
             recordToEdit = null;
             isEditMode = false;
             this.Text = "Add Productivity Record";
+        }
+
+        public void setCurrentUser(DepartmentManagement user)
+        {
+            this.currentUser = user;
         }
 
         public void setRecordToEdit(ProductivityRecord record)
@@ -188,9 +194,16 @@ namespace PEDIS
 
         private void AddEditProductivityRecordDialog_Load(object sender, EventArgs e)
         {
+            // Restriction only applies when adding a new record; editing locks the prisoner field
+            // anyway and must keep showing whichever prisoner the record already references.
+            bool restrictToOwnFactory = !isEditMode && currentUser != null && currentUser.getRole() == DepartmentManagementRole.FactoryManager;
+
             cbPrisoner.Items.Clear();
             foreach (Prisoner prisoner in Program.Prisoners)
             {
+                if (restrictToOwnFactory && prisoner.getFactory() != currentUser.getFactory())
+                    continue;
+
                 cbPrisoner.Items.Add(prisoner.getPrisonerNumber() + " - " + prisoner.getFullName());
             }
             cbPrisoner.DropDownStyle = ComboBoxStyle.DropDownList;

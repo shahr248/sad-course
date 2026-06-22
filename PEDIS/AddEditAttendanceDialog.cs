@@ -73,39 +73,32 @@ namespace PEDIS
                 }
             }
 
-            // Multiple records per date are allowed, as long as their hours don't overlap.
-            {
-                string selectedPrisoner = cbPrisoner.SelectedItem.ToString();
-                string[] parts = selectedPrisoner.Split(new string[] { " - " }, StringSplitOptions.None);
-                Prisoner prisoner = Prisoner.seekByNumber(parts[0]);
-
-                if (prisoner != null)
-                {
-                    TimeSpan newEntry = chkEntryTime.Checked ? dtpEntryTime.Value.TimeOfDay : TimeSpan.Zero;
-                    TimeSpan newExit = chkExitTime.Checked ? dtpExitTime.Value.TimeOfDay : TimeSpan.FromHours(24);
-
-                    foreach (AttendanceRecord record in Program.AttendanceRecords)
-                    {
-                        if (isEditMode && record == attendanceToEdit)
-                            continue;
-
-                        if (record.getPrisonerId() != prisoner.getId() ||
-                            record.getAttendanceDate().Date != dtpAttendanceDate.Value.Date)
-                            continue;
-
-                        TimeSpan existingEntry = record.getEntryTime() ?? TimeSpan.Zero;
-                        TimeSpan existingExit = record.getExitTime() ?? TimeSpan.FromHours(24);
-
-                        if (newEntry < existingExit && existingEntry < newExit)
-                        {
-                            MessageBox.Show("This prisoner already has an attendance record on this date with overlapping hours.", "Overlap Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            return false;
-                        }
-                    }
-                }
-            }
-
             return true;
+        }
+
+        // Multiple records per date are allowed, as long as their hours don't overlap.
+        // Per requirement, an overlapping shift must throw an Exception and reject the action,
+        // rather than just warn the user -- so this is checked from btnSave_Click's try block.
+        private void CheckForOverlap(Prisoner prisoner)
+        {
+            TimeSpan newEntry = chkEntryTime.Checked ? dtpEntryTime.Value.TimeOfDay : TimeSpan.Zero;
+            TimeSpan newExit = chkExitTime.Checked ? dtpExitTime.Value.TimeOfDay : TimeSpan.FromHours(24);
+
+            foreach (AttendanceRecord record in Program.AttendanceRecords)
+            {
+                if (isEditMode && record == attendanceToEdit)
+                    continue;
+
+                if (record.getPrisonerId() != prisoner.getId() ||
+                    record.getAttendanceDate().Date != dtpAttendanceDate.Value.Date)
+                    continue;
+
+                TimeSpan existingEntry = record.getEntryTime() ?? TimeSpan.Zero;
+                TimeSpan existingExit = record.getExitTime() ?? TimeSpan.FromHours(24);
+
+                if (newEntry < existingExit && existingEntry < newExit)
+                    throw new Exception("This prisoner already has an attendance record on this date with overlapping hours.");
+            }
         }
 
         private void btnSave_Click(object sender, EventArgs e)
@@ -124,6 +117,8 @@ namespace PEDIS
                     MessageBox.Show("Selected prisoner not found.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
+
+                CheckForOverlap(prisoner);
 
                 TimeSpan? entryTime = chkEntryTime.Checked ? (TimeSpan?)dtpEntryTime.Value.TimeOfDay : null;
                 TimeSpan? exitTime = chkExitTime.Checked ? (TimeSpan?)dtpExitTime.Value.TimeOfDay : null;

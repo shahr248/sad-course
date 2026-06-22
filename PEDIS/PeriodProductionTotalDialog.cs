@@ -4,27 +4,29 @@ using System.Windows.Forms;
 
 namespace PEDIS
 {
-    public class DailyProductionTotalDialog : Form
+    public class PeriodProductionTotalDialog : Form
     {
-        private DateTime selectedDate;
+        private DateTime periodStartDate;
+        private DateTime periodEndDate;
         private int? filteredProductId;
         private DepartmentManagement currentUser;
         private Factory? selectedFactoryFilter;
-        private ListView lvDailyTotals;
+        private ListView lvPeriodTotals;
         private Button btnApplyToOrder;
         private Button btnClose;
         private Label lblTitle;
         private Label lblFactory;
         private ComboBox cmbFactory;
 
-        public DailyProductionTotalDialog(DateTime selectedDate, DepartmentManagement currentUser, int? filteredProductId = null)
+        public PeriodProductionTotalDialog(DateTime periodStartDate, DateTime periodEndDate, DepartmentManagement currentUser, int? filteredProductId = null)
         {
-            this.selectedDate = selectedDate;
+            this.periodStartDate = periodStartDate;
+            this.periodEndDate = periodEndDate;
             this.currentUser = currentUser;
             this.filteredProductId = filteredProductId;
             InitializeComponent();
             InitializeFactoryFilter();
-            LoadDailyTotals();
+            LoadPeriodTotals();
         }
 
         private void InitializeComponent()
@@ -32,12 +34,12 @@ namespace PEDIS
             this.lblTitle = new Label();
             this.lblFactory = new Label();
             this.cmbFactory = new ComboBox();
-            this.lvDailyTotals = new ListView();
+            this.lvPeriodTotals = new ListView();
             this.btnApplyToOrder = new Button();
             this.btnClose = new Button();
             this.SuspendLayout();
 
-            this.Text = "Daily Production Totals";
+            this.Text = "Period Production Totals";
             this.Size = new System.Drawing.Size(600, 400);
             this.StartPosition = FormStartPosition.CenterParent;
             this.FormBorderStyle = FormBorderStyle.FixedDialog;
@@ -49,7 +51,7 @@ namespace PEDIS
             this.lblTitle.Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Bold);
             this.lblTitle.Location = new System.Drawing.Point(20, 15);
             this.lblTitle.Size = new System.Drawing.Size(550, 30);
-            this.lblTitle.Text = "Daily Production Totals - " + selectedDate.ToString("yyyy-MM-dd");
+            this.lblTitle.Text = "Period Production Totals - " + periodStartDate.ToString("yyyy-MM-dd") + " to " + periodEndDate.ToString("yyyy-MM-dd");
             this.lblTitle.ForeColor = System.Drawing.Color.FromArgb(0, 51, 102);
 
             this.lblFactory.AutoSize = false;
@@ -64,18 +66,18 @@ namespace PEDIS
             this.cmbFactory.DropDownStyle = ComboBoxStyle.DropDownList;
             this.cmbFactory.SelectedIndexChanged += new EventHandler(this.cmbFactory_SelectedIndexChanged);
 
-            this.lvDailyTotals.FullRowSelect = true;
-            this.lvDailyTotals.GridLines = true;
-            this.lvDailyTotals.Location = new System.Drawing.Point(20, 85);
-            this.lvDailyTotals.Size = new System.Drawing.Size(550, 235);
-            this.lvDailyTotals.UseCompatibleStateImageBehavior = false;
-            this.lvDailyTotals.View = System.Windows.Forms.View.Details;
-            this.lvDailyTotals.BackColor = System.Drawing.Color.White;
-            this.lvDailyTotals.BorderStyle = BorderStyle.Fixed3D;
+            this.lvPeriodTotals.FullRowSelect = true;
+            this.lvPeriodTotals.GridLines = true;
+            this.lvPeriodTotals.Location = new System.Drawing.Point(20, 85);
+            this.lvPeriodTotals.Size = new System.Drawing.Size(550, 235);
+            this.lvPeriodTotals.UseCompatibleStateImageBehavior = false;
+            this.lvPeriodTotals.View = System.Windows.Forms.View.Details;
+            this.lvPeriodTotals.BackColor = System.Drawing.Color.White;
+            this.lvPeriodTotals.BorderStyle = BorderStyle.Fixed3D;
 
-            this.lvDailyTotals.Columns.Add("Product Name", 250);
-            this.lvDailyTotals.Columns.Add("Total Units", 150);
-            this.lvDailyTotals.Columns.Add("Work Orders", 150);
+            this.lvPeriodTotals.Columns.Add("Product Name", 250);
+            this.lvPeriodTotals.Columns.Add("Total Units", 150);
+            this.lvPeriodTotals.Columns.Add("Work Orders", 150);
 
             this.btnApplyToOrder.Location = new System.Drawing.Point(20, 330);
             this.btnApplyToOrder.Size = new System.Drawing.Size(150, 35);
@@ -98,7 +100,7 @@ namespace PEDIS
 
             this.Controls.Add(this.btnClose);
             this.Controls.Add(this.btnApplyToOrder);
-            this.Controls.Add(this.lvDailyTotals);
+            this.Controls.Add(this.lvPeriodTotals);
             this.Controls.Add(this.cmbFactory);
             this.Controls.Add(this.lblFactory);
             this.Controls.Add(this.lblTitle);
@@ -136,18 +138,18 @@ namespace PEDIS
             else
                 selectedFactoryFilter = (Factory)Enum.Parse(typeof(Factory), cmbFactory.SelectedItem.ToString());
 
-            LoadDailyTotals();
+            LoadPeriodTotals();
         }
 
-        private void LoadDailyTotals()
+        private void LoadPeriodTotals()
         {
-            lvDailyTotals.Items.Clear();
+            lvPeriodTotals.Items.Clear();
             Dictionary<int, (string productName, int totalUnits, List<int> workOrderIds)> productTotals =
                 new Dictionary<int, (string, int, List<int>)>();
 
             foreach (ProductivityRecord record in Program.ProductivityRecords)
             {
-                if (record.getProductivityDate().Date != selectedDate.Date)
+                if (record.getProductivityDate().Date < periodStartDate.Date || record.getProductivityDate().Date > periodEndDate.Date)
                     continue;
 
                 if (selectedFactoryFilter.HasValue && record.getFactory() != selectedFactoryFilter.Value)
@@ -188,19 +190,19 @@ namespace PEDIS
                 item.SubItems.Add(totalUnits.ToString());
                 item.SubItems.Add(workOrderIds.Count.ToString());
                 item.Tag = new { productId, totalUnits, workOrderIds };
-                lvDailyTotals.Items.Add(item);
+                lvPeriodTotals.Items.Add(item);
             }
         }
 
         private void btnApplyToOrder_Click(object sender, EventArgs e)
         {
-            if (lvDailyTotals.SelectedItems.Count == 0)
+            if (lvPeriodTotals.SelectedItems.Count == 0)
             {
                 MessageBox.Show("Please select a product to apply totals", "Selection Required", MessageBoxButtons.OK);
                 return;
             }
 
-            ListViewItem selectedItem = lvDailyTotals.SelectedItems[0];
+            ListViewItem selectedItem = lvPeriodTotals.SelectedItems[0];
             dynamic tagData = selectedItem.Tag;
             int productId = tagData.productId;
             int totalUnits = tagData.totalUnits;

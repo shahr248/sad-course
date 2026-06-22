@@ -10,6 +10,7 @@ namespace PEDIS
         private System.Windows.Forms.Button btnContracts;
         private System.Windows.Forms.Button btnWorkOrders;
         private System.Windows.Forms.Button btnAttendance;
+        private System.Windows.Forms.Button btnProductivity;
         private System.Windows.Forms.Button btnReports;
         private System.Windows.Forms.Button btnLogout;
 
@@ -31,6 +32,7 @@ namespace PEDIS
             this.btnContracts = new System.Windows.Forms.Button();
             this.btnWorkOrders = new System.Windows.Forms.Button();
             this.btnAttendance = new System.Windows.Forms.Button();
+            this.btnProductivity = new System.Windows.Forms.Button();
             this.btnReports = new System.Windows.Forms.Button();
             this.btnLogout = new System.Windows.Forms.Button();
             this.SuspendLayout();
@@ -115,11 +117,23 @@ namespace PEDIS
             this.btnAttendance.UseVisualStyleBackColor = false;
             this.btnAttendance.Click += new System.EventHandler(this.btnAttendance_Click);
 
+            // btnProductivity
+            this.btnProductivity.Location = new System.Drawing.Point(20, 190);
+            this.btnProductivity.Name = "btnProductivity";
+            this.btnProductivity.Size = new System.Drawing.Size(150, 60);
+            this.btnProductivity.TabIndex = 7;
+            this.btnProductivity.Text = "📈 Productivity";
+            this.btnProductivity.BackColor = System.Drawing.Color.FromArgb(142, 68, 173);
+            this.btnProductivity.ForeColor = System.Drawing.Color.White;
+            this.btnProductivity.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
+            this.btnProductivity.UseVisualStyleBackColor = false;
+            this.btnProductivity.Click += new System.EventHandler(this.btnProductivity_Click);
+
             // btnReports
             this.btnReports.Location = new System.Drawing.Point(820, 110);
             this.btnReports.Name = "btnReports";
             this.btnReports.Size = new System.Drawing.Size(150, 60);
-            this.btnReports.TabIndex = 7;
+            this.btnReports.TabIndex = 8;
             this.btnReports.Text = "📊 Reports";
             this.btnReports.BackColor = System.Drawing.Color.FromArgb(41, 128, 185);
             this.btnReports.ForeColor = System.Drawing.Color.White;
@@ -132,7 +146,7 @@ namespace PEDIS
             this.btnLogout.Location = new System.Drawing.Point(844, 20);
             this.btnLogout.Name = "btnLogout";
             this.btnLogout.Size = new System.Drawing.Size(160, 40);
-            this.btnLogout.TabIndex = 8;
+            this.btnLogout.TabIndex = 9;
             this.btnLogout.Text = "🚪 Logout";
             this.btnLogout.BackColor = System.Drawing.Color.FromArgb(192, 57, 43);
             this.btnLogout.ForeColor = System.Drawing.Color.White;
@@ -146,6 +160,7 @@ namespace PEDIS
             this.BackColor = System.Drawing.Color.FromArgb(236, 240, 241);
             this.Controls.Add(this.btnLogout);
             this.Controls.Add(this.btnReports);
+            this.Controls.Add(this.btnProductivity);
             this.Controls.Add(this.btnAttendance);
             this.Controls.Add(this.btnWorkOrders);
             this.Controls.Add(this.btnContracts);

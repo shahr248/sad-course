@@ -11,6 +11,7 @@ namespace PEDIS
         private int customerCompanyId;
         private int? productId;
         private DateTime startDate;
+        private DateTime? endDate;
         private decimal? pricePerUnit;
         private string paymentTerms;
         private ContractStatus? contractStatus;
@@ -18,7 +19,7 @@ namespace PEDIS
         private Product product;
         private List<ProductionOrder> productionOrders;
 
-        public Contract(int id, string contractNum, int custCompId, int? prodId, DateTime start, decimal? price, 
+        public Contract(int id, string contractNum, int custCompId, int? prodId, DateTime start, DateTime? end, decimal? price,
                        string terms, ContractStatus? status, bool isNew)
         {
             this.contractId = id;
@@ -26,6 +27,7 @@ namespace PEDIS
             this.customerCompanyId = custCompId;
             this.productId = prodId;
             this.startDate = start;
+            this.endDate = end;
             this.pricePerUnit = price;
             this.paymentTerms = terms;
             this.contractStatus = status;
@@ -47,13 +49,16 @@ namespace PEDIS
         public int getCustomerCompanyId() { return this.customerCompanyId; }
         public int? getProductId() { return this.productId; }
         public DateTime getStartDate() { return this.startDate; }
+        public DateTime? getEndDate() { return this.endDate; }
         public decimal? getPricePerUnit() { return this.pricePerUnit; }
         public string getPaymentTerms() { return this.paymentTerms; }
         public ContractStatus? getContractStatus() { return this.contractStatus; }
         public CustomerCompany getCustomerCompany() { return this.customerCompany; }
         public Product getProduct() { return this.product; }
+        public Factory? getFactory() { return this.customerCompany?.getFactory(); }
 
         public void setContractNumber(string num) { this.contractNumber = num; }
+        public void setEndDate(DateTime? end) { this.endDate = end; }
         public void setPricePerUnit(decimal? price) { this.pricePerUnit = price; }
         public void setPaymentTerms(string terms) { this.paymentTerms = terms; }
         public void setContractStatus(ContractStatus? status) { this.contractStatus = status; }
@@ -81,12 +86,13 @@ namespace PEDIS
         public void create()
         {
             SqlCommand cmd = new SqlCommand();
-            cmd.CommandText = "EXECUTE sp_Contract_create @contract_id, @contract_number, @customer_company_id, @product_id, @start_date, @price_per_unit, @payment_terms, @contract_status";
+            cmd.CommandText = "EXECUTE sp_Contract_create @contract_id, @contract_number, @customer_company_id, @product_id, @start_date, @end_date, @price_per_unit, @payment_terms, @contract_status";
             cmd.Parameters.AddWithValue("@contract_id", this.contractId);
             cmd.Parameters.AddWithValue("@contract_number", this.contractNumber);
             cmd.Parameters.AddWithValue("@customer_company_id", this.customerCompanyId);
             cmd.Parameters.AddWithValue("@product_id", this.productId ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@start_date", this.startDate);
+            cmd.Parameters.AddWithValue("@end_date", this.endDate ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@price_per_unit", this.pricePerUnit ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@payment_terms", this.paymentTerms ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@contract_status", this.contractStatus.HasValue ? EnumHelpers.ToDbString(this.contractStatus.Value) : (object)DBNull.Value);
@@ -97,12 +103,13 @@ namespace PEDIS
         public void update()
         {
             SqlCommand cmd = new SqlCommand();
-            cmd.CommandText = "EXECUTE sp_Contract_update @contract_id, @contract_number, @customer_company_id, @product_id, @start_date, @price_per_unit, @payment_terms, @contract_status";
+            cmd.CommandText = "EXECUTE sp_Contract_update @contract_id, @contract_number, @customer_company_id, @product_id, @start_date, @end_date, @price_per_unit, @payment_terms, @contract_status";
             cmd.Parameters.AddWithValue("@contract_id", this.contractId);
             cmd.Parameters.AddWithValue("@contract_number", this.contractNumber);
             cmd.Parameters.AddWithValue("@customer_company_id", this.customerCompanyId);
             cmd.Parameters.AddWithValue("@product_id", this.productId ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@start_date", this.startDate);
+            cmd.Parameters.AddWithValue("@end_date", this.endDate ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@price_per_unit", this.pricePerUnit ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@payment_terms", this.paymentTerms ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@contract_status", this.contractStatus.HasValue ? EnumHelpers.ToDbString(this.contractStatus.Value) : (object)DBNull.Value);
@@ -140,11 +147,12 @@ namespace PEDIS
                 int custCompId = Convert.ToInt32(reader.GetValue(2));
                 int? prodId = reader.IsDBNull(3) ? null : Convert.ToInt32(reader.GetValue(3));
                 DateTime start = Convert.ToDateTime(reader.GetValue(4));
-                decimal? price = reader.IsDBNull(5) ? null : Convert.ToDecimal(reader.GetValue(5));
-                string terms = reader.IsDBNull(6) ? null : reader.GetValue(6).ToString();
-                ContractStatus? status = reader.IsDBNull(7) ? null : EnumHelpers.ContractStatusFromDb(reader.GetValue(7).ToString());
+                DateTime? end = reader.IsDBNull(5) ? null : Convert.ToDateTime(reader.GetValue(5));
+                decimal? price = reader.IsDBNull(6) ? null : Convert.ToDecimal(reader.GetValue(6));
+                string terms = reader.IsDBNull(7) ? null : reader.GetValue(7).ToString();
+                ContractStatus? status = reader.IsDBNull(8) ? null : EnumHelpers.ContractStatusFromDb(reader.GetValue(8).ToString());
 
-                Contract c = new Contract(id, contractNum, custCompId, prodId, start, price, terms, status, false);
+                Contract c = new Contract(id, contractNum, custCompId, prodId, start, end, price, terms, status, false);
                 Program.Contracts.Add(c);
             }
             reader.Close();

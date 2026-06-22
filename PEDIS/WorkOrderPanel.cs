@@ -9,6 +9,7 @@ namespace PEDIS
         public event BackHandler onBack;
 
         private DepartmentManagement currentUser;
+        private bool showFactoryColumn;
 
         public WorkOrderPanel()
         {
@@ -22,6 +23,14 @@ namespace PEDIS
 
         private void WorkOrderPanel_Load(object sender, EventArgs e)
         {
+            // Factory field is only relevant to roles that see work orders across all factories.
+            showFactoryColumn = currentUser != null &&
+                (currentUser.getRole() == DepartmentManagementRole.DepartmentManager ||
+                 currentUser.getRole() == DepartmentManagementRole.DeputyOfDepartmentManager);
+
+            if (showFactoryColumn)
+                lvWorkOrders.Columns.Add("Factory", 100);
+
             refreshList();
         }
 
@@ -47,6 +56,8 @@ namespace PEDIS
                 item.SubItems.Add(workOrder.getStartDate().ToString("yyyy-MM-dd"));
                 item.SubItems.Add(workOrder.getDeadline().ToString("yyyy-MM-dd"));
                 item.SubItems.Add(product?.getPackagingInstructions() ?? "");
+                if (showFactoryColumn)
+                    item.SubItems.Add(workOrder.getProductionOrder()?.getFactory().ToString() ?? "N/A");
                 item.Tag = workOrder;
                 lvWorkOrders.Items.Add(item);
             }

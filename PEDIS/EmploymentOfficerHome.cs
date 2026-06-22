@@ -62,6 +62,8 @@ namespace PEDIS
         private void btnWorkOrders_Click(object sender, EventArgs e)
         {
             WorkOrderPanel panel = new WorkOrderPanel();
+            if (currentUser != null)
+                panel.setCurrentUser(currentUser);
             panel.onBack += () => onShowPanel?.Invoke(this);
             onShowPanel?.Invoke(panel);
         }
@@ -69,6 +71,15 @@ namespace PEDIS
         private void btnAttendance_Click(object sender, EventArgs e)
         {
             AttendanceRecordPanel panel = new AttendanceRecordPanel();
+            panel.onBack += () => onShowPanel?.Invoke(this);
+            onShowPanel?.Invoke(panel);
+        }
+
+        private void btnProductivity_Click(object sender, EventArgs e)
+        {
+            ProductivityRecordPanel panel = new ProductivityRecordPanel();
+            if (currentUser != null)
+                panel.setCurrentUser(currentUser);
             panel.onBack += () => onShowPanel?.Invoke(this);
             onShowPanel?.Invoke(panel);
         }

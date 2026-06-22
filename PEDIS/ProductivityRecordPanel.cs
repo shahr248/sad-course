@@ -35,10 +35,15 @@ namespace PEDIS
             dtpFilterStartDate.Value = DateTime.Today;
             dtpFilterEndDate.Value = DateTime.Today;
 
+            bool isFactoryManager = currentUser != null && currentUser.getRole() == DepartmentManagementRole.FactoryManager;
+
             cmbFilterPrisoner.Items.Clear();
             cmbFilterPrisoner.Items.Add("All Prisoners");
             foreach (Prisoner prisoner in Program.Prisoners)
             {
+                if (isFactoryManager && prisoner.getFactory() != currentUser.getFactory())
+                    continue;
+
                 cmbFilterPrisoner.Items.Add(prisoner.getPrisonerNumber() + " - " + prisoner.getFullName());
             }
             cmbFilterPrisoner.SelectedIndex = 0;
@@ -165,10 +170,11 @@ namespace PEDIS
             refreshList(null, null, null, null);
         }
 
-        private void btnDailyTotals_Click(object sender, EventArgs e)
+        private void btnPeriodTotal_Click(object sender, EventArgs e)
         {
-            DateTime selectedDate = filterStartDate ?? DateTime.Today;
-            DailyProductionTotalDialog dialog = new DailyProductionTotalDialog(selectedDate, currentUser);
+            DateTime periodStart = filterStartDate ?? DateTime.Today;
+            DateTime periodEnd = filterEndDate ?? DateTime.Today;
+            PeriodProductionTotalDialog dialog = new PeriodProductionTotalDialog(periodStart, periodEnd, currentUser);
             if (dialog.ShowDialog() == DialogResult.OK)
             {
                 refreshList(filterStartDate, filterEndDate, filteredPrisonerId, filteredWorkOrderId);
@@ -205,6 +211,7 @@ namespace PEDIS
         private void btnAdd_Click(object sender, EventArgs e)
         {
             AddEditProductivityRecordDialog dialog = new AddEditProductivityRecordDialog();
+            dialog.setCurrentUser(currentUser);
             if (dialog.ShowDialog() == DialogResult.OK)
             {
                 refreshList(filterStartDate, filterEndDate, filteredPrisonerId, filteredWorkOrderId);

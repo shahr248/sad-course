@@ -15,7 +15,7 @@ namespace PEDIS
         private System.Windows.Forms.ComboBox cmbFilterWorkOrder;
         private System.Windows.Forms.Button btnApplyFilters;
         private System.Windows.Forms.Button btnClearFilters;
-        private System.Windows.Forms.Button btnDailyTotals;
+        private System.Windows.Forms.Button btnPeriodTotal;
         private System.Windows.Forms.ListView lvProductivity;
         private System.Windows.Forms.Button btnView;
         private System.Windows.Forms.Button btnAdd;
@@ -46,7 +46,7 @@ namespace PEDIS
             this.cmbFilterWorkOrder = new System.Windows.Forms.ComboBox();
             this.btnApplyFilters = new System.Windows.Forms.Button();
             this.btnClearFilters = new System.Windows.Forms.Button();
-            this.btnDailyTotals = new System.Windows.Forms.Button();
+            this.btnPeriodTotal = new System.Windows.Forms.Button();
             this.lvProductivity = new System.Windows.Forms.ListView();
             this.btnView = new System.Windows.Forms.Button();
             this.btnAdd = new System.Windows.Forms.Button();
@@ -129,14 +129,14 @@ namespace PEDIS
             this.btnClearFilters.UseVisualStyleBackColor = false;
             this.btnClearFilters.Click += new System.EventHandler(this.btnClearFilters_Click);
 
-            this.btnDailyTotals.Location = new System.Drawing.Point(625, 90);
-            this.btnDailyTotals.Size = new System.Drawing.Size(120, 25);
-            this.btnDailyTotals.Text = "Daily Totals";
-            this.btnDailyTotals.BackColor = System.Drawing.Color.FromArgb(230, 126, 34);
-            this.btnDailyTotals.ForeColor = System.Drawing.Color.White;
-            this.btnDailyTotals.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
-            this.btnDailyTotals.UseVisualStyleBackColor = false;
-            this.btnDailyTotals.Click += new System.EventHandler(this.btnDailyTotals_Click);
+            this.btnPeriodTotal.Location = new System.Drawing.Point(625, 90);
+            this.btnPeriodTotal.Size = new System.Drawing.Size(120, 25);
+            this.btnPeriodTotal.Text = "Period Total";
+            this.btnPeriodTotal.BackColor = System.Drawing.Color.FromArgb(230, 126, 34);
+            this.btnPeriodTotal.ForeColor = System.Drawing.Color.White;
+            this.btnPeriodTotal.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            this.btnPeriodTotal.UseVisualStyleBackColor = false;
+            this.btnPeriodTotal.Click += new System.EventHandler(this.btnPeriodTotal_Click);
 
             this.lvProductivity.FullRowSelect = true;
             this.lvProductivity.GridLines = true;
@@ -211,7 +211,7 @@ namespace PEDIS
             this.Controls.Add(this.btnAdd);
             this.Controls.Add(this.btnView);
             this.Controls.Add(this.lvProductivity);
-            this.Controls.Add(this.btnDailyTotals);
+            this.Controls.Add(this.btnPeriodTotal);
             this.Controls.Add(this.btnClearFilters);
             this.Controls.Add(this.btnApplyFilters);
             this.Controls.Add(this.cmbFilterWorkOrder);
