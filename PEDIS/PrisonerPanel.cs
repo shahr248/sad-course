@@ -110,28 +110,24 @@ namespace PEDIS
                     btnStartSafetyTraining.Visible = true;
                     btnSuspend.Visible = true;
                     txtSuspendReason.Visible = true;
-                    btnRelease.Visible = true;
                     break;
 
                 case PrisonerActivityStatus.OnShiftWorking:
                 case PrisonerActivityStatus.WaitingForMaterials:
                     btnSuspend.Visible = true;
                     txtSuspendReason.Visible = true;
-                    btnRelease.Visible = true;
                     break;
 
                 case PrisonerActivityStatus.InProfessionalTraining:
                     btnCompleteProfessionalTraining.Visible = true;
                     btnSuspend.Visible = true;
                     txtSuspendReason.Visible = true;
-                    btnRelease.Visible = true;
                     break;
 
                 case PrisonerActivityStatus.InSafetyTraining:
                     btnCompleteSafetyTraining.Visible = true;
                     btnSuspend.Visible = true;
                     txtSuspendReason.Visible = true;
-                    btnRelease.Visible = true;
                     break;
 
                 case PrisonerActivityStatus.TemporarilyUnavailable:
