@@ -17,6 +17,8 @@ namespace PEDIS
         private System.Windows.Forms.ComboBox cbRole;
         private System.Windows.Forms.Label lblHourlyRate;
         private System.Windows.Forms.TextBox txtHourlyRate;
+        private System.Windows.Forms.Label lblWorkStartDate;
+        private System.Windows.Forms.DateTimePicker dtpWorkStartDate;
         private System.Windows.Forms.Label lblReleaseDate;
         private System.Windows.Forms.DateTimePicker dtpReleaseDate;
         private System.Windows.Forms.Label lblSafetyTrainingExpiration;
@@ -51,6 +53,8 @@ namespace PEDIS
             this.cbRole = new System.Windows.Forms.ComboBox();
             this.lblHourlyRate = new System.Windows.Forms.Label();
             this.txtHourlyRate = new System.Windows.Forms.TextBox();
+            this.lblWorkStartDate = new System.Windows.Forms.Label();
+            this.dtpWorkStartDate = new System.Windows.Forms.DateTimePicker();
             this.lblReleaseDate = new System.Windows.Forms.Label();
             this.dtpReleaseDate = new System.Windows.Forms.DateTimePicker();
             this.lblSafetyTrainingExpiration = new System.Windows.Forms.Label();
@@ -142,34 +146,53 @@ namespace PEDIS
             this.txtHourlyRate.Size = new System.Drawing.Size(300, 25);
             this.txtHourlyRate.Text = "0.00";
 
+            // lblWorkStartDate
+            this.lblWorkStartDate.AutoSize = true;
+            this.lblWorkStartDate.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.lblWorkStartDate.Location = new System.Drawing.Point(20, 300);
+            this.lblWorkStartDate.Text = "Work Start Date:";
+            this.lblWorkStartDate.Visible = false;
+
+            // dtpWorkStartDate
+            // Hidden/disabled by default: work start date is normally system-computed (R5).
+            // It's only revealed when Release Date is set in the past, to let the user enter
+            // a historical start date for a prisoner being backfilled as already-released.
+            this.dtpWorkStartDate.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.dtpWorkStartDate.Location = new System.Drawing.Point(150, 300);
+            this.dtpWorkStartDate.Size = new System.Drawing.Size(300, 25);
+            this.dtpWorkStartDate.Format = System.Windows.Forms.DateTimePickerFormat.Short;
+            this.dtpWorkStartDate.Visible = false;
+            this.dtpWorkStartDate.Enabled = false;
+
             // lblReleaseDate
             this.lblReleaseDate.AutoSize = true;
             this.lblReleaseDate.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.lblReleaseDate.Location = new System.Drawing.Point(20, 300);
+            this.lblReleaseDate.Location = new System.Drawing.Point(20, 340);
             this.lblReleaseDate.Text = "Release Date:";
 
             // dtpReleaseDate
             this.dtpReleaseDate.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.dtpReleaseDate.Location = new System.Drawing.Point(150, 300);
+            this.dtpReleaseDate.Location = new System.Drawing.Point(150, 340);
             this.dtpReleaseDate.Size = new System.Drawing.Size(300, 25);
             this.dtpReleaseDate.Format = System.Windows.Forms.DateTimePickerFormat.Short;
+            this.dtpReleaseDate.ValueChanged += new System.EventHandler(this.dtpReleaseDate_ValueChanged);
 
             // lblSafetyTrainingExpiration
             this.lblSafetyTrainingExpiration.AutoSize = true;
             this.lblSafetyTrainingExpiration.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.lblSafetyTrainingExpiration.Location = new System.Drawing.Point(20, 340);
+            this.lblSafetyTrainingExpiration.Location = new System.Drawing.Point(20, 380);
             this.lblSafetyTrainingExpiration.Text = "Safety Training Exp.:";
 
             // chkSafetyTrainingSet
             this.chkSafetyTrainingSet.AutoSize = true;
             this.chkSafetyTrainingSet.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.chkSafetyTrainingSet.Location = new System.Drawing.Point(150, 343);
+            this.chkSafetyTrainingSet.Location = new System.Drawing.Point(150, 383);
             this.chkSafetyTrainingSet.Text = "Set";
             this.chkSafetyTrainingSet.CheckedChanged += new System.EventHandler(this.chkSafetyTrainingSet_CheckedChanged);
 
             // dtpSafetyTrainingExpiration
             this.dtpSafetyTrainingExpiration.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.dtpSafetyTrainingExpiration.Location = new System.Drawing.Point(220, 340);
+            this.dtpSafetyTrainingExpiration.Location = new System.Drawing.Point(220, 380);
             this.dtpSafetyTrainingExpiration.Size = new System.Drawing.Size(230, 25);
             this.dtpSafetyTrainingExpiration.Format = System.Windows.Forms.DateTimePickerFormat.Short;
             this.dtpSafetyTrainingExpiration.Enabled = false;
@@ -177,13 +200,13 @@ namespace PEDIS
             // chkQualified
             this.chkQualified.AutoSize = true;
             this.chkQualified.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.chkQualified.Location = new System.Drawing.Point(150, 380);
+            this.chkQualified.Location = new System.Drawing.Point(150, 420);
             this.chkQualified.Text = "Qualified";
             this.chkQualified.Size = new System.Drawing.Size(100, 20);
 
             // btnSave
             this.btnSave.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.btnSave.Location = new System.Drawing.Point(150, 430);
+            this.btnSave.Location = new System.Drawing.Point(150, 470);
             this.btnSave.Size = new System.Drawing.Size(100, 35);
             this.btnSave.Text = "Save";
             this.btnSave.BackColor = System.Drawing.Color.FromArgb(46, 204, 113);
@@ -193,7 +216,7 @@ namespace PEDIS
 
             // btnCancel
             this.btnCancel.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.btnCancel.Location = new System.Drawing.Point(260, 430);
+            this.btnCancel.Location = new System.Drawing.Point(260, 470);
             this.btnCancel.Size = new System.Drawing.Size(100, 35);
             this.btnCancel.Text = "Cancel";
             this.btnCancel.BackColor = System.Drawing.Color.FromArgb(149, 165, 166);
@@ -205,7 +228,7 @@ namespace PEDIS
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(236, 240, 241);
-            this.ClientSize = new System.Drawing.Size(500, 500);
+            this.ClientSize = new System.Drawing.Size(500, 540);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnSave);
             this.Controls.Add(this.chkQualified);
@@ -214,6 +237,8 @@ namespace PEDIS
             this.Controls.Add(this.lblSafetyTrainingExpiration);
             this.Controls.Add(this.dtpReleaseDate);
             this.Controls.Add(this.lblReleaseDate);
+            this.Controls.Add(this.dtpWorkStartDate);
+            this.Controls.Add(this.lblWorkStartDate);
             this.Controls.Add(this.txtHourlyRate);
             this.Controls.Add(this.lblHourlyRate);
             this.Controls.Add(this.cbRole);

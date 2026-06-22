@@ -220,13 +220,40 @@ namespace PEDIS
                     }
 
                     PrisonerActivityStatus selectedStatus = (PrisonerActivityStatus)cbActivityStatus.SelectedItem;
+                    DateTime releaseDateValue = dtpReleaseDate.Value.Date;
+                    DateTime? workStart;
 
-                    // Employment start date is system-controlled (R5): auto-set to the date the
-                    // prisoner is added to the system, but only once they're actually placed with
-                    // a factory (not while still pending placement/approval).
-                    DateTime? workStart = (selectedFactory.HasValue && !isPendingPlacementStatus(selectedStatus))
-                        ? DateTime.Today
-                        : (DateTime?)null;
+                    if (releaseDateValue < DateTime.Today)
+                    {
+                        // Historical entry: this prisoner was already released before being
+                        // added to the system. Refuse to backfill records that are too stale
+                        // to be meaningfully tracked.
+                        DateTime sevenYearsAgo = DateTime.Today.AddYears(-7);
+                        if (releaseDateValue < sevenYearsAgo)
+                        {
+                            MessageBox.Show("Release date is too old: a prisoner released more than 7 years ago cannot be added.", "Date Too Old", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            return;
+                        }
+
+                        DateTime manualWorkStart = dtpWorkStartDate.Value.Date;
+                        if (manualWorkStart >= releaseDateValue)
+                            throw new Exception("Work start date must be earlier than the release date for a prisoner who has already been released.");
+
+                        workStart = manualWorkStart;
+                        selectedStatus = PrisonerActivityStatus.Archived;
+                    }
+                    else
+                    {
+                        // Employment start date is system-controlled (R5): auto-set to the date the
+                        // prisoner is added to the system, but only once they're actually placed with
+                        // a factory (not while still pending placement/approval).
+                        workStart = (selectedFactory.HasValue && !isPendingPlacementStatus(selectedStatus))
+                            ? DateTime.Today
+                            : (DateTime?)null;
+
+                        if (workStart.HasValue && releaseDateValue <= workStart.Value)
+                            throw new Exception("Release date must be later than the work start date.");
+                    }
 
                     DateTime? safetyTrain = chkSafetyTrainingSet.Checked ? dtpSafetyTrainingExpiration.Value.Date : (DateTime?)null;
 
@@ -240,7 +267,7 @@ namespace PEDIS
                         selectedRole,
                         safetyTrain,
                         workStart,
-                        dtpReleaseDate.Value.Date,
+                        releaseDateValue,
                         chkQualified.Checked,
                         false,
                         decimal.Parse(txtHourlyRate.Text),
@@ -268,6 +295,36 @@ namespace PEDIS
         private void chkSafetyTrainingSet_CheckedChanged(object sender, EventArgs e)
         {
             dtpSafetyTrainingExpiration.Enabled = chkSafetyTrainingSet.Checked;
+        }
+
+        // Work start date is normally system-controlled (R5) and stays hidden. It's only
+        // revealed -- in Add mode -- when Release Date is pushed into the past, since that's
+        // the one case where the auto-computed "today" start date would land after release.
+        private void dtpReleaseDate_ValueChanged(object sender, EventArgs e)
+        {
+            if (isEditMode || cbActivityStatus.Items.Count == 0)
+                return;
+
+            bool releasedInPast = dtpReleaseDate.Value.Date < DateTime.Today;
+            lblWorkStartDate.Visible = releasedInPast;
+            dtpWorkStartDate.Visible = releasedInPast;
+            dtpWorkStartDate.Enabled = releasedInPast;
+
+            if (releasedInPast)
+            {
+                DateTime maxStart = dtpReleaseDate.Value.Date.AddDays(-1);
+                dtpWorkStartDate.MaxDate = maxStart;
+                if (dtpWorkStartDate.Value.Date > maxStart)
+                    dtpWorkStartDate.Value = maxStart;
+
+                cbActivityStatus.SelectedItem = PrisonerActivityStatus.Archived;
+                cbActivityStatus.Enabled = false;
+            }
+            else
+            {
+                dtpWorkStartDate.MaxDate = DateTimePicker.MaximumDateTime;
+                cbActivityStatus.Enabled = true;
+            }
         }
 
         private void AddEditPrisonerDialog_Load(object sender, EventArgs e)
@@ -311,6 +368,7 @@ namespace PEDIS
             {
                 cbFactory.SelectedIndex = 0; // Unassigned for most roles; Factory Managers only have their own factory in the list
                 cbRole.SelectedIndex = 0; // Default to None for new prisoners
+                dtpReleaseDate_ValueChanged(this, EventArgs.Empty); // sync Work Start Date visibility to the default Release Date
             }
         }
     }
