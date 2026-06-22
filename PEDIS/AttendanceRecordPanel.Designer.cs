@@ -192,7 +192,6 @@ namespace PEDIS
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(236, 240, 241);
-            this.Controls.Add(this.pnlFilterBackground);
             this.Controls.Add(this.pnlTitleSeparator);
             this.Controls.Add(this.btnBack);
             this.Controls.Add(this.btnDelete);
@@ -208,6 +207,9 @@ namespace PEDIS
             this.Controls.Add(this.lblFilterDateTo);
             this.Controls.Add(this.dtpFilterStartDate);
             this.Controls.Add(this.lblFilterDate);
+            // Added last (not first) so it lands at the back of the z-order -- in WinForms,
+            // Controls.Add appends to index 0 being the front; index 0 = front per BringToFront().
+            this.Controls.Add(this.pnlFilterBackground);
             this.Controls.Add(this.lblTitle);
             this.Name = "AttendanceRecordPanel";
             this.Size = new System.Drawing.Size(1024, 768);
