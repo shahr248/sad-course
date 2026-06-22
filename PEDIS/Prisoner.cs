@@ -314,6 +314,10 @@ namespace PEDIS
 
             this.factory = factory;
             this.activityStatus = PrisonerActivityStatus.Idle;
+            // Employment start date is system-controlled (R5): set once, the first time a
+            // prisoner is actually placed with a factory; never overwritten afterward.
+            if (!this.workStartDate.HasValue)
+                this.workStartDate = DateTime.Today;
             this.update();
         }
 

@@ -8,7 +8,7 @@ namespace PEDIS
         private System.Windows.Forms.Label lblFullName;
         private System.Windows.Forms.TextBox txtFullName;
         private System.Windows.Forms.Label lblDepartment;
-        private System.Windows.Forms.TextBox txtDepartment;
+        private System.Windows.Forms.ComboBox cbDepartment;
         private System.Windows.Forms.Label lblFactory;
         private System.Windows.Forms.ComboBox cbFactory;
         private System.Windows.Forms.Label lblActivityStatus;
@@ -17,6 +17,11 @@ namespace PEDIS
         private System.Windows.Forms.ComboBox cbRole;
         private System.Windows.Forms.Label lblHourlyRate;
         private System.Windows.Forms.TextBox txtHourlyRate;
+        private System.Windows.Forms.Label lblReleaseDate;
+        private System.Windows.Forms.DateTimePicker dtpReleaseDate;
+        private System.Windows.Forms.Label lblSafetyTrainingExpiration;
+        private System.Windows.Forms.CheckBox chkSafetyTrainingSet;
+        private System.Windows.Forms.DateTimePicker dtpSafetyTrainingExpiration;
         private System.Windows.Forms.CheckBox chkQualified;
         private System.Windows.Forms.Button btnSave;
         private System.Windows.Forms.Button btnCancel;
@@ -37,7 +42,7 @@ namespace PEDIS
             this.lblFullName = new System.Windows.Forms.Label();
             this.txtFullName = new System.Windows.Forms.TextBox();
             this.lblDepartment = new System.Windows.Forms.Label();
-            this.txtDepartment = new System.Windows.Forms.TextBox();
+            this.cbDepartment = new System.Windows.Forms.ComboBox();
             this.lblFactory = new System.Windows.Forms.Label();
             this.cbFactory = new System.Windows.Forms.ComboBox();
             this.lblActivityStatus = new System.Windows.Forms.Label();
@@ -46,6 +51,11 @@ namespace PEDIS
             this.cbRole = new System.Windows.Forms.ComboBox();
             this.lblHourlyRate = new System.Windows.Forms.Label();
             this.txtHourlyRate = new System.Windows.Forms.TextBox();
+            this.lblReleaseDate = new System.Windows.Forms.Label();
+            this.dtpReleaseDate = new System.Windows.Forms.DateTimePicker();
+            this.lblSafetyTrainingExpiration = new System.Windows.Forms.Label();
+            this.chkSafetyTrainingSet = new System.Windows.Forms.CheckBox();
+            this.dtpSafetyTrainingExpiration = new System.Windows.Forms.DateTimePicker();
             this.chkQualified = new System.Windows.Forms.CheckBox();
             this.btnSave = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
@@ -79,10 +89,13 @@ namespace PEDIS
             this.lblDepartment.Location = new System.Drawing.Point(20, 100);
             this.lblDepartment.Text = "Department:";
 
-            // txtDepartment
-            this.txtDepartment.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.txtDepartment.Location = new System.Drawing.Point(150, 100);
-            this.txtDepartment.Size = new System.Drawing.Size(300, 25);
+            // cbDepartment
+            this.cbDepartment.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.cbDepartment.Location = new System.Drawing.Point(150, 100);
+            this.cbDepartment.Size = new System.Drawing.Size(300, 25);
+            this.cbDepartment.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDown;
+            for (int wing = 1; wing <= 7; wing++)
+                this.cbDepartment.Items.Add(wing.ToString());
 
             // lblFactory
             this.lblFactory.AutoSize = true;
@@ -129,16 +142,48 @@ namespace PEDIS
             this.txtHourlyRate.Size = new System.Drawing.Size(300, 25);
             this.txtHourlyRate.Text = "0.00";
 
+            // lblReleaseDate
+            this.lblReleaseDate.AutoSize = true;
+            this.lblReleaseDate.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.lblReleaseDate.Location = new System.Drawing.Point(20, 300);
+            this.lblReleaseDate.Text = "Release Date:";
+
+            // dtpReleaseDate
+            this.dtpReleaseDate.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.dtpReleaseDate.Location = new System.Drawing.Point(150, 300);
+            this.dtpReleaseDate.Size = new System.Drawing.Size(300, 25);
+            this.dtpReleaseDate.Format = System.Windows.Forms.DateTimePickerFormat.Short;
+
+            // lblSafetyTrainingExpiration
+            this.lblSafetyTrainingExpiration.AutoSize = true;
+            this.lblSafetyTrainingExpiration.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.lblSafetyTrainingExpiration.Location = new System.Drawing.Point(20, 340);
+            this.lblSafetyTrainingExpiration.Text = "Safety Training Exp.:";
+
+            // chkSafetyTrainingSet
+            this.chkSafetyTrainingSet.AutoSize = true;
+            this.chkSafetyTrainingSet.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.chkSafetyTrainingSet.Location = new System.Drawing.Point(150, 343);
+            this.chkSafetyTrainingSet.Text = "Set";
+            this.chkSafetyTrainingSet.CheckedChanged += new System.EventHandler(this.chkSafetyTrainingSet_CheckedChanged);
+
+            // dtpSafetyTrainingExpiration
+            this.dtpSafetyTrainingExpiration.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.dtpSafetyTrainingExpiration.Location = new System.Drawing.Point(220, 340);
+            this.dtpSafetyTrainingExpiration.Size = new System.Drawing.Size(230, 25);
+            this.dtpSafetyTrainingExpiration.Format = System.Windows.Forms.DateTimePickerFormat.Short;
+            this.dtpSafetyTrainingExpiration.Enabled = false;
+
             // chkQualified
             this.chkQualified.AutoSize = true;
             this.chkQualified.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.chkQualified.Location = new System.Drawing.Point(150, 300);
+            this.chkQualified.Location = new System.Drawing.Point(150, 380);
             this.chkQualified.Text = "Qualified";
             this.chkQualified.Size = new System.Drawing.Size(100, 20);
 
             // btnSave
             this.btnSave.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.btnSave.Location = new System.Drawing.Point(150, 350);
+            this.btnSave.Location = new System.Drawing.Point(150, 430);
             this.btnSave.Size = new System.Drawing.Size(100, 35);
             this.btnSave.Text = "Save";
             this.btnSave.BackColor = System.Drawing.Color.FromArgb(46, 204, 113);
@@ -148,7 +193,7 @@ namespace PEDIS
 
             // btnCancel
             this.btnCancel.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.btnCancel.Location = new System.Drawing.Point(260, 350);
+            this.btnCancel.Location = new System.Drawing.Point(260, 430);
             this.btnCancel.Size = new System.Drawing.Size(100, 35);
             this.btnCancel.Text = "Cancel";
             this.btnCancel.BackColor = System.Drawing.Color.FromArgb(149, 165, 166);
@@ -160,10 +205,15 @@ namespace PEDIS
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(236, 240, 241);
-            this.ClientSize = new System.Drawing.Size(500, 440);
+            this.ClientSize = new System.Drawing.Size(500, 500);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnSave);
             this.Controls.Add(this.chkQualified);
+            this.Controls.Add(this.dtpSafetyTrainingExpiration);
+            this.Controls.Add(this.chkSafetyTrainingSet);
+            this.Controls.Add(this.lblSafetyTrainingExpiration);
+            this.Controls.Add(this.dtpReleaseDate);
+            this.Controls.Add(this.lblReleaseDate);
             this.Controls.Add(this.txtHourlyRate);
             this.Controls.Add(this.lblHourlyRate);
             this.Controls.Add(this.cbRole);
@@ -172,7 +222,7 @@ namespace PEDIS
             this.Controls.Add(this.lblActivityStatus);
             this.Controls.Add(this.cbFactory);
             this.Controls.Add(this.lblFactory);
-            this.Controls.Add(this.txtDepartment);
+            this.Controls.Add(this.cbDepartment);
             this.Controls.Add(this.lblDepartment);
             this.Controls.Add(this.txtFullName);
             this.Controls.Add(this.lblFullName);

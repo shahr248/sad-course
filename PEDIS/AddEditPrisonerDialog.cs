@@ -21,6 +21,15 @@ namespace PEDIS
             }
         }
 
+        // Statuses in which a prisoner has not yet been placed with a factory --
+        // employment start date only applies once a prisoner moves past this stage.
+        private static bool isPendingPlacementStatus(PrisonerActivityStatus status)
+        {
+            return status == PrisonerActivityStatus.PendingPrisonAdministrationApproval ||
+                   status == PrisonerActivityStatus.PendingDepartmentManagerApproval ||
+                   status == PrisonerActivityStatus.PendingPlacement;
+        }
+
         public void setPrisonerToEdit(Prisoner prisoner)
         {
             this.prisonerToEdit = prisoner;
@@ -37,7 +46,20 @@ namespace PEDIS
 
             txtPrisonerNumber.Text = prisoner.getPrisonerNumber();
             txtFullName.Text = prisoner.getFullName();
-            txtDepartment.Text = prisoner.getDepartment().ToString();
+            cbDepartment.Text = prisoner.getDepartment().ToString();
+
+            if (prisoner.getReleaseDate().HasValue)
+                dtpReleaseDate.Value = prisoner.getReleaseDate().Value;
+
+            if (prisoner.getSafetyTrainingValidity().HasValue)
+            {
+                chkSafetyTrainingSet.Checked = true;
+                dtpSafetyTrainingExpiration.Value = prisoner.getSafetyTrainingValidity().Value;
+            }
+            else
+            {
+                chkSafetyTrainingSet.Checked = false;
+            }
 
             // Set factory (or "Unassigned" if null)
             if (prisoner.getFactory().HasValue)
@@ -87,7 +109,7 @@ namespace PEDIS
                 return false;
             }
 
-            if (!int.TryParse(txtDepartment.Text, out int department) || department <= 0)
+            if (!int.TryParse(cbDepartment.Text, out int department) || department <= 0)
             {
                 MessageBox.Show("Please enter a valid department (positive number). This is the inmate's home wing/department, independent of the employment department.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return false;
@@ -146,13 +168,22 @@ namespace PEDIS
                     }
 
                     prisonerToEdit.setFullName(txtFullName.Text);
-                    prisonerToEdit.setDepartment(int.Parse(txtDepartment.Text));
+                    prisonerToEdit.setDepartment(int.Parse(cbDepartment.Text));
                     prisonerToEdit.setFactory(selectedFactory);
                     // activityStatus is intentionally not updated here — it is controlled
                     // exclusively by the Prisoner state-machine action buttons in PrisonerPanel.
                     prisonerToEdit.setRole(selectedRole);
                     prisonerToEdit.setHourlyRate(decimal.Parse(txtHourlyRate.Text));
                     prisonerToEdit.setQualified(chkQualified.Checked);
+                    prisonerToEdit.setReleaseDate(dtpReleaseDate.Value.Date);
+                    prisonerToEdit.setSafetyTrainingValidity(chkSafetyTrainingSet.Checked ? dtpSafetyTrainingExpiration.Value.Date : (DateTime?)null);
+
+                    // Employment start date is system-controlled (R5): backfill it the moment a
+                    // factory-assigned, non-pending prisoner is found without one, but never
+                    // overwrite an existing value once set.
+                    if (selectedFactory.HasValue && !isPendingPlacementStatus(prisonerToEdit.getActivityStatus()) && !prisonerToEdit.getWorkStartDate().HasValue)
+                        prisonerToEdit.setWorkStartDate(DateTime.Today);
+
                     prisonerToEdit.update();
 
                     MessageBox.Show("Prisoner updated successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -182,17 +213,28 @@ namespace PEDIS
                         selectedRole = (PrisonerRole)cbRole.SelectedItem;
                     }
 
+                    PrisonerActivityStatus selectedStatus = (PrisonerActivityStatus)cbActivityStatus.SelectedItem;
+
+                    // Employment start date is system-controlled (R5): auto-set to the date the
+                    // prisoner is added to the system, but only once they're actually placed with
+                    // a factory (not while still pending placement/approval).
+                    DateTime? workStart = (selectedFactory.HasValue && !isPendingPlacementStatus(selectedStatus))
+                        ? DateTime.Today
+                        : (DateTime?)null;
+
+                    DateTime? safetyTrain = chkSafetyTrainingSet.Checked ? dtpSafetyTrainingExpiration.Value.Date : (DateTime?)null;
+
                     Prisoner newPrisoner = new Prisoner(
                         nextId,
                         txtPrisonerNumber.Text,
                         txtFullName.Text,
                         selectedFactory,
-                        int.Parse(txtDepartment.Text),
-                        (PrisonerActivityStatus)cbActivityStatus.SelectedItem,
+                        int.Parse(cbDepartment.Text),
+                        selectedStatus,
                         selectedRole,
-                        null,
-                        null,
-                        null,
+                        safetyTrain,
+                        workStart,
+                        dtpReleaseDate.Value.Date,
                         chkQualified.Checked,
                         false,
                         decimal.Parse(txtHourlyRate.Text),
@@ -215,6 +257,11 @@ namespace PEDIS
         {
             this.DialogResult = DialogResult.Cancel;
             this.Close();
+        }
+
+        private void chkSafetyTrainingSet_CheckedChanged(object sender, EventArgs e)
+        {
+            dtpSafetyTrainingExpiration.Enabled = chkSafetyTrainingSet.Checked;
         }
 
         private void AddEditPrisonerDialog_Load(object sender, EventArgs e)

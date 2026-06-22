@@ -131,7 +131,7 @@ namespace PEDIS
             this.lvPrisoners.GridLines = true;
             this.lvPrisoners.Location = new System.Drawing.Point(20, 95);
             this.lvPrisoners.Name = "lvPrisoners";
-            this.lvPrisoners.Size = new System.Drawing.Size(1400, 350);
+            this.lvPrisoners.Size = new System.Drawing.Size(984, 350);
             this.lvPrisoners.TabIndex = 1;
             this.lvPrisoners.UseCompatibleStateImageBehavior = false;
             this.lvPrisoners.View = System.Windows.Forms.View.Details;
@@ -153,7 +153,7 @@ namespace PEDIS
             this.lvPrisoners.Columns.Add("Qualified", 60);
 
             // btnView
-            this.btnView.Location = new System.Drawing.Point(20, 670);
+            this.btnView.Location = new System.Drawing.Point(20, 455);
             this.btnView.Name = "btnView";
             this.btnView.Size = new System.Drawing.Size(100, 35);
             this.btnView.TabIndex = 2;
@@ -165,7 +165,7 @@ namespace PEDIS
             this.btnView.Click += new System.EventHandler(this.btnView_Click);
 
             // btnAdd
-            this.btnAdd.Location = new System.Drawing.Point(130, 670);
+            this.btnAdd.Location = new System.Drawing.Point(130, 455);
             this.btnAdd.Name = "btnAdd";
             this.btnAdd.Size = new System.Drawing.Size(100, 35);
             this.btnAdd.TabIndex = 3;
@@ -177,7 +177,7 @@ namespace PEDIS
             this.btnAdd.Click += new System.EventHandler(this.btnAdd_Click);
 
             // btnEdit
-            this.btnEdit.Location = new System.Drawing.Point(240, 670);
+            this.btnEdit.Location = new System.Drawing.Point(240, 455);
             this.btnEdit.Name = "btnEdit";
             this.btnEdit.Size = new System.Drawing.Size(100, 35);
             this.btnEdit.TabIndex = 4;
@@ -189,7 +189,7 @@ namespace PEDIS
             this.btnEdit.Click += new System.EventHandler(this.btnEdit_Click);
 
             // btnDelete
-            this.btnDelete.Location = new System.Drawing.Point(350, 670);
+            this.btnDelete.Location = new System.Drawing.Point(350, 455);
             this.btnDelete.Name = "btnDelete";
             this.btnDelete.Size = new System.Drawing.Size(100, 35);
             this.btnDelete.TabIndex = 5;
@@ -201,7 +201,7 @@ namespace PEDIS
             this.btnDelete.Click += new System.EventHandler(this.btnDelete_Click);
 
             // btnBack
-            this.btnBack.Location = new System.Drawing.Point(20, 720);
+            this.btnBack.Location = new System.Drawing.Point(20, 500);
             this.btnBack.Name = "btnBack";
             this.btnBack.Size = new System.Drawing.Size(100, 35);
             this.btnBack.TabIndex = 6;
@@ -215,14 +215,14 @@ namespace PEDIS
             // lblActions
             this.lblActions.AutoSize = false;
             this.lblActions.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
-            this.lblActions.Location = new System.Drawing.Point(20, 455);
+            this.lblActions.Location = new System.Drawing.Point(20, 545);
             this.lblActions.Name = "lblActions";
             this.lblActions.Size = new System.Drawing.Size(400, 25);
             this.lblActions.Text = "Actions for Selected Prisoner";
             this.lblActions.ForeColor = System.Drawing.Color.FromArgb(0, 51, 102);
 
             // btnApprove
-            this.btnApprove.Location = new System.Drawing.Point(20, 485);
+            this.btnApprove.Location = new System.Drawing.Point(20, 580);
             this.btnApprove.Name = "btnApprove";
             this.btnApprove.Size = new System.Drawing.Size(110, 35);
             this.btnApprove.Text = "Approve";
@@ -234,7 +234,7 @@ namespace PEDIS
             this.btnApprove.Click += new System.EventHandler(this.btnApprove_Click);
 
             // btnReject
-            this.btnReject.Location = new System.Drawing.Point(140, 485);
+            this.btnReject.Location = new System.Drawing.Point(140, 580);
             this.btnReject.Name = "btnReject";
             this.btnReject.Size = new System.Drawing.Size(110, 35);
             this.btnReject.Text = "Reject";
@@ -246,7 +246,7 @@ namespace PEDIS
             this.btnReject.Click += new System.EventHandler(this.btnReject_Click);
 
             // btnAssignToFactory
-            this.btnAssignToFactory.Location = new System.Drawing.Point(260, 485);
+            this.btnAssignToFactory.Location = new System.Drawing.Point(260, 580);
             this.btnAssignToFactory.Name = "btnAssignToFactory";
             this.btnAssignToFactory.Size = new System.Drawing.Size(150, 35);
             this.btnAssignToFactory.Text = "Assign to Factory";
@@ -258,14 +258,14 @@ namespace PEDIS
             this.btnAssignToFactory.Click += new System.EventHandler(this.btnAssignToFactory_Click);
 
             // cmbAssignFactory
-            this.cmbAssignFactory.Location = new System.Drawing.Point(420, 492);
+            this.cmbAssignFactory.Location = new System.Drawing.Point(420, 587);
             this.cmbAssignFactory.Name = "cmbAssignFactory";
             this.cmbAssignFactory.Size = new System.Drawing.Size(130, 25);
             this.cmbAssignFactory.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbAssignFactory.Visible = false;
 
             // btnStartProfessionalTraining
-            this.btnStartProfessionalTraining.Location = new System.Drawing.Point(560, 485);
+            this.btnStartProfessionalTraining.Location = new System.Drawing.Point(560, 580);
             this.btnStartProfessionalTraining.Name = "btnStartProfessionalTraining";
             this.btnStartProfessionalTraining.Size = new System.Drawing.Size(190, 35);
             this.btnStartProfessionalTraining.Text = "Start Professional Training";
@@ -277,7 +277,7 @@ namespace PEDIS
             this.btnStartProfessionalTraining.Click += new System.EventHandler(this.btnStartProfessionalTraining_Click);
 
             // btnCompleteProfessionalTraining
-            this.btnCompleteProfessionalTraining.Location = new System.Drawing.Point(20, 530);
+            this.btnCompleteProfessionalTraining.Location = new System.Drawing.Point(20, 620);
             this.btnCompleteProfessionalTraining.Name = "btnCompleteProfessionalTraining";
             this.btnCompleteProfessionalTraining.Size = new System.Drawing.Size(210, 35);
             this.btnCompleteProfessionalTraining.Text = "Complete Professional Training";
@@ -289,7 +289,7 @@ namespace PEDIS
             this.btnCompleteProfessionalTraining.Click += new System.EventHandler(this.btnCompleteProfessionalTraining_Click);
 
             // btnStartSafetyTraining
-            this.btnStartSafetyTraining.Location = new System.Drawing.Point(240, 530);
+            this.btnStartSafetyTraining.Location = new System.Drawing.Point(240, 620);
             this.btnStartSafetyTraining.Name = "btnStartSafetyTraining";
             this.btnStartSafetyTraining.Size = new System.Drawing.Size(160, 35);
             this.btnStartSafetyTraining.Text = "Start Safety Training";
@@ -301,7 +301,7 @@ namespace PEDIS
             this.btnStartSafetyTraining.Click += new System.EventHandler(this.btnStartSafetyTraining_Click);
 
             // btnCompleteSafetyTraining
-            this.btnCompleteSafetyTraining.Location = new System.Drawing.Point(410, 530);
+            this.btnCompleteSafetyTraining.Location = new System.Drawing.Point(410, 620);
             this.btnCompleteSafetyTraining.Name = "btnCompleteSafetyTraining";
             this.btnCompleteSafetyTraining.Size = new System.Drawing.Size(170, 35);
             this.btnCompleteSafetyTraining.Text = "Complete Safety Training";
@@ -313,7 +313,7 @@ namespace PEDIS
             this.btnCompleteSafetyTraining.Click += new System.EventHandler(this.btnCompleteSafetyTraining_Click);
 
             // btnSuspend
-            this.btnSuspend.Location = new System.Drawing.Point(20, 575);
+            this.btnSuspend.Location = new System.Drawing.Point(20, 660);
             this.btnSuspend.Name = "btnSuspend";
             this.btnSuspend.Size = new System.Drawing.Size(100, 35);
             this.btnSuspend.Text = "Suspend";
@@ -325,14 +325,14 @@ namespace PEDIS
             this.btnSuspend.Click += new System.EventHandler(this.btnSuspend_Click);
 
             // txtSuspendReason
-            this.txtSuspendReason.Location = new System.Drawing.Point(130, 583);
+            this.txtSuspendReason.Location = new System.Drawing.Point(130, 668);
             this.txtSuspendReason.Name = "txtSuspendReason";
             this.txtSuspendReason.Size = new System.Drawing.Size(200, 25);
             this.txtSuspendReason.PlaceholderText = "Reason (optional)";
             this.txtSuspendReason.Visible = false;
 
             // btnReactivate
-            this.btnReactivate.Location = new System.Drawing.Point(340, 575);
+            this.btnReactivate.Location = new System.Drawing.Point(340, 660);
             this.btnReactivate.Name = "btnReactivate";
             this.btnReactivate.Size = new System.Drawing.Size(110, 35);
             this.btnReactivate.Text = "Reactivate";
@@ -344,7 +344,7 @@ namespace PEDIS
             this.btnReactivate.Click += new System.EventHandler(this.btnReactivate_Click);
 
             // btnRelease
-            this.btnRelease.Location = new System.Drawing.Point(460, 575);
+            this.btnRelease.Location = new System.Drawing.Point(460, 660);
             this.btnRelease.Name = "btnRelease";
             this.btnRelease.Size = new System.Drawing.Size(100, 35);
             this.btnRelease.Text = "Release";
@@ -356,7 +356,7 @@ namespace PEDIS
             this.btnRelease.Click += new System.EventHandler(this.btnRelease_Click);
 
             // btnClockIn
-            this.btnClockIn.Location = new System.Drawing.Point(20, 620);
+            this.btnClockIn.Location = new System.Drawing.Point(20, 705);
             this.btnClockIn.Name = "btnClockIn";
             this.btnClockIn.Size = new System.Drawing.Size(120, 35);
             this.btnClockIn.Text = "Clock In";
@@ -368,7 +368,7 @@ namespace PEDIS
             this.btnClockIn.Click += new System.EventHandler(this.btnClockIn_Click);
 
             // btnClockOut
-            this.btnClockOut.Location = new System.Drawing.Point(150, 620);
+            this.btnClockOut.Location = new System.Drawing.Point(150, 705);
             this.btnClockOut.Name = "btnClockOut";
             this.btnClockOut.Size = new System.Drawing.Size(120, 35);
             this.btnClockOut.Text = "Clock Out";
