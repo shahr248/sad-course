@@ -34,9 +34,14 @@ namespace PEDIS
             dtpFilterStartDate.Value = DateTime.Today;
             dtpFilterEndDate.Value = DateTime.Today;
 
+            bool isFactoryManager = currentUser != null && currentUser.getRole() == DepartmentManagementRole.FactoryManager;
+
             cmbFilterPrisoner.Items.Clear();
             foreach (Prisoner prisoner in Program.Prisoners)
             {
+                if (isFactoryManager && prisoner.getFactory() != currentUser.getFactory())
+                    continue;
+
                 cmbFilterPrisoner.Items.Add(prisoner.getPrisonerNumber() + " - " + prisoner.getFullName());
             }
             cmbFilterPrisoner.Text = "";
@@ -179,6 +184,7 @@ namespace PEDIS
         private void btnAdd_Click(object sender, EventArgs e)
         {
             AddEditAttendanceDialog dialog = new AddEditAttendanceDialog();
+            dialog.setCurrentUser(currentUser);
             if (dialog.ShowDialog() == DialogResult.OK)
             {
                 refreshList(filterStartDate, filterEndDate, filteredPrisonerId);
@@ -195,6 +201,7 @@ namespace PEDIS
 
             AttendanceRecord attendance = (AttendanceRecord)lvAttendance.SelectedItems[0].Tag;
             AddEditAttendanceDialog dialog = new AddEditAttendanceDialog();
+            dialog.setCurrentUser(currentUser);
             dialog.setAttendanceToEdit(attendance);
             if (dialog.ShowDialog() == DialogResult.OK)
             {

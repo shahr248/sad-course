@@ -25,9 +25,15 @@ namespace PEDIS
 
         private void PrisonerPanel_Load(object sender, EventArgs e)
         {
+            // Factory Managers can only ever place a prisoner into the one factory they manage.
+            bool isFactoryManager = currentUser != null && currentUser.getRole() == DepartmentManagementRole.FactoryManager;
+
             cmbAssignFactory.Items.Clear();
             foreach (Factory factory in Enum.GetValues(typeof(Factory)))
             {
+                if (isFactoryManager && factory != currentUser.getFactory())
+                    continue;
+
                 cmbAssignFactory.Items.Add(factory);
             }
             if (cmbAssignFactory.Items.Count > 0)
@@ -257,6 +263,7 @@ namespace PEDIS
         private void btnAdd_Click(object sender, EventArgs e)
         {
             AddEditPrisonerDialog dialog = new AddEditPrisonerDialog();
+            dialog.setCurrentUser(currentUser);
             if (dialog.ShowDialog() == DialogResult.OK)
             {
                 refreshList();
@@ -274,6 +281,7 @@ namespace PEDIS
 
             Prisoner prisoner = (Prisoner)lvPrisoners.SelectedItems[0].Tag;
             AddEditPrisonerDialog dialog = new AddEditPrisonerDialog();
+            dialog.setCurrentUser(currentUser);
             dialog.setPrisonerToEdit(prisoner);
             if (dialog.ShowDialog() == DialogResult.OK)
             {

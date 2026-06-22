@@ -7,6 +7,7 @@ namespace PEDIS
     {
         private AttendanceRecord attendanceToEdit;
         private bool isEditMode;
+        private DepartmentManagement currentUser;
 
         public AddEditAttendanceDialog()
         {
@@ -14,6 +15,11 @@ namespace PEDIS
             attendanceToEdit = null;
             isEditMode = false;
             this.Text = "Add Attendance Record";
+        }
+
+        public void setCurrentUser(DepartmentManagement user)
+        {
+            this.currentUser = user;
         }
 
         public void setAttendanceToEdit(AttendanceRecord attendance)
@@ -170,17 +176,30 @@ namespace PEDIS
 
         private void AddEditAttendanceDialog_Load(object sender, EventArgs e)
         {
+            // Factory Managers can only log attendance for prisoners in their own factory,
+            // and any record they create must be tagged with that same factory.
+            bool isFactoryManager = currentUser != null && currentUser.getRole() == DepartmentManagementRole.FactoryManager;
+
             cbPrisoner.Items.Clear();
             foreach (Prisoner prisoner in Program.Prisoners)
             {
+                if (isFactoryManager && prisoner.getFactory() != currentUser.getFactory())
+                    continue;
+
                 cbPrisoner.Items.Add(prisoner.getPrisonerNumber() + " - " + prisoner.getFullName());
             }
             cbPrisoner.DropDownStyle = ComboBoxStyle.DropDownList;
 
             cbFactory.Items.Clear();
             foreach (var factory in Enum.GetValues(typeof(Factory)))
+            {
+                if (isFactoryManager && (Factory)factory != currentUser.getFactory())
+                    continue;
+
                 cbFactory.Items.Add(factory);
+            }
             cbFactory.DropDownStyle = ComboBoxStyle.DropDownList;
+            cbFactory.Enabled = !isFactoryManager;
 
             if (isEditMode && attendanceToEdit != null)
             {

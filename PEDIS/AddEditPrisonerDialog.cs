@@ -7,6 +7,7 @@ namespace PEDIS
     {
         private Prisoner prisonerToEdit;
         private bool isEditMode;
+        private DepartmentManagement currentUser;
 
         public AddEditPrisonerDialog()
         {
@@ -19,6 +20,11 @@ namespace PEDIS
             {
                 txtHourlyRate.Text = "14.7";
             }
+        }
+
+        public void setCurrentUser(DepartmentManagement user)
+        {
+            this.currentUser = user;
         }
 
         // Statuses in which a prisoner has not yet been placed with a factory --
@@ -266,12 +272,23 @@ namespace PEDIS
 
         private void AddEditPrisonerDialog_Load(object sender, EventArgs e)
         {
+            // Factory Managers manage exactly one factory -- every prisoner they add or edit
+            // must stay in that factory, so there's nothing else to offer or choose.
+            bool isFactoryManager = currentUser != null && currentUser.getRole() == DepartmentManagementRole.FactoryManager;
+
             // Populate Factory ComboBox with "Unassigned" option
             cbFactory.Items.Clear();
-            cbFactory.Items.Add("(Unassigned)");
+            if (!isFactoryManager)
+                cbFactory.Items.Add("(Unassigned)");
             foreach (var factory in Enum.GetValues(typeof(Factory)))
+            {
+                if (isFactoryManager && (Factory)factory != currentUser.getFactory())
+                    continue;
+
                 cbFactory.Items.Add(factory);
+            }
             cbFactory.DropDownStyle = ComboBoxStyle.DropDownList;
+            cbFactory.Enabled = !isFactoryManager;
 
             // Populate ActivityStatus ComboBox
             cbActivityStatus.Items.Clear();
@@ -292,7 +309,7 @@ namespace PEDIS
             }
             else
             {
-                cbFactory.SelectedIndex = 0; // Default to Unassigned for new prisoners
+                cbFactory.SelectedIndex = 0; // Unassigned for most roles; Factory Managers only have their own factory in the list
                 cbRole.SelectedIndex = 0; // Default to None for new prisoners
             }
         }
