@@ -112,6 +112,12 @@ namespace PEDIS
                 return false;
             }
 
+            if (!System.Text.RegularExpressions.Regex.IsMatch(txtFullName.Text, @"^[A-Za-z\s]+$"))
+            {
+                MessageBox.Show("שם האסיר יכול להכיל אותיות באנגלית בלבד (ניתן להשתמש ברווחים). אין להשתמש בספרות או בסימנים.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return false;
+            }
+
             if (!int.TryParse(cbDepartment.Text, out int department) || department <= 0)
             {
                 MessageBox.Show("Please enter a valid department (positive number). This is the inmate's home wing/department, independent of the employment department.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);

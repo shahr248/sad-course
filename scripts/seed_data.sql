@@ -622,7 +622,9 @@ EXEC sp_WorkOrder_create
     @start_date = '2026-06-15',
     @deadline = '2026-07-15',
     @status = 'inProcess',
-    @hold_reason = NULL;
+    @hold_reason = NULL,
+    @product_id = 1,
+    @packaging_instructions = 'Pack in 500g bags, seal with tamper-proof label';
 
 EXEC sp_WorkOrder_create
     @work_order_id = 2,
@@ -632,7 +634,9 @@ EXEC sp_WorkOrder_create
     @start_date = '2026-06-20',
     @deadline = '2026-08-01',
     @status = 'inProcess',
-    @hold_reason = NULL;
+    @hold_reason = NULL,
+    @product_id = 3,
+    @packaging_instructions = 'Pack in cartons of 100 units';
 
 EXEC sp_WorkOrder_create
     @work_order_id = 3,
@@ -642,7 +646,9 @@ EXEC sp_WorkOrder_create
     @start_date = '2026-05-20',
     @deadline = '2026-07-01',
     @status = 'completed',
-    @hold_reason = NULL;
+    @hold_reason = NULL,
+    @product_id = 4,
+    @packaging_instructions = 'Roll and wrap in protective plastic';
 
 EXEC sp_WorkOrder_create
     @work_order_id = 4,
@@ -652,7 +658,9 @@ EXEC sp_WorkOrder_create
     @start_date = '2026-04-10',
     @deadline = '2026-06-15',
     @status = 'completed',
-    @hold_reason = NULL;
+    @hold_reason = NULL,
+    @product_id = 2,
+    @packaging_instructions = 'Pack in 250g containers';
 
 EXEC sp_WorkOrder_create
     @work_order_id = 5,
@@ -662,7 +670,9 @@ EXEC sp_WorkOrder_create
     @start_date = '2026-06-20',
     @deadline = '2026-07-20',
     @status = 'hasntEnteredIntoProductionYet',
-    @hold_reason = NULL;
+    @hold_reason = NULL,
+    @product_id = 6,
+    @packaging_instructions = 'Pack individually in cardboard boxes';
 
 EXEC sp_WorkOrder_create
     @work_order_id = 6,
@@ -672,7 +682,9 @@ EXEC sp_WorkOrder_create
     @start_date = '2026-06-01',
     @deadline = '2026-08-10',
     @status = 'inProcess',
-    @hold_reason = NULL;
+    @hold_reason = NULL,
+    @product_id = 1,
+    @packaging_instructions = 'Pack in 500g bags, seal with tamper-proof label';
 
 EXEC sp_WorkOrder_create
     @work_order_id = 7,
@@ -682,7 +694,9 @@ EXEC sp_WorkOrder_create
     @start_date = '2026-06-25',
     @deadline = '2026-07-25',
     @status = 'hasntEnteredIntoProductionYet',
-    @hold_reason = 'Waiting for ingredient shipment';
+    @hold_reason = 'Waiting for ingredient shipment',
+    @product_id = 2,
+    @packaging_instructions = 'Pack in 250g containers';
 
 EXEC sp_WorkOrder_create
     @work_order_id = 8,
@@ -692,7 +706,9 @@ EXEC sp_WorkOrder_create
     @start_date = '2026-06-18',
     @deadline = '2026-08-20',
     @status = 'inProcess',
-    @hold_reason = NULL;
+    @hold_reason = NULL,
+    @product_id = 3,
+    @packaging_instructions = 'Pack in cartons of 100 units';
 
 EXEC sp_WorkOrder_create
     @work_order_id = 9,
@@ -702,7 +718,9 @@ EXEC sp_WorkOrder_create
     @start_date = '2026-07-01',
     @deadline = '2026-07-20',
     @status = 'inProcess',
-    @hold_reason = NULL;
+    @hold_reason = NULL,
+    @product_id = 1,
+    @packaging_instructions = 'Pack in 500g bags, seal with tamper-proof label';
 
 EXEC sp_WorkOrder_create
     @work_order_id = 10,
@@ -712,7 +730,9 @@ EXEC sp_WorkOrder_create
     @start_date = '2026-06-15',
     @deadline = '2026-07-30',
     @status = 'inProcess',
-    @hold_reason = NULL;
+    @hold_reason = NULL,
+    @product_id = 3,
+    @packaging_instructions = 'Pack in cartons of 100 units';
 
 EXEC sp_WorkOrder_create
     @work_order_id = 11,
@@ -722,7 +742,9 @@ EXEC sp_WorkOrder_create
     @start_date = '2026-06-10',
     @deadline = '2026-07-01',
     @status = 'completed',
-    @hold_reason = NULL;
+    @hold_reason = NULL,
+    @product_id = 4,
+    @packaging_instructions = 'Roll and wrap in protective plastic';
 
 EXEC sp_WorkOrder_create
     @work_order_id = 12,
@@ -732,7 +754,9 @@ EXEC sp_WorkOrder_create
     @start_date = '2026-05-25',
     @deadline = '2026-08-05',
     @status = 'inProcess',
-    @hold_reason = NULL;
+    @hold_reason = NULL,
+    @product_id = 1,
+    @packaging_instructions = 'Pack in 500g bags, seal with tamper-proof label';
 
 -- ============================================================================
 -- 9. AttendanceRecord (20 rows)
