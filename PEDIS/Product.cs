@@ -13,10 +13,11 @@ namespace PEDIS
         private string packagingInstructions;
         private UnitOfMeasure unitOfMeasure;
         private string activityStatus;
+        private Factory factory;
         private List<Contract> contracts;
         private List<ProductionOrder> productionOrders;
 
-        public Product(int id, string sku, string name, string desc, string packing, UnitOfMeasure unit, string status, bool isNew)
+        public Product(int id, string sku, string name, string desc, string packing, UnitOfMeasure unit, string status, Factory factory, bool isNew)
         {
             this.productId = id;
             this.sku = sku;
@@ -25,6 +26,7 @@ namespace PEDIS
             this.packagingInstructions = packing;
             this.unitOfMeasure = unit;
             this.activityStatus = status;
+            this.factory = factory;
             if (isNew)
             {
                 this.create();
@@ -39,6 +41,7 @@ namespace PEDIS
         public string getPackagingInstructions() { return this.packagingInstructions; }
         public UnitOfMeasure getUnitOfMeasure() { return this.unitOfMeasure; }
         public string getActivityStatus() { return this.activityStatus; }
+        public Factory getFactory() { return this.factory; }
 
         public void setSku(string sku) { this.sku = sku; }
         public void setName(string name) { this.productName = name; }
@@ -46,6 +49,7 @@ namespace PEDIS
         public void setPackagingInstructions(string packing) { this.packagingInstructions = packing; }
         public void setUnitOfMeasure(UnitOfMeasure unit) { this.unitOfMeasure = unit; }
         public void setActivityStatus(string status) { this.activityStatus = status; }
+        public void setFactory(Factory factory) { this.factory = factory; }
 
         public List<Contract> getContracts()
         {
@@ -90,7 +94,7 @@ namespace PEDIS
         public void create()
         {
             SqlCommand cmd = new SqlCommand();
-            cmd.CommandText = "EXECUTE sp_Product_create @product_id, @sku, @product_name, @description, @packaging_instructions, @unit_of_measure, @activity_status";
+            cmd.CommandText = "EXECUTE sp_Product_create @product_id, @sku, @product_name, @description, @packaging_instructions, @unit_of_measure, @activity_status, @factory";
             cmd.Parameters.AddWithValue("@product_id", this.productId);
             cmd.Parameters.AddWithValue("@sku", this.sku);
             cmd.Parameters.AddWithValue("@product_name", this.productName);
@@ -98,6 +102,7 @@ namespace PEDIS
             cmd.Parameters.AddWithValue("@packaging_instructions", this.packagingInstructions ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@unit_of_measure", EnumHelpers.ToDbString(this.unitOfMeasure));
             cmd.Parameters.AddWithValue("@activity_status", this.activityStatus ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@factory", EnumHelpers.ToDbString(this.factory));
             SQL_CON sc = new SQL_CON();
             sc.execute_non_query(cmd);
         }
@@ -105,7 +110,7 @@ namespace PEDIS
         public void update()
         {
             SqlCommand cmd = new SqlCommand();
-            cmd.CommandText = "EXECUTE sp_Product_update @product_id, @sku, @product_name, @description, @packaging_instructions, @unit_of_measure, @activity_status";
+            cmd.CommandText = "EXECUTE sp_Product_update @product_id, @sku, @product_name, @description, @packaging_instructions, @unit_of_measure, @activity_status, @factory";
             cmd.Parameters.AddWithValue("@product_id", this.productId);
             cmd.Parameters.AddWithValue("@sku", this.sku);
             cmd.Parameters.AddWithValue("@product_name", this.productName);
@@ -113,6 +118,7 @@ namespace PEDIS
             cmd.Parameters.AddWithValue("@packaging_instructions", this.packagingInstructions ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@unit_of_measure", EnumHelpers.ToDbString(this.unitOfMeasure));
             cmd.Parameters.AddWithValue("@activity_status", this.activityStatus ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@factory", EnumHelpers.ToDbString(this.factory));
             SQL_CON sc = new SQL_CON();
             sc.execute_non_query(cmd);
         }
@@ -145,8 +151,11 @@ namespace PEDIS
                 string packing = reader.IsDBNull(4) ? null : reader.GetValue(4).ToString();
                 UnitOfMeasure unit = EnumHelpers.UnitOfMeasureFromDb(reader.GetValue(5).ToString());
                 string status = reader.IsDBNull(6) ? null : reader.GetValue(6).ToString();
+                // index 7/8 are created_at/modified_at (not modeled on this entity);
+                // factory is appended after them (see create_database.sql)
+                Factory factory = EnumHelpers.FactoryFromDb(reader.GetValue(9).ToString());
 
-                Product p = new Product(id, sku, name, desc, packing, unit, status, false);
+                Product p = new Product(id, sku, name, desc, packing, unit, status, factory, false);
                 Program.Products.Add(p);
             }
             reader.Close();

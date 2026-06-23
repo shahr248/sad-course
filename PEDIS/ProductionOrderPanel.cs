@@ -90,7 +90,7 @@ namespace PEDIS
 
         private void btnAdd_Click(object sender, EventArgs e)
         {
-            AddEditProductionOrderDialog dialog = new AddEditProductionOrderDialog(null);
+            AddEditProductionOrderDialog dialog = new AddEditProductionOrderDialog(null, currentUser);
             DialogResult result = dialog.ShowDialog();
             if (result == DialogResult.OK)
             {
@@ -107,7 +107,7 @@ namespace PEDIS
             }
 
             ProductionOrder order = (ProductionOrder)lvOrders.SelectedItems[0].Tag;
-            AddEditProductionOrderDialog dialog = new AddEditProductionOrderDialog(order);
+            AddEditProductionOrderDialog dialog = new AddEditProductionOrderDialog(order, currentUser);
             DialogResult result = dialog.ShowDialog();
             if (result == DialogResult.OK)
             {

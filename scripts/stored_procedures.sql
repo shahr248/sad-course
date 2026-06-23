@@ -164,14 +164,15 @@ CREATE PROCEDURE sp_Product_create
     @description NVARCHAR(MAX) = NULL,
     @packaging_instructions NVARCHAR(MAX) = NULL,
     @unit_of_measure NVARCHAR(20),
-    @activity_status NVARCHAR(50) = NULL
+    @activity_status NVARCHAR(50) = NULL,
+    @factory NVARCHAR(30)
 AS
 BEGIN
     SET NOCOUNT ON;
     INSERT INTO Product
-        (product_id, sku, product_name, description, packaging_instructions, unit_of_measure, activity_status, created_at)
+        (product_id, sku, product_name, description, packaging_instructions, unit_of_measure, activity_status, created_at, factory)
     VALUES
-        (@product_id, @sku, @product_name, @description, @packaging_instructions, @unit_of_measure, @activity_status, GETUTCDATE());
+        (@product_id, @sku, @product_name, @description, @packaging_instructions, @unit_of_measure, @activity_status, GETUTCDATE(), @factory);
 END;
 GO
 
@@ -182,7 +183,8 @@ CREATE PROCEDURE sp_Product_update
     @description NVARCHAR(MAX) = NULL,
     @packaging_instructions NVARCHAR(MAX) = NULL,
     @unit_of_measure NVARCHAR(20),
-    @activity_status NVARCHAR(50) = NULL
+    @activity_status NVARCHAR(50) = NULL,
+    @factory NVARCHAR(30)
 AS
 BEGIN
     SET NOCOUNT ON;
@@ -193,6 +195,7 @@ BEGIN
         packaging_instructions = @packaging_instructions,
         unit_of_measure = @unit_of_measure,
         activity_status = @activity_status,
+        factory = @factory,
         modified_at = GETUTCDATE()
     WHERE product_id = @product_id;
 END;

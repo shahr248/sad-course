@@ -41,7 +41,9 @@ CREATE TABLE Product (
     activity_status NVARCHAR(50),
     created_at DATETIME2 NOT NULL DEFAULT GETUTCDATE(),
     modified_at DATETIME2 NULL,
-    CONSTRAINT CHK_Product_UnitOfMeasure CHECK (unit_of_measure IN ('kg', 'gr', 'units'))
+    factory NVARCHAR(30) NOT NULL,
+    CONSTRAINT CHK_Product_UnitOfMeasure CHECK (unit_of_measure IN ('kg', 'gr', 'units')),
+    CONSTRAINT CHK_Product_Factory CHECK (factory IN ('MaimonSpices', 'Technosak', 'SewingWorkshop', 'TzitzitWorkshop'))
 );
 
 -- ============================================================================

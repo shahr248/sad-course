@@ -34,12 +34,14 @@ namespace PEDIS
 
         private ProductionOrder orderToEdit;
         private bool isEditMode;
+        private DepartmentManagement currentUser;
         private List<ProductLineRow> productLines = new List<ProductLineRow>();
 
-        public AddEditProductionOrderDialog(ProductionOrder orderToEdit = null)
+        public AddEditProductionOrderDialog(ProductionOrder orderToEdit = null, DepartmentManagement currentUser = null)
         {
             this.orderToEdit = orderToEdit;
             this.isEditMode = (orderToEdit != null);
+            this.currentUser = currentUser;
             InitializeComponent();
             PopulateCustomerCompanies();
             PopulateOrderStatuses();
@@ -56,11 +58,21 @@ namespace PEDIS
             }
         }
 
+        private bool isFactoryManager()
+        {
+            return currentUser != null && currentUser.getRole() == DepartmentManagementRole.FactoryManager;
+        }
+
         private void PopulateCustomerCompanies()
         {
+            bool scoped = isFactoryManager();
+
             cbCustomerCompany.Items.Clear();
             foreach (CustomerCompany cc in Program.CustomerCompanies)
             {
+                if (scoped && cc.getFactory() != currentUser.getFactory())
+                    continue;
+
                 string displayText = cc.getName() ?? "Unknown";
                 cbCustomerCompany.Items.Add(new ComboBoxItem(displayText, cc));
             }
@@ -128,8 +140,15 @@ namespace PEDIS
             row.cbProduct.DropDownStyle = ComboBoxStyle.DropDownList;
             row.cbProduct.Location = new System.Drawing.Point(0, 4);
             row.cbProduct.Size = new System.Drawing.Size(200, 24);
+            // Scoping only applies to rows the user can actually pick from (editable);
+            // read-only rows in Edit mode must keep showing the line's real product
+            // even if it falls outside the current Factory Manager's own factory.
+            bool scoped = editable && isFactoryManager();
             foreach (Product p in Program.Products)
             {
+                if (scoped && p.getFactory() != currentUser.getFactory())
+                    continue;
+
                 string displayText = p.getName() ?? "Unknown";
                 row.cbProduct.Items.Add(new ComboBoxItem(displayText, p));
             }

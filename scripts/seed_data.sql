@@ -122,7 +122,8 @@ EXEC sp_Product_create
     @description = 'Premium black pepper, ground',
     @packaging_instructions = 'Pack in 500g bags, seal with tamper-proof label',
     @unit_of_measure = 'gr',
-    @activity_status = 'Active';
+    @activity_status = 'Active',
+    @factory = 'MaimonSpices';
 
 EXEC sp_Product_create
     @product_id = 2,
@@ -131,7 +132,8 @@ EXEC sp_Product_create
     @description = 'Spiced paprika blend for cooking',
     @packaging_instructions = 'Pack in 250g containers',
     @unit_of_measure = 'gr',
-    @activity_status = 'Active';
+    @activity_status = 'Active',
+    @factory = 'MaimonSpices';
 
 EXEC sp_Product_create
     @product_id = 3,
@@ -140,7 +142,8 @@ EXEC sp_Product_create
     @description = '500ml clear plastic bottles with caps',
     @packaging_instructions = 'Pack in cartons of 100 units',
     @unit_of_measure = 'units',
-    @activity_status = 'Active';
+    @activity_status = 'Active',
+    @factory = 'Technosak';
 
 EXEC sp_Product_create
     @product_id = 4,
@@ -149,7 +152,8 @@ EXEC sp_Product_create
     @description = '100% cotton woven fabric, 1.5m wide',
     @packaging_instructions = 'Roll and wrap in protective plastic',
     @unit_of_measure = 'kg',
-    @activity_status = 'Active';
+    @activity_status = 'Active',
+    @factory = 'SewingWorkshop';
 
 EXEC sp_Product_create
     @product_id = 5,
@@ -158,7 +162,8 @@ EXEC sp_Product_create
     @description = 'Hand-spun tzitzit thread, traditional quality',
     @packaging_instructions = 'Bundle in sets of 4, wrap per order',
     @unit_of_measure = 'units',
-    @activity_status = 'Active';
+    @activity_status = 'Active',
+    @factory = 'TzitzitWorkshop';
 
 EXEC sp_Product_create
     @product_id = 6,
@@ -167,7 +172,8 @@ EXEC sp_Product_create
     @description = 'Natural handmade soap, various scents',
     @packaging_instructions = 'Pack individually in cardboard boxes',
     @unit_of_measure = 'units',
-    @activity_status = 'Active';
+    @activity_status = 'Active',
+    @factory = 'TzitzitWorkshop';
 
 -- ============================================================================
 -- 4. DepartmentManagement (6 rows) - System Users
