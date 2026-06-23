@@ -114,7 +114,7 @@ namespace PEDIS
 
             if (!System.Text.RegularExpressions.Regex.IsMatch(txtFullName.Text, @"^[A-Za-z\s]+$"))
             {
-                MessageBox.Show("שם האסיר יכול להכיל אותיות באנגלית בלבד (ניתן להשתמש ברווחים). אין להשתמש בספרות או בסימנים.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Prisoner name can only contain English letters (spaces allowed). Digits and symbols are not allowed.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return false;
             }
 
