@@ -147,10 +147,13 @@ namespace PEDIS
                 int custCompId = Convert.ToInt32(reader.GetValue(2));
                 int? prodId = reader.IsDBNull(3) ? null : Convert.ToInt32(reader.GetValue(3));
                 DateTime start = Convert.ToDateTime(reader.GetValue(4));
-                DateTime? end = reader.IsDBNull(5) ? null : Convert.ToDateTime(reader.GetValue(5));
-                decimal? price = reader.IsDBNull(6) ? null : Convert.ToDecimal(reader.GetValue(6));
-                string terms = reader.IsDBNull(7) ? null : reader.GetValue(7).ToString();
-                ContractStatus? status = reader.IsDBNull(8) ? null : EnumHelpers.ContractStatusFromDb(reader.GetValue(8).ToString());
+                decimal? price = reader.IsDBNull(5) ? null : Convert.ToDecimal(reader.GetValue(5));
+                string terms = reader.IsDBNull(6) ? null : reader.GetValue(6).ToString();
+                ContractStatus? status = reader.IsDBNull(7) ? null : EnumHelpers.ContractStatusFromDb(reader.GetValue(7).ToString());
+                // index 8/9 are created_at/modified_at (not modeled on this entity);
+                // end_date was added later via ALTER TABLE, so it sits after them
+                // (see create_database.sql / migrate_contract_add_end_date.sql)
+                DateTime? end = reader.IsDBNull(10) ? null : Convert.ToDateTime(reader.GetValue(10));
 
                 Contract c = new Contract(id, contractNum, custCompId, prodId, start, end, price, terms, status, false);
                 Program.Contracts.Add(c);

@@ -92,12 +92,12 @@ CREATE TABLE Contract (
     customer_company_id INT NOT NULL,
     product_id INT NULL,
     start_date DATE NOT NULL,
-    end_date DATE NULL,
     price_per_unit DECIMAL(10,2),
     payment_terms NVARCHAR(MAX),
     contract_status NVARCHAR(50),
     created_at DATETIME2 NOT NULL DEFAULT GETUTCDATE(),
     modified_at DATETIME2 NULL,
+    end_date DATE NULL,
     CONSTRAINT CHK_Contract_Status CHECK (contract_status IN ('Active', 'Inactive', 'Expired')),
     CONSTRAINT CHK_Contract_EndDate CHECK (end_date IS NULL OR end_date >= start_date),
     CONSTRAINT FK_Contract_CustomerCompany FOREIGN KEY (customer_company_id)
