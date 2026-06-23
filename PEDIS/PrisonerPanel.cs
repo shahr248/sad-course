@@ -96,6 +96,10 @@ namespace PEDIS
 
                 btnClockIn.Visible = !hasOpenShiftToday;
                 btnClockOut.Visible = hasOpenShiftToday;
+
+                // Release is available to any manager from any non-terminal status, not just
+                // TemporarilyUnavailable — it's a deliberate override of the normal state machine.
+                btnRelease.Visible = true;
             }
 
             switch (prisoner.getActivityStatus())
@@ -138,7 +142,6 @@ namespace PEDIS
 
                 case PrisonerActivityStatus.TemporarilyUnavailable:
                     btnReactivate.Visible = true;
-                    btnRelease.Visible = true;
                     break;
 
                 case PrisonerActivityStatus.Archived:
@@ -512,13 +515,23 @@ namespace PEDIS
                 return;
 
             DialogResult confirm = MessageBox.Show(
-                "Are you sure you want to release/archive prisoner: " + prisoner.getFullName() + "?",
+                "Are you sure you want to permanently release this prisoner?",
                 "Confirm Release",
                 MessageBoxButtons.YesNo,
                 MessageBoxIcon.Question);
 
             if (confirm != DialogResult.Yes)
                 return;
+
+            PasswordConfirmationDialog passwordDialog = new PasswordConfirmationDialog();
+            if (passwordDialog.ShowDialog() != DialogResult.OK)
+                return;
+
+            if (passwordDialog.EnteredPassword != currentUser.getPassword())
+            {
+                MessageBox.Show("Incorrect password. Release cancelled.", "Action Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
 
             try
             {
