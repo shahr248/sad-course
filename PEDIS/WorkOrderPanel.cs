@@ -46,16 +46,17 @@ namespace PEDIS
                         continue;
                 }
 
-                Product product = workOrder.getProductionOrder()?.getProduct();
+                Product product = workOrder.getProduct();
 
                 ListViewItem item = new ListViewItem(workOrder.getId().ToString());
                 item.SubItems.Add(workOrder.getWorkOrderNumber());
                 item.SubItems.Add(workOrder.getProductionOrder()?.getOrderNumber() ?? "N/A");
                 item.SubItems.Add(product?.getName() ?? "N/A");
+                item.SubItems.Add(workOrder.getRequiredQuantity().ToString());
                 item.SubItems.Add(workOrder.getStatus().ToString());
                 item.SubItems.Add(workOrder.getStartDate().ToString("yyyy-MM-dd"));
                 item.SubItems.Add(workOrder.getDeadline().ToString("yyyy-MM-dd"));
-                item.SubItems.Add(product?.getPackagingInstructions() ?? "");
+                item.SubItems.Add(workOrder.getPackagingInstructions() ?? "");
                 if (showFactoryColumn)
                     item.SubItems.Add(workOrder.getProductionOrder()?.getFactory().ToString() ?? "N/A");
                 item.Tag = workOrder;
@@ -72,15 +73,16 @@ namespace PEDIS
             }
 
             WorkOrder workOrder = (WorkOrder)lvWorkOrders.SelectedItems[0].Tag;
-            Product product = workOrder.getProductionOrder()?.getProduct();
+            Product product = workOrder.getProduct();
             string info = "ID: " + workOrder.getId() + "\n" +
                          "Work Order #: " + workOrder.getWorkOrderNumber() + "\n" +
                          "Parent Order: " + (workOrder.getProductionOrder()?.getOrderNumber() ?? "N/A") + "\n" +
                          "Product: " + (product?.getName() ?? "N/A") + "\n" +
+                         "Quantity: " + workOrder.getRequiredQuantity() + "\n" +
                          "Status: " + workOrder.getStatus() + "\n" +
                          "Start Date: " + workOrder.getStartDate().ToString("yyyy-MM-dd") + "\n" +
                          "End Date: " + workOrder.getDeadline().ToString("yyyy-MM-dd") + "\n" +
-                         "Work Instructions: " + (product?.getPackagingInstructions() ?? "N/A");
+                         "Work Instructions: " + (workOrder.getPackagingInstructions() ?? "N/A");
             MessageBox.Show(info, "Work Order Details", MessageBoxButtons.OK);
         }
 

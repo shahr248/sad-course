@@ -91,7 +91,7 @@ namespace PEDIS
                 item.SubItems.Add(productivity.getPrisoner()?.getPrisonerNumber() ?? "N/A");
                 item.SubItems.Add(productivity.getPrisoner()?.getFullName() ?? "N/A");
                 item.SubItems.Add(productivity.getWorkOrder()?.getWorkOrderNumber() ?? "N/A");
-                item.SubItems.Add(productivity.getWorkOrder()?.getProductionOrder()?.getProduct()?.getName() ?? "N/A");
+                item.SubItems.Add(productivity.getWorkOrder()?.getProduct()?.getName() ?? "N/A");
                 item.SubItems.Add(productivity.getProductivityDate().ToString("yyyy-MM-dd"));
                 item.SubItems.Add(productivity.getQuantityProduced().ToString());
                 item.SubItems.Add(productivity.getProductivityType().ToString());
@@ -195,7 +195,7 @@ namespace PEDIS
 
             WorkOrder workOrder = productivity.getWorkOrder();
             string workOrderInfo = workOrder != null ? workOrder.getWorkOrderNumber() : "N/A";
-            string productInfo = workOrder?.getProductionOrder()?.getProduct()?.getName() ?? "N/A";
+            string productInfo = workOrder?.getProduct()?.getName() ?? "N/A";
 
             string info = "ID: " + productivity.getId() + "\n" +
                          "Prisoner: " + prisonerInfo + "\n" +

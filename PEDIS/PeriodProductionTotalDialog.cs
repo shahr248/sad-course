@@ -159,11 +159,7 @@ namespace PEDIS
                 if (workOrder == null)
                     continue;
 
-                ProductionOrder prodOrder = workOrder.getProductionOrder();
-                if (prodOrder == null)
-                    continue;
-
-                Product product = prodOrder.getProduct();
+                Product product = workOrder.getProduct();
                 if (product == null)
                     continue;
 

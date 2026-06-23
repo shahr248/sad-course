@@ -51,6 +51,7 @@ namespace PEDIS
             this.lvWorkOrders.Columns.Add("Work Order #", 120);
             this.lvWorkOrders.Columns.Add("Parent Order", 120);
             this.lvWorkOrders.Columns.Add("Product", 140);
+            this.lvWorkOrders.Columns.Add("Quantity", 80);
             this.lvWorkOrders.Columns.Add("Status", 110);
             this.lvWorkOrders.Columns.Add("Start Date", 100);
             this.lvWorkOrders.Columns.Add("End Date", 100);

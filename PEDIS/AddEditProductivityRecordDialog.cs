@@ -42,7 +42,7 @@ namespace PEDIS
             WorkOrder workOrder = record.getWorkOrder();
             if (workOrder != null)
             {
-                string productName = workOrder.getProductionOrder()?.getProduct()?.getName() ?? "N/A";
+                string productName = workOrder.getProduct()?.getName() ?? "N/A";
                 cbWorkOrder.SelectedItem = workOrder.getWorkOrderNumber() + " - " + productName;
             }
 
@@ -211,7 +211,7 @@ namespace PEDIS
             cbWorkOrder.Items.Clear();
             foreach (WorkOrder workOrder in Program.WorkOrders)
             {
-                string productName = workOrder.getProductionOrder()?.getProduct()?.getName() ?? "N/A";
+                string productName = workOrder.getProduct()?.getName() ?? "N/A";
                 cbWorkOrder.Items.Add(workOrder.getWorkOrderNumber() + " - " + productName);
             }
             cbWorkOrder.DropDownStyle = ComboBoxStyle.DropDownList;
