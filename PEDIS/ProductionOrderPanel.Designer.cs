@@ -4,7 +4,6 @@ namespace PEDIS
     {
         private System.ComponentModel.IContainer components = null;
         private System.Windows.Forms.Label lblTitle;
-        private System.Windows.Forms.Panel pnlTitleAccent;
         private System.Windows.Forms.Panel pnlTitleSeparator;
         private System.Windows.Forms.ListView lvOrders;
         private System.Windows.Forms.Button btnView;
@@ -25,7 +24,6 @@ namespace PEDIS
         private void InitializeComponent()
         {
             this.lblTitle = new System.Windows.Forms.Label();
-            this.pnlTitleAccent = new System.Windows.Forms.Panel();
             this.pnlTitleSeparator = new System.Windows.Forms.Panel();
             this.lvOrders = new System.Windows.Forms.ListView();
             this.btnView = new System.Windows.Forms.Button();
@@ -36,19 +34,15 @@ namespace PEDIS
             this.SuspendLayout();
 
             this.lblTitle.AutoSize = false;
-            this.lblTitle.Font = new System.Drawing.Font("Segoe UI", 16F, System.Drawing.FontStyle.Bold);
+            this.lblTitle.Font = new System.Drawing.Font("Segoe UI", 18F, System.Drawing.FontStyle.Bold);
             this.lblTitle.Location = new System.Drawing.Point(20, 15);
             this.lblTitle.Size = new System.Drawing.Size(500, 35);
             this.lblTitle.Text = "Production Orders";
-            this.lblTitle.ForeColor = System.Drawing.Color.FromArgb(15, 23, 42);
-
-            this.pnlTitleAccent.Location = new System.Drawing.Point(16, 15);
-            this.pnlTitleAccent.Size = new System.Drawing.Size(4, 35);
-            this.pnlTitleAccent.BackColor = System.Drawing.Color.FromArgb(16, 42, 67);
+            this.lblTitle.ForeColor = System.Drawing.Color.FromArgb(0, 51, 102);
 
             this.pnlTitleSeparator.Location = new System.Drawing.Point(20, 52);
-            this.pnlTitleSeparator.Size = new System.Drawing.Size(984, 1);
-            this.pnlTitleSeparator.BackColor = System.Drawing.Color.FromArgb(226, 232, 240);
+            this.pnlTitleSeparator.Size = new System.Drawing.Size(984, 2);
+            this.pnlTitleSeparator.BackColor = System.Drawing.Color.FromArgb(189, 195, 199);
 
             this.lvOrders.FullRowSelect = true;
             this.lvOrders.GridLines = true;
@@ -72,7 +66,7 @@ namespace PEDIS
             this.btnView.Location = new System.Drawing.Point(20, 430);
             this.btnView.Size = new System.Drawing.Size(100, 35);
             this.btnView.Text = "View";
-            this.btnView.BackColor = System.Drawing.Color.FromArgb(59, 130, 246);
+            this.btnView.BackColor = System.Drawing.Color.FromArgb(52, 152, 219);
             this.btnView.ForeColor = System.Drawing.Color.White;
             this.btnView.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.btnView.UseVisualStyleBackColor = false;
@@ -81,7 +75,7 @@ namespace PEDIS
             this.btnAdd.Location = new System.Drawing.Point(130, 430);
             this.btnAdd.Size = new System.Drawing.Size(100, 35);
             this.btnAdd.Text = "Add";
-            this.btnAdd.BackColor = System.Drawing.Color.FromArgb(37, 99, 235);
+            this.btnAdd.BackColor = System.Drawing.Color.FromArgb(46, 204, 113);
             this.btnAdd.ForeColor = System.Drawing.Color.White;
             this.btnAdd.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.btnAdd.UseVisualStyleBackColor = false;
@@ -90,7 +84,7 @@ namespace PEDIS
             this.btnEdit.Location = new System.Drawing.Point(240, 430);
             this.btnEdit.Size = new System.Drawing.Size(100, 35);
             this.btnEdit.Text = "Edit";
-            this.btnEdit.BackColor = System.Drawing.Color.FromArgb(30, 41, 59);
+            this.btnEdit.BackColor = System.Drawing.Color.FromArgb(241, 196, 15);
             this.btnEdit.ForeColor = System.Drawing.Color.White;
             this.btnEdit.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.btnEdit.UseVisualStyleBackColor = false;
@@ -99,7 +93,7 @@ namespace PEDIS
             this.btnDelete.Location = new System.Drawing.Point(350, 430);
             this.btnDelete.Size = new System.Drawing.Size(100, 35);
             this.btnDelete.Text = "Delete";
-            this.btnDelete.BackColor = System.Drawing.Color.FromArgb(220, 38, 38);
+            this.btnDelete.BackColor = System.Drawing.Color.FromArgb(231, 76, 60);
             this.btnDelete.ForeColor = System.Drawing.Color.White;
             this.btnDelete.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.btnDelete.UseVisualStyleBackColor = false;
@@ -108,18 +102,15 @@ namespace PEDIS
             this.btnBack.Location = new System.Drawing.Point(20, 485);
             this.btnBack.Size = new System.Drawing.Size(100, 35);
             this.btnBack.Text = "← Back";
-            this.btnBack.BackColor = System.Drawing.Color.White;
-            this.btnBack.ForeColor = System.Drawing.Color.FromArgb(100, 116, 139);
+            this.btnBack.BackColor = System.Drawing.Color.FromArgb(149, 165, 166);
+            this.btnBack.ForeColor = System.Drawing.Color.White;
             this.btnBack.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.btnBack.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnBack.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(226, 232, 240);
-            this.btnBack.FlatAppearance.BorderSize = 1;
             this.btnBack.UseVisualStyleBackColor = false;
             this.btnBack.Click += new System.EventHandler(this.btnBack_Click);
 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.FromArgb(248, 250, 252);
+            this.BackColor = System.Drawing.Color.FromArgb(236, 240, 241);
             this.Controls.Add(this.btnBack);
             this.Controls.Add(this.btnDelete);
             this.Controls.Add(this.btnEdit);
@@ -127,7 +118,6 @@ namespace PEDIS
             this.Controls.Add(this.btnView);
             this.Controls.Add(this.lvOrders);
             this.Controls.Add(this.pnlTitleSeparator);
-            this.Controls.Add(this.pnlTitleAccent);
             this.Controls.Add(this.lblTitle);
             this.Name = "ProductionOrderPanel";
             this.Size = new System.Drawing.Size(1024, 768);
