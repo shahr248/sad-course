@@ -468,8 +468,8 @@ CREATE PROCEDURE sp_ProductionOrder_create
     @production_order_id INT,
     @order_number NVARCHAR(50),
     @customer_company_id INT,
-    @product_id INT,
-    @contract_id INT,
+    @product_id INT = NULL,
+    @contract_id INT = NULL,
     @quantity INT,
     @completed_quantity INT = 0,
     @submission_date DATE,
@@ -489,8 +489,8 @@ CREATE PROCEDURE sp_ProductionOrder_update
     @production_order_id INT,
     @order_number NVARCHAR(50),
     @customer_company_id INT,
-    @product_id INT,
-    @contract_id INT,
+    @product_id INT = NULL,
+    @contract_id INT = NULL,
     @quantity INT,
     @completed_quantity INT = 0,
     @submission_date DATE,
@@ -552,14 +552,16 @@ CREATE PROCEDURE sp_WorkOrder_create
     @start_date DATE,
     @deadline DATE,
     @status NVARCHAR(50),
-    @hold_reason NVARCHAR(MAX) = NULL
+    @hold_reason NVARCHAR(MAX) = NULL,
+    @product_id INT,
+    @packaging_instructions NVARCHAR(MAX) = NULL
 AS
 BEGIN
     SET NOCOUNT ON;
     INSERT INTO WorkOrder
-        (work_order_id, work_order_number, production_order_id, required_quantity, start_date, deadline, status, hold_reason, created_at)
+        (work_order_id, work_order_number, production_order_id, required_quantity, start_date, deadline, status, hold_reason, created_at, product_id, packaging_instructions)
     VALUES
-        (@work_order_id, @work_order_number, @production_order_id, @required_quantity, @start_date, @deadline, @status, @hold_reason, GETUTCDATE());
+        (@work_order_id, @work_order_number, @production_order_id, @required_quantity, @start_date, @deadline, @status, @hold_reason, GETUTCDATE(), @product_id, @packaging_instructions);
 END;
 GO
 
@@ -571,7 +573,9 @@ CREATE PROCEDURE sp_WorkOrder_update
     @start_date DATE,
     @deadline DATE,
     @status NVARCHAR(50),
-    @hold_reason NVARCHAR(MAX) = NULL
+    @hold_reason NVARCHAR(MAX) = NULL,
+    @product_id INT,
+    @packaging_instructions NVARCHAR(MAX) = NULL
 AS
 BEGIN
     SET NOCOUNT ON;
@@ -583,6 +587,8 @@ BEGIN
         deadline = @deadline,
         status = @status,
         hold_reason = @hold_reason,
+        product_id = @product_id,
+        packaging_instructions = @packaging_instructions,
         modified_at = GETUTCDATE()
     WHERE work_order_id = @work_order_id;
 END;

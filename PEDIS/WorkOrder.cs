@@ -14,11 +14,14 @@ namespace PEDIS
         private DateTime deadline;
         private WorkOrderStatus status;
         private string holdReason;
+        private int productId;
+        private string packagingInstructions;
         private ProductionOrder productionOrder;
+        private Product product;
         private List<ProductivityRecord> productivityRecords;
 
         public WorkOrder(int id, string workNum, int prodOrderId, int reqQty, DateTime start, DateTime deadline,
-                        WorkOrderStatus status, string holdReason, bool isNew)
+                        WorkOrderStatus status, string holdReason, int productId, string packagingInstructions, bool isNew)
         {
             this.workOrderId = id;
             this.workOrderNumber = workNum;
@@ -28,7 +31,10 @@ namespace PEDIS
             this.deadline = deadline;
             this.status = status;
             this.holdReason = holdReason;
+            this.productId = productId;
+            this.packagingInstructions = packagingInstructions;
             this.productionOrder = ProductionOrder.seekById(prodOrderId);
+            this.product = Product.seekById(productId);
             if (isNew)
             {
                 this.create();
@@ -46,7 +52,10 @@ namespace PEDIS
         public DateTime getDeadline() { return this.deadline; }
         public WorkOrderStatus getStatus() { return this.status; }
         public string getHoldReason() { return this.holdReason; }
+        public int getProductId() { return this.productId; }
+        public string getPackagingInstructions() { return this.packagingInstructions; }
         public ProductionOrder getProductionOrder() { return this.productionOrder; }
+        public Product getProduct() { return this.product; }
 
         public Factory? getFactory()
         {
@@ -61,6 +70,8 @@ namespace PEDIS
         public void setDeadline(DateTime deadline) { this.deadline = deadline; }
         public void setStatus(WorkOrderStatus status) { this.status = status; }
         public void setHoldReason(string reason) { this.holdReason = reason; }
+        public void setProductId(int productId) { this.productId = productId; this.product = Product.seekById(productId); }
+        public void setPackagingInstructions(string instructions) { this.packagingInstructions = instructions; }
 
         public List<ProductivityRecord> getProductivityRecords()
         {
@@ -85,7 +96,7 @@ namespace PEDIS
         public void create()
         {
             SqlCommand cmd = new SqlCommand();
-            cmd.CommandText = "EXECUTE sp_WorkOrder_create @work_order_id, @work_order_number, @production_order_id, @required_quantity, @start_date, @deadline, @status, @hold_reason";
+            cmd.CommandText = "EXECUTE sp_WorkOrder_create @work_order_id, @work_order_number, @production_order_id, @required_quantity, @start_date, @deadline, @status, @hold_reason, @product_id, @packaging_instructions";
             cmd.Parameters.AddWithValue("@work_order_id", this.workOrderId);
             cmd.Parameters.AddWithValue("@work_order_number", this.workOrderNumber);
             cmd.Parameters.AddWithValue("@production_order_id", this.productionOrderId);
@@ -94,6 +105,8 @@ namespace PEDIS
             cmd.Parameters.AddWithValue("@deadline", this.deadline);
             cmd.Parameters.AddWithValue("@status", EnumHelpers.ToDbString(this.status));
             cmd.Parameters.AddWithValue("@hold_reason", this.holdReason ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@product_id", this.productId);
+            cmd.Parameters.AddWithValue("@packaging_instructions", this.packagingInstructions ?? (object)DBNull.Value);
             SQL_CON sc = new SQL_CON();
             sc.execute_non_query(cmd);
         }
@@ -101,7 +114,7 @@ namespace PEDIS
         public void update()
         {
             SqlCommand cmd = new SqlCommand();
-            cmd.CommandText = "EXECUTE sp_WorkOrder_update @work_order_id, @work_order_number, @production_order_id, @required_quantity, @start_date, @deadline, @status, @hold_reason";
+            cmd.CommandText = "EXECUTE sp_WorkOrder_update @work_order_id, @work_order_number, @production_order_id, @required_quantity, @start_date, @deadline, @status, @hold_reason, @product_id, @packaging_instructions";
             cmd.Parameters.AddWithValue("@work_order_id", this.workOrderId);
             cmd.Parameters.AddWithValue("@work_order_number", this.workOrderNumber);
             cmd.Parameters.AddWithValue("@production_order_id", this.productionOrderId);
@@ -110,6 +123,8 @@ namespace PEDIS
             cmd.Parameters.AddWithValue("@deadline", this.deadline);
             cmd.Parameters.AddWithValue("@status", EnumHelpers.ToDbString(this.status));
             cmd.Parameters.AddWithValue("@hold_reason", this.holdReason ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@product_id", this.productId);
+            cmd.Parameters.AddWithValue("@packaging_instructions", this.packagingInstructions ?? (object)DBNull.Value);
             SQL_CON sc = new SQL_CON();
             sc.execute_non_query(cmd);
         }
@@ -145,8 +160,12 @@ namespace PEDIS
                 DateTime deadline = Convert.ToDateTime(reader.GetValue(5));
                 WorkOrderStatus status = EnumHelpers.WorkOrderStatusFromDb(reader.GetValue(6).ToString());
                 string holdReason = reader.IsDBNull(7) ? null : reader.GetValue(7).ToString();
+                // indices 8/9 are created_at/modified_at (not modeled on this entity);
+                // product_id/packaging_instructions are appended after them (see create_database.sql)
+                int productId = Convert.ToInt32(reader.GetValue(10));
+                string packagingInstructions = reader.IsDBNull(11) ? null : reader.GetValue(11).ToString();
 
-                WorkOrder wo = new WorkOrder(id, workNum, prodOrderId, reqQty, start, deadline, status, holdReason, false);
+                WorkOrder wo = new WorkOrder(id, workNum, prodOrderId, reqQty, start, deadline, status, holdReason, productId, packagingInstructions, false);
                 Program.WorkOrders.Add(wo);
             }
             reader.Close();

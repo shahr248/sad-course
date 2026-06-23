@@ -112,8 +112,8 @@ CREATE TABLE ProductionOrder (
     production_order_id INT NOT NULL PRIMARY KEY,
     order_number NVARCHAR(50) NOT NULL UNIQUE,
     customer_company_id INT NOT NULL,
-    product_id INT NOT NULL,
-    contract_id INT NOT NULL,
+    product_id INT NULL,
+    contract_id INT NULL,
     quantity INT NOT NULL,
     completed_quantity INT NOT NULL DEFAULT 0,
     submission_date DATE NOT NULL,
@@ -129,6 +129,10 @@ CREATE TABLE ProductionOrder (
     CONSTRAINT FK_ProductionOrder_Contract FOREIGN KEY (contract_id)
         REFERENCES Contract(contract_id) ON DELETE NO ACTION ON UPDATE NO ACTION
 );
+-- product_id / contract_id are nullable: a ProductionOrder is created against a
+-- Customer Company only; its products live on its WorkOrder line items instead
+-- (see WorkOrder.product_id below). quantity is the sum of those line items'
+-- required_quantity, computed in C# at save time, not entered directly.
 
 CREATE TABLE WorkOrder (
     work_order_id INT NOT NULL PRIMARY KEY,
@@ -141,9 +145,17 @@ CREATE TABLE WorkOrder (
     hold_reason NVARCHAR(MAX) NULL,
     created_at DATETIME2 NOT NULL DEFAULT GETUTCDATE(),
     modified_at DATETIME2 NULL,
+    -- product_id / packaging_instructions are appended last (not grouped next to
+    -- required_quantity) so a fresh install's column order matches a migrated DB's
+    -- (ALTER TABLE ADD appends at the end) -- WorkOrder.initWorkOrders() reads
+    -- SELECT * positionally, so the two layouts must agree.
+    product_id INT NOT NULL,
+    packaging_instructions NVARCHAR(MAX) NULL,
     CONSTRAINT CHK_WorkOrder_Status CHECK (status IN ('inProcess', 'completed', 'hasntEnteredIntoProductionYet')),
     CONSTRAINT FK_WorkOrder_ProductionOrder FOREIGN KEY (production_order_id)
-        REFERENCES ProductionOrder(production_order_id) ON DELETE NO ACTION ON UPDATE NO ACTION
+        REFERENCES ProductionOrder(production_order_id) ON DELETE NO ACTION ON UPDATE NO ACTION,
+    CONSTRAINT FK_WorkOrder_Product FOREIGN KEY (product_id)
+        REFERENCES Product(product_id) ON DELETE NO ACTION ON UPDATE NO ACTION
 );
 
 -- ============================================================================

@@ -9,8 +9,8 @@ namespace PEDIS
         private int productionOrderId;
         private string orderNumber;
         private int customerCompanyId;
-        private int productId;
-        private int contractId;
+        private int? productId;
+        private int? contractId;
         private int quantity;
         private int completedQuantity;
         private DateTime submissionDate;
@@ -21,7 +21,7 @@ namespace PEDIS
         private Contract contract;
         private List<WorkOrder> workOrders;
 
-        public ProductionOrder(int id, string orderNum, int custCompId, int prodId, int contId, int qty, int completed,
+        public ProductionOrder(int id, string orderNum, int custCompId, int? prodId, int? contId, int qty, int completed,
                               DateTime submission, DateTime deadline, ProductionOrderStatus status, bool isNew)
         {
             this.productionOrderId = id;
@@ -35,8 +35,8 @@ namespace PEDIS
             this.deliveryDeadline = deadline;
             this.orderStatus = status;
             this.customerCompany = CustomerCompany.seekById(custCompId);
-            this.product = Product.seekById(prodId);
-            this.contract = Contract.seekById(contId);
+            this.product = prodId.HasValue ? Product.seekById(prodId.Value) : null;
+            this.contract = contId.HasValue ? Contract.seekById(contId.Value) : null;
             if (isNew)
             {
                 this.create();
@@ -53,8 +53,8 @@ namespace PEDIS
         public int getId() { return this.productionOrderId; }
         public string getOrderNumber() { return this.orderNumber; }
         public int getCustomerCompanyId() { return this.customerCompanyId; }
-        public int getProductId() { return this.productId; }
-        public int getContractId() { return this.contractId; }
+        public int? getProductId() { return this.productId; }
+        public int? getContractId() { return this.contractId; }
         public int getQuantity() { return this.quantity; }
         public int getCompletedQuantity() { return this.completedQuantity; }
         public DateTime getSubmissionDate() { return this.submissionDate; }
@@ -68,8 +68,19 @@ namespace PEDIS
         public void setOrderNumber(string num) { this.orderNumber = num; }
         public void setQuantity(int qty) { this.quantity = qty; }
         public void setCompletedQuantity(int completed) { this.completedQuantity = completed; }
+        public void setSubmissionDate(DateTime date) { this.submissionDate = date; }
         public void setDeliveryDeadline(DateTime deadline) { this.deliveryDeadline = deadline; }
         public void setOrderStatus(ProductionOrderStatus status) { this.orderStatus = status; }
+
+        public void setCustomerCompanyId(int custCompId)
+        {
+            if (this.customerCompany != null)
+                this.customerCompany.removeProductionOrder(this);
+            this.customerCompanyId = custCompId;
+            this.customerCompany = CustomerCompany.seekById(custCompId);
+            if (this.customerCompany != null)
+                this.customerCompany.addProductionOrder(this);
+        }
 
         public List<WorkOrder> getWorkOrders()
         {
@@ -98,8 +109,8 @@ namespace PEDIS
             cmd.Parameters.AddWithValue("@production_order_id", this.productionOrderId);
             cmd.Parameters.AddWithValue("@order_number", this.orderNumber);
             cmd.Parameters.AddWithValue("@customer_company_id", this.customerCompanyId);
-            cmd.Parameters.AddWithValue("@product_id", this.productId);
-            cmd.Parameters.AddWithValue("@contract_id", this.contractId);
+            cmd.Parameters.AddWithValue("@product_id", this.productId.HasValue ? (object)this.productId.Value : DBNull.Value);
+            cmd.Parameters.AddWithValue("@contract_id", this.contractId.HasValue ? (object)this.contractId.Value : DBNull.Value);
             cmd.Parameters.AddWithValue("@quantity", this.quantity);
             cmd.Parameters.AddWithValue("@completed_quantity", this.completedQuantity);
             cmd.Parameters.AddWithValue("@submission_date", this.submissionDate);
@@ -116,8 +127,8 @@ namespace PEDIS
             cmd.Parameters.AddWithValue("@production_order_id", this.productionOrderId);
             cmd.Parameters.AddWithValue("@order_number", this.orderNumber);
             cmd.Parameters.AddWithValue("@customer_company_id", this.customerCompanyId);
-            cmd.Parameters.AddWithValue("@product_id", this.productId);
-            cmd.Parameters.AddWithValue("@contract_id", this.contractId);
+            cmd.Parameters.AddWithValue("@product_id", this.productId.HasValue ? (object)this.productId.Value : DBNull.Value);
+            cmd.Parameters.AddWithValue("@contract_id", this.contractId.HasValue ? (object)this.contractId.Value : DBNull.Value);
             cmd.Parameters.AddWithValue("@quantity", this.quantity);
             cmd.Parameters.AddWithValue("@completed_quantity", this.completedQuantity);
             cmd.Parameters.AddWithValue("@submission_date", this.submissionDate);
@@ -157,8 +168,8 @@ namespace PEDIS
                 int id = Convert.ToInt32(reader.GetValue(0));
                 string orderNum = reader.GetValue(1).ToString();
                 int custCompId = Convert.ToInt32(reader.GetValue(2));
-                int prodId = Convert.ToInt32(reader.GetValue(3));
-                int contId = Convert.ToInt32(reader.GetValue(4));
+                int? prodId = reader.IsDBNull(3) ? (int?)null : Convert.ToInt32(reader.GetValue(3));
+                int? contId = reader.IsDBNull(4) ? (int?)null : Convert.ToInt32(reader.GetValue(4));
                 int qty = Convert.ToInt32(reader.GetValue(5));
                 int completed = Convert.ToInt32(reader.GetValue(6));
                 DateTime submission = Convert.ToDateTime(reader.GetValue(7));

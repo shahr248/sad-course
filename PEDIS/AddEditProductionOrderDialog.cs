@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Windows.Forms;
 
 namespace PEDIS
@@ -22,8 +23,18 @@ namespace PEDIS
 
     public partial class AddEditProductionOrderDialog : Form
     {
+        private class ProductLineRow
+        {
+            public Panel Container;
+            public ComboBox cbProduct;
+            public TextBox txtQuantity;
+            public TextBox txtPackagingInstructions;
+            public Button btnRemove;
+        }
+
         private ProductionOrder orderToEdit;
         private bool isEditMode;
+        private List<ProductLineRow> productLines = new List<ProductLineRow>();
 
         public AddEditProductionOrderDialog(ProductionOrder orderToEdit = null)
         {
@@ -31,12 +42,17 @@ namespace PEDIS
             this.isEditMode = (orderToEdit != null);
             InitializeComponent();
             PopulateCustomerCompanies();
-            PopulateProducts();
-            PopulateContracts();
             PopulateOrderStatuses();
             if (isEditMode)
             {
                 setPrisonOrderToEdit(orderToEdit);
+            }
+            else
+            {
+                txtOrderNumber.Text = generateNextOrderNumber();
+                dtpSubmissionDate.Value = DateTime.Now;
+                dtpDeliveryDeadline.Value = DateTime.Now;
+                AddProductLineRow(true);
             }
         }
 
@@ -50,26 +66,6 @@ namespace PEDIS
             }
         }
 
-        private void PopulateProducts()
-        {
-            cbProduct.Items.Clear();
-            foreach (Product p in Program.Products)
-            {
-                string displayText = p.getName() ?? "Unknown";
-                cbProduct.Items.Add(new ComboBoxItem(displayText, p));
-            }
-        }
-
-        private void PopulateContracts()
-        {
-            cbContract.Items.Clear();
-            foreach (Contract c in Program.Contracts)
-            {
-                string displayText = c.getContractNumber() ?? "Unknown";
-                cbContract.Items.Add(new ComboBoxItem(displayText, c));
-            }
-        }
-
         private void PopulateOrderStatuses()
         {
             cbOrderStatus.Items.Clear();
@@ -80,6 +76,118 @@ namespace PEDIS
             }
             if (cbOrderStatus.Items.Count > 0)
                 cbOrderStatus.SelectedIndex = 0;
+        }
+
+        private string generateNextOrderNumber()
+        {
+            int year = DateTime.Now.Year;
+            int maxSeq = 0;
+            string prefix = $"ORD-{year}-";
+            foreach (ProductionOrder po in Program.ProductionOrders)
+            {
+                string num = po.getOrderNumber();
+                if (num != null && num.StartsWith(prefix) &&
+                    int.TryParse(num.Substring(prefix.Length), out int seq) && seq > maxSeq)
+                    maxSeq = seq;
+            }
+            return prefix + (maxSeq + 1).ToString("D4");
+        }
+
+        private string generateNextWorkOrderNumber()
+        {
+            int year = DateTime.Now.Year;
+            int maxSeq = 0;
+            string prefix = $"WO-{year}-";
+            foreach (WorkOrder wo in Program.WorkOrders)
+            {
+                string num = wo.getWorkOrderNumber();
+                if (num != null && num.StartsWith(prefix) &&
+                    int.TryParse(num.Substring(prefix.Length), out int seq) && seq > maxSeq)
+                    maxSeq = seq;
+            }
+            return prefix + (maxSeq + 1).ToString("D4");
+        }
+
+        private int getNextWorkOrderId()
+        {
+            int maxId = 0;
+            foreach (WorkOrder wo in Program.WorkOrders)
+                if (wo.getId() > maxId) maxId = wo.getId();
+            return maxId + 1;
+        }
+
+        private ProductLineRow AddProductLineRow(bool editable, Product preselectedProduct = null, int? quantity = null, string packagingInstructions = null)
+        {
+            ProductLineRow row = new ProductLineRow();
+
+            row.Container = new Panel();
+            row.Container.Size = new System.Drawing.Size(630, 32);
+            row.Container.Margin = new Padding(0, 0, 0, 4);
+
+            row.cbProduct = new ComboBox();
+            row.cbProduct.DropDownStyle = ComboBoxStyle.DropDownList;
+            row.cbProduct.Location = new System.Drawing.Point(0, 4);
+            row.cbProduct.Size = new System.Drawing.Size(200, 24);
+            foreach (Product p in Program.Products)
+            {
+                string displayText = p.getName() ?? "Unknown";
+                row.cbProduct.Items.Add(new ComboBoxItem(displayText, p));
+            }
+            if (preselectedProduct != null)
+            {
+                for (int i = 0; i < row.cbProduct.Items.Count; i++)
+                {
+                    if (((ComboBoxItem)row.cbProduct.Items[i]).Value == (object)preselectedProduct)
+                    {
+                        row.cbProduct.SelectedIndex = i;
+                        break;
+                    }
+                }
+            }
+            row.cbProduct.Enabled = editable;
+
+            row.txtQuantity = new TextBox();
+            row.txtQuantity.Location = new System.Drawing.Point(210, 4);
+            row.txtQuantity.Size = new System.Drawing.Size(70, 24);
+            row.txtQuantity.Text = quantity.HasValue ? quantity.Value.ToString() : "";
+            row.txtQuantity.Enabled = editable;
+
+            row.txtPackagingInstructions = new TextBox();
+            row.txtPackagingInstructions.Location = new System.Drawing.Point(290, 4);
+            row.txtPackagingInstructions.Size = new System.Drawing.Size(300, 24);
+            row.txtPackagingInstructions.Text = packagingInstructions ?? "";
+            row.txtPackagingInstructions.Enabled = editable;
+
+            row.btnRemove = new Button();
+            row.btnRemove.Location = new System.Drawing.Point(600, 2);
+            row.btnRemove.Size = new System.Drawing.Size(28, 28);
+            row.btnRemove.Text = "X";
+            row.btnRemove.BackColor = System.Drawing.Color.FromArgb(231, 76, 60);
+            row.btnRemove.ForeColor = System.Drawing.Color.White;
+            row.btnRemove.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            row.btnRemove.UseVisualStyleBackColor = false;
+            row.btnRemove.Visible = editable;
+            row.btnRemove.Click += (s, e) => RemoveProductLineRow(row);
+
+            row.Container.Controls.Add(row.cbProduct);
+            row.Container.Controls.Add(row.txtQuantity);
+            row.Container.Controls.Add(row.txtPackagingInstructions);
+            row.Container.Controls.Add(row.btnRemove);
+
+            pnlProductLines.Controls.Add(row.Container);
+            productLines.Add(row);
+            return row;
+        }
+
+        private void RemoveProductLineRow(ProductLineRow row)
+        {
+            pnlProductLines.Controls.Remove(row.Container);
+            productLines.Remove(row);
+        }
+
+        private void btnAddProduct_Click(object sender, EventArgs e)
+        {
+            AddProductLineRow(true);
         }
 
         public void setPrisonOrderToEdit(ProductionOrder po)
@@ -104,97 +212,63 @@ namespace PEDIS
                 }
             }
 
-            // Set Product
-            Product p = po.getProduct();
-            if (p != null)
-            {
-                for (int i = 0; i < cbProduct.Items.Count; i++)
-                {
-                    ComboBoxItem item = (ComboBoxItem)cbProduct.Items[i];
-                    if ((Product)item.Value == p)
-                    {
-                        cbProduct.SelectedIndex = i;
-                        break;
-                    }
-                }
-            }
-
-            // Set Contract
-            Contract c = po.getContract();
-            if (c != null)
-            {
-                for (int i = 0; i < cbContract.Items.Count; i++)
-                {
-                    ComboBoxItem item = (ComboBoxItem)cbContract.Items[i];
-                    if ((Contract)item.Value == c)
-                    {
-                        cbContract.SelectedIndex = i;
-                        break;
-                    }
-                }
-            }
-
-            txtQuantity.Text = po.getQuantity().ToString();
             dtpSubmissionDate.Value = po.getSubmissionDate();
             dtpDeliveryDeadline.Value = po.getDeliveryDeadline();
             cbOrderStatus.SelectedItem = po.getOrderStatus();
+
+            // Product lines are read-only in Edit mode for now (see plan §7)
+            btnAddProduct.Visible = false;
+            foreach (WorkOrder wo in po.getWorkOrders())
+            {
+                AddProductLineRow(false, wo.getProduct(), wo.getRequiredQuantity(), wo.getPackagingInstructions());
+            }
         }
 
         private bool validateInput()
         {
-            // Check Order Number is not empty
-            if (string.IsNullOrWhiteSpace(txtOrderNumber.Text))
-            {
-                MessageBox.Show("Order Number cannot be empty", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return false;
-            }
-
-            // Check for uniqueness (if in Add mode)
-            if (!isEditMode)
-            {
-                foreach (ProductionOrder po in Program.ProductionOrders)
-                {
-                    if (po.getOrderNumber() == txtOrderNumber.Text)
-                    {
-                        MessageBox.Show("Order Number already exists", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                        return false;
-                    }
-                }
-            }
-
-            // Check Customer Company is selected
             if (cbCustomerCompany.SelectedIndex < 0)
             {
                 MessageBox.Show("Please select a Customer Company", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return false;
             }
 
-            // Check Product is selected
-            if (cbProduct.SelectedIndex < 0)
+            if (dtpDeliveryDeadline.Value < dtpSubmissionDate.Value)
             {
-                MessageBox.Show("Please select a Product", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Due Date cannot be before Order Date", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return false;
             }
 
-            // Check Contract is selected
-            if (cbContract.SelectedIndex < 0)
+            if (!isEditMode)
             {
-                MessageBox.Show("Please select a Contract", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return false;
-            }
+                if (productLines.Count == 0)
+                {
+                    MessageBox.Show("Please add at least one product line", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return false;
+                }
 
-            // Validate Quantity
-            if (!int.TryParse(txtQuantity.Text, out int quantity) || quantity <= 0)
-            {
-                MessageBox.Show("Quantity must be a positive number", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return false;
-            }
+                foreach (ProductLineRow row in productLines)
+                {
+                    if (row.cbProduct.SelectedIndex < 0)
+                    {
+                        MessageBox.Show("Please select a Product for every product line", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return false;
+                    }
+                    if (!int.TryParse(row.txtQuantity.Text, out int qty) || qty <= 0)
+                    {
+                        MessageBox.Show("Quantity must be a positive number for every product line", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return false;
+                    }
+                }
 
-            // Validate Dates
-            if (dtpDeliveryDeadline.Value <= dtpSubmissionDate.Value)
-            {
-                MessageBox.Show("Delivery Deadline must be after Submission Date", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return false;
+                // Order Number is auto-generated, but double-check uniqueness defensively
+                foreach (ProductionOrder po in Program.ProductionOrders)
+                {
+                    if (po.getOrderNumber() == txtOrderNumber.Text)
+                    {
+                        MessageBox.Show("Order Number already exists, please reopen the dialog and try again", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return false;
+                    }
+                }
             }
 
             return true;
@@ -203,36 +277,33 @@ namespace PEDIS
         private ProductionOrder getProductionOrderData()
         {
             CustomerCompany cc = ((ComboBoxItem)cbCustomerCompany.SelectedItem).Value as CustomerCompany;
-            Product p = ((ComboBoxItem)cbProduct.SelectedItem).Value as Product;
-            Contract c = ((ComboBoxItem)cbContract.SelectedItem).Value as Contract;
-            int quantity = int.Parse(txtQuantity.Text);
             ProductionOrderStatus status = (ProductionOrderStatus)cbOrderStatus.SelectedItem;
 
             if (isEditMode)
             {
-                // Update existing
-                orderToEdit.setQuantity(quantity);
+                orderToEdit.setCustomerCompanyId(cc.getId());
+                orderToEdit.setSubmissionDate(dtpSubmissionDate.Value);
                 orderToEdit.setDeliveryDeadline(dtpDeliveryDeadline.Value);
                 orderToEdit.setOrderStatus(status);
                 return orderToEdit;
             }
             else
             {
-                // Create new - find max ID to avoid duplicates
+                int quantity = 0;
+                foreach (ProductLineRow row in productLines)
+                    quantity += int.Parse(row.txtQuantity.Text);
+
                 int maxId = 0;
                 foreach (ProductionOrder po in Program.ProductionOrders)
-                {
-                    if (po.getId() > maxId)
-                        maxId = po.getId();
-                }
+                    if (po.getId() > maxId) maxId = po.getId();
                 int nextId = maxId + 1;
 
                 ProductionOrder newPO = new ProductionOrder(
                     nextId,
                     txtOrderNumber.Text,
                     cc.getId(),
-                    p.getId(),
-                    c.getId(),
+                    null,
+                    null,
                     quantity,
                     0,
                     dtpSubmissionDate.Value,
@@ -240,6 +311,28 @@ namespace PEDIS
                     status,
                     true
                 );
+
+                foreach (ProductLineRow row in productLines)
+                {
+                    Product p = ((ComboBoxItem)row.cbProduct.SelectedItem).Value as Product;
+                    int lineQty = int.Parse(row.txtQuantity.Text);
+                    string packaging = string.IsNullOrWhiteSpace(row.txtPackagingInstructions.Text) ? null : row.txtPackagingInstructions.Text;
+
+                    new WorkOrder(
+                        getNextWorkOrderId(),
+                        generateNextWorkOrderNumber(),
+                        nextId,
+                        lineQty,
+                        dtpSubmissionDate.Value,
+                        dtpDeliveryDeadline.Value,
+                        WorkOrderStatus.HasntEnteredIntoProductionYet,
+                        null,
+                        p.getId(),
+                        packaging,
+                        true
+                    );
+                }
+
                 return newPO;
             }
         }

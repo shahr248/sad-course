@@ -75,13 +75,14 @@ namespace PEDIS
         private void LoadWorkOrders()
         {
             lvWorkOrders.Items.Clear();
-            string productName = order.getProduct() != null ? order.getProduct().getName() : "N/A";
-            string workInstructions = order.getProduct() != null ? (order.getProduct().getPackagingInstructions() ?? "N/A") : "N/A";
 
             foreach (WorkOrder workOrder in Program.WorkOrders)
             {
                 if (workOrder.getProductionOrderId() != order.getId())
                     continue;
+
+                string productName = workOrder.getProduct() != null ? workOrder.getProduct().getName() : "N/A";
+                string workInstructions = workOrder.getPackagingInstructions() ?? "N/A";
 
                 int producedSoFar = 0;
                 foreach (ProductivityRecord record in Program.ProductivityRecords)
