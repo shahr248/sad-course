@@ -458,6 +458,7 @@ namespace PEDIS
             sc.execute_non_query(cmd);
 
             this.activityStatus = PrisonerActivityStatus.Idle;
+            this.qualified = true;
             this.update();
         }
 
