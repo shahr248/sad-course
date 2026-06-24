@@ -187,6 +187,10 @@ namespace PEDIS
 
         private void refreshList()
         {
+            // Self-heal any prisoner stuck at OnShiftWorking with no active attendance
+            // record for today before rendering, so the grid never shows a stale status.
+            Prisoner.reconcileOnShiftStatuses();
+
             lvPrisoners.Items.Clear();
             foreach (Prisoner prisoner in Program.Prisoners)
             {

@@ -215,6 +215,21 @@ namespace PEDIS
             return null;
         }
 
+        // Corrects any prisoner left at OnShiftWorking with no backing active
+        // AttendanceRecord for today (stale session, manually deleted record, etc).
+        public static void reconcileOnShiftStatuses()
+        {
+            foreach (Prisoner p in Program.Prisoners)
+            {
+                if (p.getActivityStatus() == PrisonerActivityStatus.OnShiftWorking &&
+                    !AttendanceRecord.hasActiveToday(p.getId()))
+                {
+                    p.setActivityStatus(PrisonerActivityStatus.Idle);
+                    p.update();
+                }
+            }
+        }
+
         // ============================================================================
         // STATE TRANSITION METHODS (18 transitions for PrisonerActivityStatus)
         // ============================================================================

@@ -136,6 +136,16 @@ namespace PEDIS
                 return false;
             }
 
+            if ((PrisonerActivityStatus)cbActivityStatus.SelectedItem == PrisonerActivityStatus.OnShiftWorking)
+            {
+                bool hasActiveAttendance = isEditMode && AttendanceRecord.hasActiveToday(prisonerToEdit.getId());
+                if (!hasActiveAttendance)
+                {
+                    MessageBox.Show("Cannot set prisoner to OnShiftWorking without an active attendance record for today.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return false;
+                }
+            }
+
             // Check for duplicate prisoner number (only in Add mode)
             if (!isEditMode)
             {

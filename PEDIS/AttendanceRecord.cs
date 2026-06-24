@@ -55,6 +55,7 @@ namespace PEDIS
             cmd.Parameters.AddWithValue("@exit_time", this.exitTime ?? (object)DBNull.Value);
             SQL_CON sc = new SQL_CON();
             sc.execute_non_query(cmd);
+            syncPrisonerActivityStatus();
         }
 
         public void update()
@@ -69,11 +70,13 @@ namespace PEDIS
             cmd.Parameters.AddWithValue("@exit_time", this.exitTime ?? (object)DBNull.Value);
             SQL_CON sc = new SQL_CON();
             sc.execute_non_query(cmd);
+            syncPrisonerActivityStatus();
         }
 
         public void delete()
         {
             Program.AttendanceRecords.Remove(this);
+            Prisoner affectedPrisoner = this.prisoner;
             if (this.prisoner != null)
                 this.prisoner.removeAttendanceRecord(this);
             SqlCommand cmd = new SqlCommand();
@@ -81,6 +84,49 @@ namespace PEDIS
             cmd.Parameters.AddWithValue("@attendance_record_id", this.attendanceRecordId);
             SQL_CON sc = new SQL_CON();
             sc.execute_non_query(cmd);
+
+            // Deleting a prisoner's only active record can leave them stuck as
+            // OnShiftWorking with nothing backing it -- reconcile right away.
+            if (affectedPrisoner != null)
+                Prisoner.reconcileOnShiftStatuses();
+        }
+
+        // Multiple UI flows (PrisonerPanel Clock In/Out, AddEditAttendanceDialog Add/Edit)
+        // write entry_time/exit_time directly rather than through a single shared transition
+        // method, so the Prisoner.activityStatus sync lives here where every save converges.
+        private void syncPrisonerActivityStatus()
+        {
+            if (this.prisoner == null)
+                return;
+
+            bool isActiveToday = this.attendanceDate.Date == DateTime.Today &&
+                                  this.entryTime.HasValue && !this.exitTime.HasValue;
+
+            if (isActiveToday && this.prisoner.getActivityStatus() != PrisonerActivityStatus.OnShiftWorking)
+            {
+                this.prisoner.setActivityStatus(PrisonerActivityStatus.OnShiftWorking);
+                this.prisoner.update();
+            }
+            else if (!isActiveToday && this.prisoner.getActivityStatus() == PrisonerActivityStatus.OnShiftWorking
+                      && !AttendanceRecord.hasActiveToday(this.prisoner.getId()))
+            {
+                this.prisoner.setActivityStatus(PrisonerActivityStatus.Idle);
+                this.prisoner.update();
+            }
+        }
+
+        // Active = same prisoner, attendance_date = today, entry_time set, exit_time not set.
+        public static bool hasActiveToday(int prisonerId)
+        {
+            foreach (AttendanceRecord ar in Program.AttendanceRecords)
+            {
+                if (ar.getPrisonerId() == prisonerId &&
+                    ar.getAttendanceDate().Date == DateTime.Today &&
+                    ar.getEntryTime().HasValue &&
+                    !ar.getExitTime().HasValue)
+                    return true;
+            }
+            return false;
         }
 
         public static void initAttendanceRecords()

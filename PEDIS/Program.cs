@@ -68,6 +68,10 @@ namespace PEDIS
             // 5. Transactional records (FK to multiple entities)
             AttendanceRecord.initAttendanceRecords();
             ProductivityRecord.initProductivityRecords();
+
+            // Correct any prisoner left OnShiftWorking from a prior session with no
+            // active AttendanceRecord for today (e.g. process crashed before clock-out).
+            Prisoner.reconcileOnShiftStatuses();
         }
     }
 }
