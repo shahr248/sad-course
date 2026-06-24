@@ -32,11 +32,13 @@ namespace PEDIS
             {
                 this.create();
                 Program.ProductivityRecords.Add(this);
-                if (this.prisoner != null)
-                    this.prisoner.addProductivityRecord(this);
-                if (this.workOrder != null)
-                    this.workOrder.addProductivityRecord(this);
             }
+            // Link back to parents regardless of isNew -- same fix as WorkOrder's link to
+            // ProductionOrder, so records loaded from the DB at startup are reachable too.
+            if (this.prisoner != null)
+                this.prisoner.addProductivityRecord(this);
+            if (this.workOrder != null)
+                this.workOrder.addProductivityRecord(this);
         }
 
         public int getId() { return this.productivityRecordId; }

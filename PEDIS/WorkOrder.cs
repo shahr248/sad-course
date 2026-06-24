@@ -39,9 +39,12 @@ namespace PEDIS
             {
                 this.create();
                 Program.WorkOrders.Add(this);
-                if (this.productionOrder != null)
-                    this.productionOrder.addWorkOrder(this);
             }
+            // Link back to the parent regardless of isNew -- rows loaded from the DB at
+            // startup need this too, otherwise ProductionOrder.getWorkOrders() stays empty
+            // for every pre-existing order (addWorkOrder is idempotent, so this is safe).
+            if (this.productionOrder != null)
+                this.productionOrder.addWorkOrder(this);
         }
 
         public int getId() { return this.workOrderId; }
