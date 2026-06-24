@@ -105,13 +105,13 @@ namespace PEDIS
             if (isActiveToday && this.prisoner.getActivityStatus() != PrisonerActivityStatus.OnShiftWorking)
             {
                 this.prisoner.setActivityStatus(PrisonerActivityStatus.OnShiftWorking);
-                this.prisoner.update();
+                this.prisoner.update(true);
             }
             else if (!isActiveToday && this.prisoner.getActivityStatus() == PrisonerActivityStatus.OnShiftWorking
                       && !AttendanceRecord.hasActiveToday(this.prisoner.getId()))
             {
                 this.prisoner.setActivityStatus(PrisonerActivityStatus.Idle);
-                this.prisoner.update();
+                this.prisoner.update(true);
             }
         }
 

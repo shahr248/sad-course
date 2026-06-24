@@ -43,14 +43,15 @@ namespace PEDIS
         /// 4. Close connection (always, even if error occurs)
         /// </summary>
         /// <param name="cmd">Prepared SQL command with parameters</param>
-        public void execute_non_query(SqlCommand cmd)
+        public void execute_non_query(SqlCommand cmd, bool showSuccessMessage = true)
         {
             try
             {
                 conn.Open();              // Step 1: Open connection
                 cmd.Connection = conn;    // Step 2: Bind command to connection
                 cmd.ExecuteNonQuery();    // Step 3: Execute (INSERT/UPDATE/DELETE)
-                MessageBox.Show("Operation completed successfully", "Success", MessageBoxButtons.OK);
+                if (showSuccessMessage)
+                    MessageBox.Show("Operation completed successfully", "Success", MessageBoxButtons.OK);
             }
             catch (Exception ex)
             {

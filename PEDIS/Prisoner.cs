@@ -133,7 +133,10 @@ namespace PEDIS
             sc.execute_non_query(cmd);
         }
 
-        public void update()
+        // silent=true skips the "Operation completed successfully" popup -- used by
+        // automatic background syncs (attendance-driven status sync, startup
+        // reconciliation) so they don't flood the user with modal dialogs.
+        public void update(bool silent = false)
         {
             SqlCommand cmd = new SqlCommand();
             cmd.CommandText = "EXECUTE sp_Prisoner_update @prisoner_id, @prisoner_number, @full_name, @factory, @department, @activity_status, @role, @safety_training_validity, @work_start_date, @release_date, @qualified, @shabbat_keeping, @hourly_rate";
@@ -151,7 +154,7 @@ namespace PEDIS
             cmd.Parameters.AddWithValue("@shabbat_keeping", this.sabbatKeeping);
             cmd.Parameters.AddWithValue("@hourly_rate", this.hourlyRate);
             SQL_CON sc = new SQL_CON();
-            sc.execute_non_query(cmd);
+            sc.execute_non_query(cmd, !silent);
         }
 
         public void delete()
@@ -225,7 +228,7 @@ namespace PEDIS
                     !AttendanceRecord.hasActiveToday(p.getId()))
                 {
                     p.setActivityStatus(PrisonerActivityStatus.Idle);
-                    p.update();
+                    p.update(true);
                 }
             }
         }
