@@ -30,12 +30,14 @@ namespace PEDIS
             public TextBox txtQuantity;
             public TextBox txtPackagingInstructions;
             public Button btnRemove;
+            public WorkOrder ExistingWorkOrder;
         }
 
         private ProductionOrder orderToEdit;
         private bool isEditMode;
         private DepartmentManagement currentUser;
         private List<ProductLineRow> productLines = new List<ProductLineRow>();
+        private List<WorkOrder> originalWorkOrders = new List<WorkOrder>();
 
         public AddEditProductionOrderDialog(ProductionOrder orderToEdit = null, DepartmentManagement currentUser = null)
         {
@@ -128,9 +130,10 @@ namespace PEDIS
             return maxId + 1;
         }
 
-        private ProductLineRow AddProductLineRow(bool editable, Product preselectedProduct = null, int? quantity = null, string packagingInstructions = null)
+        private ProductLineRow AddProductLineRow(bool editable, Product preselectedProduct = null, int? quantity = null, string packagingInstructions = null, WorkOrder existingWorkOrder = null)
         {
             ProductLineRow row = new ProductLineRow();
+            row.ExistingWorkOrder = existingWorkOrder;
 
             row.Container = new Panel();
             row.Container.Size = new System.Drawing.Size(630, 32);
@@ -140,13 +143,14 @@ namespace PEDIS
             row.cbProduct.DropDownStyle = ComboBoxStyle.DropDownList;
             row.cbProduct.Location = new System.Drawing.Point(0, 4);
             row.cbProduct.Size = new System.Drawing.Size(200, 24);
-            // Scoping only applies to rows the user can actually pick from (editable);
-            // read-only rows in Edit mode must keep showing the line's real product
-            // even if it falls outside the current Factory Manager's own factory.
+            // Scoping only applies to products the user could newly pick; a line's
+            // current product must always stay in its own dropdown even if it falls
+            // outside the current Factory Manager's own factory (Edit mode rows are
+            // now editable, so this guards against silently losing the assignment).
             bool scoped = editable && isFactoryManager();
             foreach (Product p in Program.Products)
             {
-                if (scoped && p.getFactory() != currentUser.getFactory())
+                if (scoped && p.getFactory() != currentUser.getFactory() && p != preselectedProduct)
                     continue;
 
                 string displayText = p.getName() ?? "Unknown";
@@ -235,11 +239,12 @@ namespace PEDIS
             dtpDeliveryDeadline.Value = po.getDeliveryDeadline();
             cbOrderStatus.SelectedItem = po.getOrderStatus();
 
-            // Product lines are read-only in Edit mode for now (see plan §7)
-            btnAddProduct.Visible = false;
-            foreach (WorkOrder wo in po.getWorkOrders())
+            // Product lines are editable in Edit mode, mirroring Add mode. Snapshot the
+            // order's current WorkOrders so Save can diff against whatever rows remain.
+            originalWorkOrders = new List<WorkOrder>(po.getWorkOrders());
+            foreach (WorkOrder wo in originalWorkOrders)
             {
-                AddProductLineRow(false, wo.getProduct(), wo.getRequiredQuantity(), wo.getPackagingInstructions());
+                AddProductLineRow(true, wo.getProduct(), wo.getRequiredQuantity(), wo.getPackagingInstructions(), wo);
             }
         }
 
@@ -257,28 +262,36 @@ namespace PEDIS
                 return false;
             }
 
-            if (!isEditMode)
+            if (productLines.Count == 0)
             {
-                if (productLines.Count == 0)
+                MessageBox.Show("Please add at least one product line", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return false;
+            }
+
+            HashSet<int> selectedProductIds = new HashSet<int>();
+            foreach (ProductLineRow row in productLines)
+            {
+                if (row.cbProduct.SelectedIndex < 0)
                 {
-                    MessageBox.Show("Please add at least one product line", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show("Please select a Product for every product line", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return false;
+                }
+                if (!int.TryParse(row.txtQuantity.Text, out int qty) || qty <= 0)
+                {
+                    MessageBox.Show("Quantity must be a positive number for every product line", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return false;
                 }
 
-                foreach (ProductLineRow row in productLines)
+                Product selectedProduct = ((ComboBoxItem)row.cbProduct.SelectedItem).Value as Product;
+                if (!selectedProductIds.Add(selectedProduct.getId()))
                 {
-                    if (row.cbProduct.SelectedIndex < 0)
-                    {
-                        MessageBox.Show("Please select a Product for every product line", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                        return false;
-                    }
-                    if (!int.TryParse(row.txtQuantity.Text, out int qty) || qty <= 0)
-                    {
-                        MessageBox.Show("Quantity must be a positive number for every product line", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                        return false;
-                    }
+                    MessageBox.Show("לא ניתן לבחור את אותו מוצר פעמיים באותה הזמנה. כל מוצר יכול להופיע בשורה אחת בלבד.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return false;
                 }
+            }
 
+            if (!isEditMode)
+            {
                 // Order Number is auto-generated, but double-check uniqueness defensively
                 foreach (ProductionOrder po in Program.ProductionOrders)
                 {
@@ -286,6 +299,37 @@ namespace PEDIS
                     {
                         MessageBox.Show("Order Number already exists, please reopen the dialog and try again", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                         return false;
+                    }
+                }
+            }
+            else
+            {
+                // Block removing a product line whose WorkOrder already has logged
+                // productivity (DB FK is ON DELETE NO ACTION) — catch it here with a
+                // clear message instead of letting a raw SQL error surface on Save.
+                foreach (WorkOrder originalWo in originalWorkOrders)
+                {
+                    bool stillPresent = false;
+                    foreach (ProductLineRow row in productLines)
+                    {
+                        if (row.ExistingWorkOrder == originalWo)
+                        {
+                            stillPresent = true;
+                            break;
+                        }
+                    }
+
+                    if (stillPresent)
+                        continue;
+
+                    foreach (ProductivityRecord record in Program.ProductivityRecords)
+                    {
+                        if (record.getWorkOrderId() == originalWo.getId())
+                        {
+                            string productName = originalWo.getProduct()?.getName() ?? originalWo.getWorkOrderNumber();
+                            MessageBox.Show("לא ניתן להסיר את המוצר \"" + productName + "\" — קיימים רישומי תפוקה (Productivity Records) המקושרים אליו.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            return false;
+                        }
                     }
                 }
             }
@@ -304,6 +348,61 @@ namespace PEDIS
                 orderToEdit.setSubmissionDate(dtpSubmissionDate.Value);
                 orderToEdit.setDeliveryDeadline(dtpDeliveryDeadline.Value);
                 orderToEdit.setOrderStatus(status);
+
+                int quantity = 0;
+                foreach (ProductLineRow row in productLines)
+                    quantity += int.Parse(row.txtQuantity.Text);
+                orderToEdit.setQuantity(quantity);
+
+                foreach (ProductLineRow row in productLines)
+                {
+                    Product p = ((ComboBoxItem)row.cbProduct.SelectedItem).Value as Product;
+                    int lineQty = int.Parse(row.txtQuantity.Text);
+                    string packaging = string.IsNullOrWhiteSpace(row.txtPackagingInstructions.Text) ? null : row.txtPackagingInstructions.Text;
+
+                    if (row.ExistingWorkOrder != null)
+                    {
+                        row.ExistingWorkOrder.setProductId(p.getId());
+                        row.ExistingWorkOrder.setRequiredQuantity(lineQty);
+                        row.ExistingWorkOrder.setPackagingInstructions(packaging);
+                        row.ExistingWorkOrder.update();
+                    }
+                    else
+                    {
+                        new WorkOrder(
+                            getNextWorkOrderId(),
+                            generateNextWorkOrderNumber(),
+                            orderToEdit.getId(),
+                            lineQty,
+                            dtpSubmissionDate.Value,
+                            dtpDeliveryDeadline.Value,
+                            WorkOrderStatus.HasntEnteredIntoProductionYet,
+                            null,
+                            p.getId(),
+                            packaging,
+                            true
+                        );
+                    }
+                }
+
+                // Remove WorkOrders whose lines were deleted from the dialog.
+                // validateInput() already confirmed none of these have ProductivityRecords.
+                foreach (WorkOrder originalWo in originalWorkOrders)
+                {
+                    bool stillPresent = false;
+                    foreach (ProductLineRow row in productLines)
+                    {
+                        if (row.ExistingWorkOrder == originalWo)
+                        {
+                            stillPresent = true;
+                            break;
+                        }
+                    }
+
+                    if (!stillPresent)
+                        originalWo.delete();
+                }
+
                 return orderToEdit;
             }
             else
